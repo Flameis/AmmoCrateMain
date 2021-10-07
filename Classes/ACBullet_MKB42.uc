@@ -18,7 +18,7 @@ defaultproperties
 {
 	BallisticCoefficient=0.138
 	Damage=450
-	MyDamageType=class'ACDmgType_ACBullet_MKB42'
+	MyDamageType=class'ACDmgType_MKb42Bullet'
 	Speed=34300 // 686 M/S
 	MaxSpeed=34300 // 686 M/S
 

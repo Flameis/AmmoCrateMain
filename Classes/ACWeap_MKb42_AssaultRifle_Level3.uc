@@ -123,8 +123,8 @@ defaultproperties
 	InstantHitDamage(0)=70
 	InstantHitDamage(1)=70
 
-	InstantHitDamageTypes(0)=class'ACDmgType_ACBullet_MKB42'
-	InstantHitDamageTypes(1)=class'ACDmgType_ACBullet_MKB42'
+	InstantHitDamageTypes(0)=class'ACDmgType_MKb42Bullet'
+	InstantHitDamageTypes(1)=class'ACDmgType_MKb42Bullet'
 
 	MuzzleFlashSocket=MuzzleFlashSocket
 	MuzzleFlashPSCTemplate=ParticleSystem'FX_VN_Weapons.MuzzleFlashes.FX_VN_MuzzleFlash_1stP_Rifles_round'
