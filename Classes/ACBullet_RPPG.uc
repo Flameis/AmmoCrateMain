@@ -7,7 +7,7 @@
 // Copyright (C) 2014 Tripwire Interactive LLC
 // - Sturt "Psycho Ch!cken" Jeffery @ Antimatter Games
 //=============================================================================
-class TestPG7VRocket extends RORocketProjectile;
+class ACBullet_RPPG extends RORocketProjectile;
 
 defaultproperties
 {

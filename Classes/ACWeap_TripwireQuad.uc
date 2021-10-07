@@ -7,11 +7,11 @@
 // Copyright (C) 2016 Tripwire Interactive LLC
 // Edited by the 29th by Reimer, Tested and Published by Scovel
 //=============================================================================
-class ACWeap_TripwireTrapQuadAllowable extends ROWeap_TripwireTrap;
+class ACWeap_TripwireQuad extends ROWeap_TripwireTrap;
 
 DefaultProperties
 {
-	WeaponContentClass(0)="AmmoCrate.ACWeap_TripwireTrapContentQuadAllowable"
+	WeaponContentClass(0)="AmmoCrate.ACWeap_TripwireQuadContent"
 	MaxAmmoCount=4
 	InitialNumPrimaryMags=4
 	MaxNumPrimaryMags=4

@@ -8,12 +8,12 @@
 // - Dayle "Xienen" Flowers
 //=============================================================================
 
-class TestROAmmo_762x25_PPSHStick extends ROAmmunition
+class ACAmmo_762x25_RPPG extends ROAmmunition
 	abstract;
 
 defaultproperties
 {
-	CompatibleWeaponClasses(0)=class'AmmoCrate.TestWeap_PPSH41_SMG'
+	CompatibleWeaponClasses(0)=class'AmmoCrate.ACWeap_RPPG'
 	CompatibleWeaponClasses(1)=class'ROGame.ROWeap_K50M_SMG'
 
 	InitialAmount=9999

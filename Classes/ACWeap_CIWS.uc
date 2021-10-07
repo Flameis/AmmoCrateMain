@@ -7,7 +7,7 @@
 // Copyright (C) 2014 Tripwire Interactive LLC
 // - Sturt "Psycho Ch!cken" Jeffery @ Antimatter Games
 //=============================================================================
-class TestWeap_M3A1_SMG extends ROProjectileWeapon
+class ACWeap_CIWS extends ROProjectileWeapon
 	abstract;
 
 // @TEMP - triple spread for most handheld weapons
@@ -18,7 +18,7 @@ simulated function float GetSpreadMod()
 
 defaultproperties
 {
-	WeaponContentClass(0)="ROGameContent.TestWeap_M3A1_SMG_Content"
+	WeaponContentClass(0)="ROGameContent.ACWeap_CIWS_Content"
 
 	RoleSelectionImage(0)=Texture2D'VN_UI_Textures.WeaponTex.US_Weap_M3A1_SMG'
 
@@ -37,7 +37,7 @@ defaultproperties
 	// MAIN FIREMODE
 	FiringStatesArray(0)=WeaponFiring
 	WeaponFireTypes(0)=EWFT_Custom
-	WeaponProjectiles(0)=class'CIWSBulletTracer'
+	WeaponProjectiles(0)=class'ACBullet_CIWS'
 	FireInterval(0)=+0.013 // 4500 RPM, just like a real CIWS :)
 	Spread(0)=0.004 // 15.48 MOA
 	WeaponDryFireSnd=AkEvent'WW_WEP_Shared.Play_WEP_Generic_Dry_Fire'
@@ -230,7 +230,7 @@ defaultproperties
 	SuppressionPower=20
 
 	// Ammo
-	AmmoClass=class'TestAmmo_1143x23_M3A1Mag'
+	AmmoClass=class'ACAmmo_1143x23_CIWS'
 	MaxAmmoCount=1000000
 	bUsesMagazines=true
 	InitialNumPrimaryMags=4

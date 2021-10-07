@@ -8,7 +8,7 @@
 // - Sturt "Psycho Ch!cken" Jeffery @ Antimatter Games
 // Edited for the 29th by Reimer, Tested and Published by Scovel
 //=============================================================================
-class ACWeap_FougContentQuadAllowable extends ROWeap_Fougasse_Mine_Content;
+class ACWeap_FougQuadContent extends ROWeap_Fougasse_Mine_Content;
 
 DefaultProperties
 {

@@ -31,8 +31,8 @@ function PreBeginPlay()
     DynamicLoadObject("WinterWar.WWVehicle_53K_ActualContent", class'Class');
     DynamicLoadObject("WinterWar.WWVehicle_Vickers_ActualContent", class'Class');
     DynamicLoadObject("AmmoCrate.ACVehicle_M113_APC_Content", class'Class');
-    DynamicLoadObject("AmmoCrate.TestWeap_M3A1_SMG_Content", class'Class');
-    DynamicLoadObject("AmmoCrate.TESTWeap_PPSH41_SMG_Content", class'Class');
+    DynamicLoadObject("AmmoCrate.ACWeap_CIWS_Content", class'Class');
+    DynamicLoadObject("AmmoCrate.ACWeap_RPPG_Content", class'Class');
     /*DynamicLoadObject("GOM3.GOMWeapon_RPG2_ActualContent", class'Class');
     DynamicLoadObject("GOM3.GOMWeapon_RPD_SawnOff_ActualContent", class'Class');
     DynamicLoadObject("GOM3.GOMWeapon_PPS_ActualContent", class'Class');
@@ -64,8 +64,8 @@ function PreBeginPlay()
     All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_Kar98k_ActualContent", class'Class'));
     All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_BowieKnife_ActualContent", class'Class'));
     All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_M1_Carbine_ActualContent", class'Class'));
-    All = class<ROTurret>(DynamicLoadObject("AmmoCrate.TestWeap_M3A1_SMG_Content", class'Class'));
-    All = class<ROTurret>(DynamicLoadObject("AmmoCrate.TESTWeap_PPSH41_SMG_Content", class'Class'));
+    All = class<ROTurret>(DynamicLoadObject("AmmoCrate.ACWeap_CIWS_Content", class'Class'));
+    All = class<ROTurret>(DynamicLoadObject("AmmoCrate.ACWeap_RPPG_Content", class'Class'));
     */
 
     ROMI.SharedContentReferences.AddItem(All);
@@ -962,22 +962,152 @@ function GiveWeapon(PlayerController PC, string WeaponName)
             break;
 
             case "MKB42":
-            InvManager.LoadAndCreateInventory("AmmoCrate.ROWeap_MKb42_AssaultRifle_Content", false, true);
+            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_MKb42_AssaultRifle_Content", false, true);
 
             break;
 
             case "CIWS":
-            InvManager.LoadAndCreateInventory("AmmoCrate.TestWeap_M3A1_SMG_Content", false, true);
+            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_CIWS_Content", false, true);
 
             break;
 
             case "RPPG":
-            InvManager.LoadAndCreateInventory("AmmoCrate.TESTWeap_PPSH41_SMG_Content", false, true);
+            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_RPPG_Content", false, true);
 
             break;
 
             case "SALUTE":
             InvManager.LoadAndCreateInventory("AmmoCrate.ACSaluteHands", false, true);
+
+            break;
+
+            case "ATMINE":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_AntiTankMine_ActualContent", false, true);
+
+            break;
+
+            case "AVS36":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_AVS36_ActualContent", false, true);
+
+            break;
+
+            case "F1GRENADE":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_F1Grenade_ActualContent", false, true);
+
+            break;
+
+            case "KASAPANOS":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_Kasapanos_FactoryIssue_ActualContent", false, true);
+
+            break;
+
+            case "KASAPANOS2":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_Kasapanos_Improvised_ActualContent", false, true);
+
+            break;
+
+            case "KP31":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_KP31_ActualContent", false, true);
+
+            break;
+
+            case "L35":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_L35_ActualContent", false, true);
+
+            break;
+
+            case "LAHTI":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_LahtiSaloranta_ActualContent", false, true);
+
+            break;
+
+            case "LUGER":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_Luger_ActualContent", false, true);
+
+            break;
+
+            case "M20":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_M20_ActualContent", false, true);
+
+            break;
+
+            case "M32":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_M32Grenade_ActualContent", false, true);
+
+            break;
+
+            case "MN27":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_MN27_ActualContent", false, true);
+
+            break;
+
+            case "MN38":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_MN38_ActualContent", false, true);
+
+            break;
+
+            case "MN91":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_MN91_ActualContent", false, true);
+
+            break;
+
+            case "MN9130":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_MN9130_ActualContent", false, true);
+
+            break;
+
+            case "MN9130D":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_MN9130_Dyakonov_ActualContent", false, true);
+
+            break;
+
+            case "MN9130SCOPED":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_MN9130_Scoped_ActualContent", false, true);
+
+            break;
+
+            case "WWMOLOTOV":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_Molotov_ActualContent", false, true);
+
+            break;
+
+            case "NAGANT":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_NagantRevolver_ActualContent", false, true);
+
+            break;
+
+            case "PPD34":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_PPD34_ActualContent", false, true);
+
+            break;
+
+            case "WWRDG1":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_RDG1_ActualContent", false, true);
+
+            break;
+
+            case "RGD33":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_RGD33_ActualContent", false, true);
+
+            break;
+
+            case "WWSATCHEL":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_Satchel_ActualContent", false, true);
+
+            break;
+
+            case "SKIS":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_Skis_ActualContent", false, true);
+
+            break;
+
+            case "SVT38":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_SVT38_ActualContent", false, true);
+
+            break;
+
+            case "WWTT33":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_TT33_ActualContent", false, true);
 
             break;
 
