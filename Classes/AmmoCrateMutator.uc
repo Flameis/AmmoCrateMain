@@ -33,7 +33,6 @@ function PreBeginPlay()
     DynamicLoadObject("AmmoCrate.ACVehicle_M113_APC_Content", class'Class');
     DynamicLoadObject("AmmoCrate.TestWeap_M3A1_SMG_Content", class'Class');
     DynamicLoadObject("AmmoCrate.TESTWeap_PPSH41_SMG_Content", class'Class');
-    //DynamicLoadObject("GOM3.GOMWeapon_Satchel_ActualContent", class'Class');
     /*DynamicLoadObject("GOM3.GOMWeapon_RPG2_ActualContent", class'Class');
     DynamicLoadObject("GOM3.GOMWeapon_RPD_SawnOff_ActualContent", class'Class');
     DynamicLoadObject("GOM3.GOMWeapon_PPS_ActualContent", class'Class');
@@ -57,7 +56,6 @@ function PreBeginPlay()
     All = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_Vickers_ActualContent", class'Class'));
     All = class<ROVehicle>(DynamicLoadObject("AmmoCrate.ACVehicle_M113_APC_Content", class'Class'));
     /*
-    All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_Satchel_ActualContent", class'Class'));
     All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_RPG2_ActualContent", class'Class'));
     All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_RPD_SawnOff_ActualContent", class'Class'));
     All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_PPS_ActualContent", class'Class'));
@@ -212,8 +210,6 @@ function ClearVehicles()
 
 function SetJumpZ(PlayerController PC, float F )
 {
-    //while (ROGameInfo(WorldInfo.Game).bRoundHasBegun && PC.Pawn.JumpZ != F)
-    //{
         if (0.5 <= F && F <= 10)
 	    {
 	        PC.Pawn.JumpZ = F;
@@ -223,18 +219,10 @@ function SetJumpZ(PlayerController PC, float F )
             PC.Pawn.JumpZ = 1;
             `log("Error");
         }
-    //}
-
-    //while (!ROGameInfo(WorldInfo.Game).bRoundHasBegun && PC.Pawn.JumpZ != 1)
-    //{
-	//    PC.Pawn.JumpZ = 1;
-    //}
 }
 
 function SetGravity(PlayerController PC, float F )
 {
-    //while (ROGameInfo(WorldInfo.Game).bRoundHasBegun && WorldInfo.WorldGravityZ != WorldInfo.Default.WorldGravityZ * F)
-    //{
         if (-1000 <= F && F <= 1000)
 	    {
             WorldInfo.WorldGravityZ = WorldInfo.Default.WorldGravityZ * F;
@@ -244,63 +232,38 @@ function SetGravity(PlayerController PC, float F )
             WorldInfo.WorldGravityZ = WorldInfo.Default.WorldGravityZ;
             `log("Error");
         }
-    //}
-
-    /*while (!ROGameInfo(WorldInfo.Game).bRoundHasBegun && WorldInfo.WorldGravityZ != WorldInfo.Default.WorldGravityZ)
-    {
-        WorldInfo.WorldGravityZ = WorldInfo.Default.WorldGravityZ;
-    }*/
 }
 
 function SetSpeed(PlayerController PC, float F )
 {
-    //while (ROGameInfo(WorldInfo.Game).bRoundHasBegun && PC.Pawn.GroundSpeed != PC.Pawn.Default.GroundSpeed * F && PC.Pawn.WaterSpeed != PC.Pawn.Default.WaterSpeed * F)
-    //{
-        if (0.5 <= F && F <= 5)
-	    {
-            PC.Pawn.GroundSpeed = PC.Pawn.Default.GroundSpeed * F;
-	        PC.Pawn.WaterSpeed = PC.Pawn.Default.WaterSpeed * F;
-        }
-        else
-        {
-            PC.Pawn.GroundSpeed = PC.Pawn.Default.GroundSpeed;
-	        PC.Pawn.WaterSpeed = PC.Pawn.Default.WaterSpeed;
-            `log("Error");
-        }
-    //}
-
-    /*while (!ROGameInfo(WorldInfo.Game).bRoundHasBegun && PC.Pawn.GroundSpeed != PC.Pawn.Default.GroundSpeed && PC.Pawn.WaterSpeed != PC.Pawn.Default.WaterSpeed)
+    if (0.5 <= F && F <= 5)
+	{
+        PC.Pawn.GroundSpeed = PC.Pawn.Default.GroundSpeed * F;
+	    PC.Pawn.WaterSpeed = PC.Pawn.Default.WaterSpeed * F;
+    }
+    else
     {
         PC.Pawn.GroundSpeed = PC.Pawn.Default.GroundSpeed;
 	    PC.Pawn.WaterSpeed = PC.Pawn.Default.WaterSpeed;
-    } */
+        `log("Error");
+    }
 }
 
 function ChangeSize(PlayerController PC, float F )
 {
-    //while (ROGameInfo(WorldInfo.Game).bRoundHasBegun && PC.Pawn.CylinderComponent.CollisionHeight != PC.Pawn.Default.CylinderComponent.CollisionHeight * F)
-    //{
-        if (0.1 <= F && F <= 50)
-	    {
-            PC.Pawn.CylinderComponent.SetCylinderSize(PC.Pawn.CylinderComponent.CollisionRadius * F / 2, PC.Pawn.CylinderComponent.CollisionHeight * F);
-	        PC.Pawn.SetDrawScale(F);
-	        PC.Pawn.SetLocation(PC.Pawn.Location);
-        }
-        else
-        {
-            PC.Pawn.CylinderComponent.SetCylinderSize(PC.Pawn.Default.CylinderComponent.CollisionRadius, PC.Pawn.Default.CylinderComponent.CollisionHeight);
-	        PC.Pawn.SetDrawScale(1);
-	        PC.Pawn.SetLocation(PC.Pawn.Location);
-            `log("Error");
-        }
-    //}
-
-    //while (!ROGameInfo(WorldInfo.Game).bRoundHasBegun && PC.Pawn.CylinderComponent.CollisionHeight != PC.Pawn.Default.CylinderComponent.CollisionHeight)
-    //{
-    //    PC.Pawn.CylinderComponent.SetCylinderSize(PC.Pawn.Default.CylinderComponent.CollisionRadius, PC.Pawn.Default.CylinderComponent.CollisionHeight);
-	//    PC.Pawn.SetDrawScale(1);
-	//    PC.Pawn.SetLocation(PC.Pawn.Location);
-    //}
+    if (0.1 <= F && F <= 50)
+	{
+        PC.Pawn.CylinderComponent.SetCylinderSize(PC.Pawn.CylinderComponent.CollisionRadius * F / 2, PC.Pawn.CylinderComponent.CollisionHeight * F);
+	    PC.Pawn.SetDrawScale(F);
+	    PC.Pawn.SetLocation(PC.Pawn.Location);
+    }
+    else
+    {
+        PC.Pawn.CylinderComponent.SetCylinderSize(PC.Pawn.Default.CylinderComponent.CollisionRadius, PC.Pawn.Default.CylinderComponent.CollisionHeight);
+	    PC.Pawn.SetDrawScale(1);
+	    PC.Pawn.SetLocation(PC.Pawn.Location);
+        `log("Error");
+    }
 }
 
 function AddBots(int Num, optional int NewTeam = -1, optional bool bNoForceAdd)
