@@ -13,7 +13,6 @@ var RORoleInfoClasses RORICNorth;
 
 function PreBeginPlay()
     {
-    local class<Object>          All;
     local ROMapInfo ROMI;
     local ROVolumeNoArtillery ROVA;
     ROMI = ROMapInfo(WorldInfo.GetMapInfo());
@@ -126,14 +125,17 @@ simulated function ReplacePawns()
 
 simulated function ModifyPlayer(Pawn Other)
 {
-    super.ModifyPlayer(Other);
-
     ReplacePawns();
+
+    super.ModifyPlayer(Other);
 }
 
 simulated function ModifyPreLogin(string Options, string Address, out string ErrorMessage)
 {
     ReplacePawns();
+    LoadObjects();
+
+    super.ModifyPreLogin(Options, Address, ErrorMessage);
 }
 
 function LoadObjects()
@@ -153,8 +155,6 @@ function LoadObjects()
 
 function NotifyLogin(Controller NewPlayer)
 {
-	local ROVehicle ROHelo;
-
     ACPC = ACPlayerController(NewPlayer);
 
     if (ACPC == None)
@@ -399,6 +399,7 @@ function Mutate(string MutateString, PlayerController PC) //no prefixes, also ca
     {
         local array<string> Args;
         local string        command;
+        local string NameValid;
 
         Args = SplitString(MutateString, " ", true);
         command = Caps(Args[0]);
@@ -407,15 +408,25 @@ function Mutate(string MutateString, PlayerController PC) //no prefixes, also ca
             Switch (Command)
             {
                 case "GIVEWEAPON":
-                GiveWeapon(PC, Args[1]);
-                WorldInfo.Game.Broadcast(self, "[29th Extras] "$PlayerName$" spawned a "$Args[1]$"");
-                `log("[29th Extras] "$PlayerName$" spawned a "$Args[1]$"");
+                GiveWeapon(PC, Args[1], NameValid);
+
+                if (NameValid != "False")
+                {
+                    WorldInfo.Game.Broadcast(self, "[29th Extras] "$PlayerName$" spawned a "$Args[1]$"");
+                    `log("[29th Extras] "$PlayerName$" spawned a "$Args[1]$"");
+                }
+
                 break;
                 
                 case "SPAWNVEHICLE":
-                SpawnVehicle(PC, Args[1]);
-                WorldInfo.Game.Broadcast(self, "[29th Extras] "$PlayerName$" spawned a "$Args[1]$"");
-                `log("[29th Extras] "$PlayerName$" spawned a "$Args[1]$"");
+                SpawnVehicle(PC, Args[1], NameValid);
+
+                if (NameValid != "False")
+                {
+                    WorldInfo.Game.Broadcast(self, "[29th Extras] "$PlayerName$" spawned a "$Args[1]$"");
+                    `log("[29th Extras] "$PlayerName$" spawned a "$Args[1]$"");
+                }
+
                 break;
 
                 case "CLEARVEHICLES":
@@ -473,7 +484,7 @@ function Mutate(string MutateString, PlayerController PC) //no prefixes, also ca
     super.Mutate(MutateString, PC);
     }
 
-function SpawnVehicle(PlayerController PC, string VehicleName)
+function SpawnVehicle(PlayerController PC, string VehicleName, out string NameValid)
 {
 	local vector                    CamLoc, StartShot, EndShot, X, Y, Z;
 	local rotator                   CamRot;
@@ -490,6 +501,8 @@ function SpawnVehicle(PlayerController PC, string VehicleName)
     local class<ROVehicle>          Vickers;
     //local class<ROVehicle>          M113;
 	local ROVehicle ROHelo;
+
+    NameValid = "true";
 
     // Do ray check and grab actor
 	ACPC.GetPlayerViewPoint(CamLoc, CamRot);
@@ -582,14 +595,17 @@ function SpawnVehicle(PlayerController PC, string VehicleName)
         default:
         `log("[29th Extras] Spawnvehicle failed! "$PlayerName$" tried to spawn a "$VehicleName$" at" $EndShot);
         PrivateMessage(PC, "Not a valid vehicle name.");
+        NameValid = "False";
         break;
     }
 }
 
-function GiveWeapon(PlayerController PC, string WeaponName)
+function GiveWeapon(PlayerController PC, string WeaponName, out string NameValid)
     {
 	local ROInventoryManager InvManager;
-	InvManager = ROInventoryManager(PC.Pawn.InvManager);     
+
+	InvManager = ROInventoryManager(PC.Pawn.InvManager);   
+    NameValid = "True";  
 
         switch (WeaponName)
         {
@@ -1409,6 +1425,7 @@ function GiveWeapon(PlayerController PC, string WeaponName)
             default:
             `log("[29th Extras] Giveweapon failed! "$PlayerName$" tried to spawn a "$WeaponName$"");
             PrivateMessage(PC, "Not a valid weapon name.");
+            NameValid = "False";
             break;
         }
     }
