@@ -1,20 +1,19 @@
 //=============================================================================
-// ROAmmo_1143x23_M3A1Mag
+// ACWeap_FougQuad
 //=============================================================================
-// Ammo properties for the 114.3 x 23mm (.45 ACP) M3A1 Greasegun magazine
+// Weapon class for the Vietnamese Fougasse mine, now with 4 allowable
 //=============================================================================
 // Rising Storm 2: Vietnam Source
-// Copyright (C) 2014 Tripwire Interactive LLC
+// Copyright (C) 2016 Tripwire Interactive LLC
 // - Sturt "Psycho Ch!cken" Jeffery @ Antimatter Games
+// Edited for the 29th by Reimer, Tested and Published by Scovel
 //=============================================================================
-class TestAmmo_1143x23_M3A1Mag extends ROAmmunition
-    abstract;
+class ACWeap_FougQuad extends ROWeap_Fougasse_Mine;
 
-defaultproperties
+DefaultProperties
 {
-    CompatibleWeaponClasses(0)=class'AmmoCrate.TestWeap_M3A1_SMG'
-
-    InitialAmount=1000000
-	Weight=0.8
-	ClipsPerSlot=3
+	WeaponContentClass(0)="AmmoCrate.ACWeap_FougQuadContent"
+	InitialNumPrimaryMags=4
+	MaxNumPrimaryMags=4
+	MaxAmmoCount=4
 }

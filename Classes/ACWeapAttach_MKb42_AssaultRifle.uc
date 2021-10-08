@@ -1,5 +1,5 @@
 //=============================================================================
-// ROWeapAttach_MKb42_AssaultRifle
+// ACWeapAttach_MKb42_AssaultRifle
 //=============================================================================
 // 3rd person Weapon attachment class for the MP40 SMG
 //=============================================================================
@@ -7,7 +7,7 @@
 // Copyright (C) 2008 Tripwire Interactive LLC
 // - John "Ramm-Jaeger" Gibson
 //=============================================================================
-class ROWeapAttach_MKb42_AssaultRifle extends ROWeaponAttachment;
+class ACWeapAttach_MKb42_AssaultRifle extends ROWeaponAttachment;
 
 defaultproperties
 {
@@ -29,7 +29,7 @@ defaultproperties
 	MuzzleFlashDuration=0.33
 	MuzzleFlashLightClass=class'ROGame.RORifleMuzzleFlashLight'
 	
-	WeaponClass=class'ROWeap_MKb42_AssaultRifle'
+	WeaponClass=class'ACWeap_MKb42_AssaultRifle'
 
 	// Shell eject FX
 	ShellEjectSocket=ShellEjectSocket

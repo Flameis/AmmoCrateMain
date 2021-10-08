@@ -1,17 +1,16 @@
 //=============================================================================
-// ACWeap_M18ClaymoreMineContentQuadAllowable
+// ACWeap_TripwireTrapContentQuadAllowable
 //=============================================================================
-// Content for American Claymore Mine
+// Content for Vietnamese Tripwire Trap, edited to have a maximum of 4 instead of 2
 //=============================================================================
 // Rising Storm 2: Vietnam Source
 // Copyright (C) 2016 Tripwire Interactive LLC
-// - Sturt "Psycho Ch!cken" Jeffery @ Antimatter Games
 // Edited for the 29th by Reimer, Tested and Published by Scovel
 //=============================================================================
-class ACWeap_M18ClaymoreMineContentQuadAllowable extends ROWeap_M18_Claymore_Content;
+class ACWeap_TripwireQuadContent extends ROWeap_TripwireTrap_Content
+;
 
 DefaultProperties
 {
-	InitialNumPrimaryMags=4
-	MaxAmmoCount=4
+	MaxAllowedAtOnce=4
 }

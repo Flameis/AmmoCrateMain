@@ -1,5 +1,5 @@
 //=============================================================================
-// MKb42Bullet
+// ACBullet_MKB42
 //=============================================================================
 // Bullet for the MKb42 Assault Rifle
 //=============================================================================
@@ -8,7 +8,7 @@
 // - John "Ramm-Jaeger" Gibson
 //=============================================================================
 
-class MKb42Bullet extends ROBullet;
+class ACBullet_MKB42 extends ROBullet;
 
 //=============================================================================
 // defaultproperties
@@ -18,7 +18,7 @@ defaultproperties
 {
 	BallisticCoefficient=0.138
 	Damage=450
-	MyDamageType=class'RODmgType_MKb42Bullet'
+	MyDamageType=class'ACDmgType_MKb42Bullet'
 	Speed=34300 // 686 M/S
 	MaxSpeed=34300 // 686 M/S
 

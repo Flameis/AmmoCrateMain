@@ -1,5 +1,5 @@
 //=============================================================================
-// RODmgType_MKb42Bullet
+// ACDmgType_MKb42Bullet
 //=============================================================================
 // Damage type for a bullet fired from the MKb42 Assault Rifle
 //=============================================================================
@@ -8,7 +8,7 @@
 // - John "Ramm-Jaeger" Gibson
 //=============================================================================
 
-class RODmgType_MKb42Bullet extends RODmgType_SmallArmsBullet
+class ACDmgType_MKb42Bullet extends RODmgType_SmallArmsBullet
 	abstract;
 
 defaultproperties

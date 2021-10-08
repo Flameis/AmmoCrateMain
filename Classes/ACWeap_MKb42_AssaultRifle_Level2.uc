@@ -1,5 +1,5 @@
 //=============================================================================
-// ROWeap_MKb42_AssaultRifle_Level2
+// ACWeap_MKb42_AssaultRifle_Level2
 //=============================================================================
 // Level 2 MKb42 Assault Rifle
 //=============================================================================
@@ -8,11 +8,11 @@
 // - Dayle "Xienen" Flowers
 //=============================================================================
 
-class ROWeap_MKb42_AssaultRifle_Level2 extends ROWeap_MKb42_AssaultRifle_Content;
+class ACWeap_MKb42_AssaultRifle_Level2 extends ACWeap_MKb42_AssaultRifle_Content;
 
 defaultproperties
 {
-	AttachmentClass=class'AmmoCrate.ROWeapAttach_MKb42_AssaultRifle_Level2'
+	AttachmentClass=class'AmmoCrate.ACWeapAttach_MKb42_AssaultRifle_Level2'
 
 	Begin Object Name=FirstPersonMesh
 		SkeletalMesh=SkeletalMesh'WP_Ger_MKB42_H.Mesh.Ger_MKB42_H_UPGD2'

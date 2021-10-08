@@ -1,37 +1,29 @@
 //=============================================================================
-// ROWeap_MKb42_AssaultRifle_Level3
+// ACWeap_MKb42_AssaultRifle
 //=============================================================================
-// Level 3 MKb42 Assault Rifle
+// MKb42 Assault Rifle
 //=============================================================================
-// Red Orchestra: Heroes Of Stalingrad Source
-// Copyright (C) 2007-2011 Tripwire Interactive LLC
-// - Dayle "Xienen" Flowers
+// Project DVA Source
+// Copyright (C) 2010 Tripwire Interactive LLC
+// - John "Ramm-Jaeger" Gibson
 //=============================================================================
 
-class ROWeap_MKb42_AssaultRifle_Level3 extends ROSniperWeapon;
+class ACWeap_MKb42_AssaultRifle extends ROProjectileWeapon
+	abstract;
 
-simulated exec function SwitchFireMode()
+// @TEMP - triple spread for most handheld weapons
+simulated function float GetSpreadMod()
 {
-	if ( !bUsingSights )
-	{
-		super(ROWeapon).SwitchFireMode();
-	}
-	else
-	{
-		super(ROSniperWeapon).SwitchFireMode();
-	}
+	return 3 * super.GetSpreadMod();
 }
 
 defaultproperties
 {
-	// 2D scene capture
-	Begin Object Name=ROSceneCapture2DDPGComponent0
-	   TextureTarget=TextureRenderTarget2D'WP_Ger_Kar98k_Rifle.Materials.Kar98Lense'
-	   FieldOfView=5.0 // "1.5X" = 7.5 / 1.5 = 5.0(FYI: 7.5 is our "real world" FOV on a 19" monitor for this scope) //4.667
-	End Object
+	WeaponContentClass(0)="AmmoCrate.ACWeap_MKb42_AssaultRifle_Content"
+
+	RoleSelectionImage(0)=Texture2D'WP_Ger_MKB42_H.Textures.ger_wp_MKB42_h'
 
 	WeaponClassType=ROWCT_AssaultRifle
-
 	TeamIndex=`AXIS_TEAM_INDEX
 
 	Category=ROIC_Primary
@@ -39,41 +31,41 @@ defaultproperties
 	InvIndex=18
 	InventoryWeight=6
 
-	PlayerIronSightFOV=45.0
+	PlayerIronSightFOV=50.0
 
 	PreFireTraceLength=1250 //25 Meters
-	FireTweenTime=0.01
 
 	// MAIN FIREMODE
 	FiringStatesArray(0)=WeaponFiring
 	WeaponFireTypes(0)=EWFT_Custom
-	WeaponProjectiles(0)=class'MKb42Bullet'
+	bLoopHighROFSounds(0)=true
+	WeaponProjectiles(0)=class'ACBullet_MKB42'
 	FireInterval(0)=+0.10
 	DelayedRecoilTime(0)=0.0
-	Spread(0)=0.0012
+	Spread(0)=0.0010
 
 	// ALT FIREMODE
 	FiringStatesArray(ALTERNATE_FIREMODE)=WeaponSingleFiring
 	WeaponFireTypes(ALTERNATE_FIREMODE)=EWFT_Custom
-	WeaponProjectiles(ALTERNATE_FIREMODE)=class'MKb42Bullet'
+	WeaponProjectiles(ALTERNATE_FIREMODE)=class'ACBullet_MKB42'
 	FireInterval(ALTERNATE_FIREMODE)=+0.10
-	DelayedRecoilTime(ALTERNATE_FIREMODE)=0.01
-	Spread(ALTERNATE_FIREMODE)=0.0012
+	DelayedRecoilTime(ALTERNATE_FIREMODE)=0.0
+	Spread(ALTERNATE_FIREMODE)=0.0010
 
-	ShoulderedSpreadMod=6.0
-	HippedSpreadMod=10.0
+	//ShoulderedSpreadMod=6.0
+	//HippedSpreadMod=10.0
 
 	// AI
 	MinBurstAmount=2
-	MaxBurstAmount=4
+	MaxBurstAmount=10
 	BurstWaitTime=1.0
 
 	// Recoil
-	maxRecoilPitch=300
-	minRecoilPitch=200
-	maxRecoilYaw=150
-	minRecoilYaw=-45
-	RecoilRate=0.095//0.085
+	maxRecoilPitch=250//260 //350
+	minRecoilPitch=250//260 //300
+	maxRecoilYaw=135//150 //200
+	minRecoilYaw=-35//-150 //-200
+	RecoilRate=0.092//0.07//0.085
 	RecoilMaxYawLimit=500
 	RecoilMinYawLimit=65035
 	RecoilMaxPitchLimit=900
@@ -82,49 +74,15 @@ defaultproperties
 	RecoilISMinYawLimit=65035
 	RecoilISMaxPitchLimit=500
 	RecoilISMinPitchLimit=65035
-   	RecoilBlendOutRatio=0.65//0.75//0.45
-   	PostureHippedRecoilModifer=2.0
-   	PostureShoulderRecoilModifer=1.75
-	RecoilViewRotationScale=0.4
+   	RecoilBlendOutRatio=0.55//0.75//0.45
+   	//PostureHippedRecoilModifer=2.0
+   	//PostureShoulderRecoilModifer=1.75
 
-	ArmsAnimSet=AnimSet'WP_Ger_MKB42_H.Animation.WP_MKB42Hands'
+	InstantHitDamage(0)=82
+	InstantHitDamage(1)=82
 
-	// Weapon SkeletalMesh
-	Begin Object Name=FirstPersonMesh
-		DepthPriorityGroup=SDPG_Foreground
-		SkeletalMesh=SkeletalMesh'WP_Ger_MKB42_H.Mesh.Ger_MKB42_H_UPGD3'
-		PhysicsAsset=None
-		AnimSets(0)=AnimSet'WP_Ger_MKB42_H.Animation.WP_MKB42Hands'
-		Animations=AnimTree'WP_Ger_MKB42_H.Animation.Ger_MKB42_Tree'
-		Scale=1.0
-		FOV=70
-	End Object
-
-	// Pickup staticmesh
-	Begin Object Name=PickupMesh
-		SkeletalMesh=SkeletalMesh'WP_Ger_MKB42_H.Mesh.MKB_42_3rd_Master'
-		PhysicsAsset=PhysicsAsset'WP_Ger_MKB42_H.Phy.MKB_42_3rd_Master_Physics'
-		CollideActors=true
-		BlockActors=true
-		BlockZeroExtent=true
-		BlockNonZeroExtent=true//false
-		BlockRigidBody=true
-		bHasPhysicsAssetInstance=false
-		bUpdateKinematicBonesFromAnimation=false
-		PhysicsWeight=1.0
-		RBChannel=RBCC_GameplayPhysics
-		RBCollideWithChannels=(Default=TRUE,GameplayPhysics=TRUE,EffectPhysics=TRUE)
-		bSkipAllUpdateWhenPhysicsAsleep=TRUE
-		bSyncActorLocationToRootRigidBody=true
-	End Object
-
-	AttachmentClass=class'AmmoCrate.ROWeapAttach_MKb42_AssaultRifle_Level3'
-
-	InstantHitDamage(0)=70
-	InstantHitDamage(1)=70
-
-	InstantHitDamageTypes(0)=class'RODmgType_MKb42Bullet'
-	InstantHitDamageTypes(1)=class'RODmgType_MKb42Bullet'
+	InstantHitDamageTypes(0)=class'ACDmgType_MKb42Bullet'
+	InstantHitDamageTypes(1)=class'ACDmgType_MKb42Bullet'
 
 	MuzzleFlashSocket=MuzzleFlashSocket
 	MuzzleFlashPSCTemplate=ParticleSystem'FX_VN_Weapons.MuzzleFlashes.FX_VN_MuzzleFlash_1stP_Rifles_round'
@@ -135,12 +93,11 @@ defaultproperties
 	ShellEjectSocket=ShellEjectSocket
 	ShellEjectPSCTemplate=ParticleSystem'FX_VN_Weapons.ShellEjects.FX_Wep_ShellEject_VC_AK47'
 
-	WeaponFireSnd(DEFAULT_FIREMODE)=(DefaultCue=AkEvent'WW_WEP_L1A1.Play_WEP_L1A1_Loop_3P', FirstPersonCue=AkEvent'WW_WEP_L1A1.Play_WEP_L1A1_Auto_LP')
-	WeaponFireSnd(ALTERNATE_FIREMODE)=(DefaultCue=AkEvent'WW_WEP_L1A1.Play_WEP_L1A1_Single_3P', FirstPersonCue=AkEvent'WW_WEP_L1A1.Play_WEP_L1A1_Fire_Single')
-
+	WeaponFireSnd(DEFAULT_FIREMODE)=(DefaultCue=AkEvent'WW_WEP_AK47.Play_WEP_AK47_Fire_Loop_3P', FirstPersonCue=AkEvent'WW_WEP_AK47.Play_WEP_AK47_Fire_Stereo_Loop')
+	WeaponFireSnd(ALTERNATE_FIREMODE)=(DefaultCue= AkEvent'WW_WEP_AK47.Play_WEP_AK47_Fire_Single_3P', FirstPersonCue=AkEvent'WW_WEP_AK47.Play_WEP_AK47_Fire_Single')
+	
 	bLoopingFireSnd(DEFAULT_FIREMODE)=true
-	WeaponFireLoopEndSnd(DEFAULT_FIREMODE)=(DefaultCue=AkEvent'WW_WEP_L1A1.Play_WEP_L1A1_Tail_3P', FirstPersonCue=AkEvent'WW_WEP_L1A1.Play_WEP_L1A1_Auto_Tail')
-	bLoopHighROFSounds(DEFAULT_FIREMODE)=true
+	WeaponFireLoopEndSnd(DEFAULT_FIREMODE)=(DefaultCue=AkEvent'WW_WEP_AK47.Play_WEP_AK47_Tail_3P', FirstPersonCue=AkEvent'WW_WEP_AK47.Play_WEP_AK47_Stereo_Tail')
 
 	bHasIronSights=true;
 
@@ -163,10 +120,6 @@ defaultproperties
 	WeaponFireSightedAnim(0)=MKB_42_iron_shoot
 	WeaponFireSightedAnim(1)=MKB_42_iron_shoot
 	WeaponFireLastSightedAnim=MKB_42_iron_shootLAST
-	//Fire through scope
-	WeaponFireScopedAnim(0)=MKB_42_Scope_shoot
-	WeaponFireScopedAnim(1)=MKB_42_Scope_shoot
-	WeaponFireLastScopedAnim=MKB_42_Scope_shootLAST
 
 	// Idle Anims
 	//Hip Idle
@@ -249,24 +202,11 @@ defaultproperties
 	WeaponBF_Idle2LeftReady=MKB_42_idleTO_L_ready
 	WeaponBF_Idle2RightReady=MKB_42_idleTO_R_ready
 
-	// MELEE FIREMODE
-	WeaponFireTypes(MELEE_ATTACK_FIREMODE)=EWFT_InstantHit
-	InstantHitDamageTypes(MELEE_ATTACK_FIREMODE)=class'RODmgType_MeleePierce'
-
 	// Melee anims
-	WeaponMeleeAnims(0)=MKB_42_Stab
-	WeaponMeleeHardAnim=MKB_42_StabHard
+	WeaponMeleeAnims(0)=MKB_42_Bash
+	WeaponMeleeHardAnim=MKB_42_BashHard
 	MeleePullbackAnim=MKB_42_Pullback
 	MeleeHoldAnim=MKB_42_Pullback_Hold
-
-	// Melee FX
-	MeleeAttackHitFleshSound=AkEvent'WW_WEP_Shared.Play_WEP_Melee_Rifle_Impact'
-
-	// Melee Settings
-	MeleeAttackRange=70
-	MeleeAttackDamage=110
-	MeleeAttackChargeDamage=200
-	bAllowMeleeToPenetrate=true
 
 	ReloadMagazinEmptyCameraAnim=CameraAnim'1stperson_Cameras.Anim.Camera_MP40_reloadempty'
 
@@ -281,13 +221,13 @@ defaultproperties
 	ISFocusBlendRadius=8
 
 	// Ammo
-	AmmoClass=class'ROAmmo_792x33_MKb42Mag'
+	AmmoClass=class'ACAmmo_792x33_MKb42Mag'
 	MaxAmmoCount=31
 	bUsesMagazines=true
-	InitialNumPrimaryMags=6
+	InitialNumPrimaryMags=4
 	bPlusOneLoading=true
 	bCanReloadNonEmptyMag=true
-	PenetrationDepth=18.42
+	PenetrationDepth=12
 	MaxPenetrationTests=3
 	MaxNumPenetrations=2
 
@@ -338,20 +278,5 @@ defaultproperties
 	SightRanges[5]=(SightRange=600,SightPitch=1065,SightSlideOffset=0.73,SightPositionOffset=-0.5)
 	SightRanges[6]=(SightRange=700,SightPitch=1380,SightSlideOffset=0.9,SightPositionOffset=-0.64)
 	SightRanges[7]=(SightRange=800,SightPitch=1725,SightSlideOffset=1.07,SightPositionOffset=-0.792)
-
-	ScopeLenseMICTemplate=MaterialInstanceConstant'M_Common_Weapons.Ger_1_5x_Lense_Material_Mic'
-
-	bHasScopePosition=true
-	ScopePosition=(X=-14.0,Y=0.001,Z=-1.11)
-	ScopedControlledBreathingSensitivityMod=2.0
-	ScopedSensitivityMod=3.0
-	ScopeTextureScale=0.3
-
-	ScopeSightRanges[0]=(SightRange=100,SightPositionOffset=-0.01)
-	ScopeSightRanges[1]=(SightRange=200,SightPositionOffset=-0.035)
-	ScopeSightRanges[2]=(SightRange=300,SightPositionOffset=-0.0525)
-	ScopeSightRanges[3]=(SightRange=400,SightPositionOffset=-0.08)
-	ScopeSightRanges[4]=(SightRange=500,SightPositionOffset=-0.11)
-	ScopeSightRanges[5]=(SightRange=600,SightPositionOffset=-0.14)
 }
 

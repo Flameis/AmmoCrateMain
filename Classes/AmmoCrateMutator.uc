@@ -30,49 +30,30 @@ function PreBeginPlay()
     DynamicLoadObject("WinterWar.WWVehicle_HT130_ActualContent", class'Class');
     DynamicLoadObject("WinterWar.WWVehicle_53K_ActualContent", class'Class');
     DynamicLoadObject("WinterWar.WWVehicle_Vickers_ActualContent", class'Class');
-    DynamicLoadObject("AmmoCrate.ACVehicle_M113_APC_Content", class'Class');
-    DynamicLoadObject("AmmoCrate.TestWeap_M3A1_SMG_Content", class'Class');
-    DynamicLoadObject("AmmoCrate.TESTWeap_PPSH41_SMG_Content", class'Class');
-    //DynamicLoadObject("GOM3.GOMWeapon_Satchel_ActualContent", class'Class');
-    /*DynamicLoadObject("GOM3.GOMWeapon_RPG2_ActualContent", class'Class');
-    DynamicLoadObject("GOM3.GOMWeapon_RPD_SawnOff_ActualContent", class'Class');
-    DynamicLoadObject("GOM3.GOMWeapon_PPS_ActualContent", class'Class');
-    DynamicLoadObject("GOM3.GOMWeapon_M38_Carbine_ActualContent", class'Class');
-    DynamicLoadObject("GOM3.GOMWeapon_M7RifleGrenade_ActualContent", class'Class');
-    DynamicLoadObject("GOM3.GOMWeapon_Kar98k_ActualContent", class'Class');
-    DynamicLoadObject("GOM3.GOMWeapon_BowieKnife_ActualContent", class'Class');
-    DynamicLoadObject("GOM3.GOMWeapon_M1_Carbine_ActualContent", class'Class');
-    */
-    
-    All = class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_AH1G_Content", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_OH6_Content", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_UH1H_Content", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_UH1H_Gunship_Content", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("GOM3.GOMVehicle_M113_ACAV_ActualContent", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T20_ActualContent", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T26_EarlyWar_ActualContent", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T28_ActualContent", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_HT130_ActualContent", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_53K_ActualContent", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_Vickers_ActualContent", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("AmmoCrate.ACVehicle_M113_APC_Content", class'Class'));
-    /*
-    All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_Satchel_ActualContent", class'Class'));
-    All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_RPG2_ActualContent", class'Class'));
-    All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_RPD_SawnOff_ActualContent", class'Class'));
-    All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_PPS_ActualContent", class'Class'));
-    All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_M38_Carbine_ActualContent", class'Class'));
-    All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_M7RifleGrenade_ActualContent", class'Class'));
-    All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_Kar98k_ActualContent", class'Class'));
-    All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_BowieKnife_ActualContent", class'Class'));
-    All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_M1_Carbine_ActualContent", class'Class'));
-    All = class<ROTurret>(DynamicLoadObject("AmmoCrate.TestWeap_M3A1_SMG_Content", class'Class'));
-    All = class<ROTurret>(DynamicLoadObject("AmmoCrate.TESTWeap_PPSH41_SMG_Content", class'Class'));
-    */
+    DynamicLoadObject("AmmoCrate.ACWeap_CIWS_Content", class'Class');
+    DynamicLoadObject("AmmoCrate.ACWeap_RPPG_Content", class'Class');
 
-    ROMI.SharedContentReferences.AddItem(All);
+    ROMI.SharedContentReferences.Remove(0, ROMI.SharedContentReferences.Length);
+	class'WorldInfo'.static.GetWorldInfo().ForceGarbageCollection(TRUE);
 
-    AddSharedContentRef(All);
+
+    ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_Maxim_ActualContent", class'Class')));
+	ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_QuadMaxims_ActualContent", class'Class')));
+	ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("ROGameContent.ROWeap_M2_HMG_Tripod_Content", class'Class')));
+	ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("ROGameContent.ROWeap_DShK_HMG_Tripod_Content", class'Class')));
+	ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_AH1G_Content", class'Class')));
+	ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_OH6_Content", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_UH1H_Content", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_UH1H_Gunship_Content", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("GOM3.GOMVehicle_M113_ACAV_ActualContent", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T20_ActualContent", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T26_EarlyWar_ActualContent", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T28_ActualContent", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_HT130_ActualContent", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_53K_ActualContent", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_Vickers_ActualContent", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.ROHeli_OH6_Content", class'Class')));
+
 
     ROGameInfo(WorldInfo.Game).PlayerControllerClass = class'ACPlayerController';
     ROGameInfo(WorldInfo.Game).PlayerReplicationInfoClass = class'ACPlayerReplicationInfo';
@@ -115,8 +96,6 @@ function PostBeginPlay()
     ReplacePawns();
 }
 
-function AddSharedContentRef(object ObjectToAdd);
-
 /*
 function ModifyPlayer(Pawn Other)
     {
@@ -157,24 +136,43 @@ simulated function ModifyPreLogin(string Options, string Address, out string Err
     ReplacePawns();
 }
 
+function LoadObjects()
+{
+    DynamicLoadObject("ROGameContent.ROHeli_AH1G_Content", class'Class');
+    DynamicLoadObject("ROGameContent.ROHeli_OH6_Content", class'Class');
+    DynamicLoadObject("ROGameContent.ROHeli_UH1H_Content", class'Class');
+    DynamicLoadObject("ROGameContent.ROHeli_UH1H_Gunship_Content", class'Class');
+    DynamicLoadObject("GOM3.GOMVehicle_M113_ACAV_ActualContent", class'Class');
+    DynamicLoadObject("WinterWar.WWVehicle_T20_ActualContent", class'Class');
+    DynamicLoadObject("WinterWar.WWVehicle_T26_EarlyWar_ActualContent", class'Class');
+    DynamicLoadObject("WinterWar.WWVehicle_T28_ActualContent", class'Class');
+    DynamicLoadObject("WinterWar.WWVehicle_HT130_ActualContent", class'Class');
+    DynamicLoadObject("WinterWar.WWVehicle_53K_ActualContent", class'Class');
+    DynamicLoadObject("WinterWar.WWVehicle_Vickers_ActualContent", class'Class');
+}
+
 function NotifyLogin(Controller NewPlayer)
+{
+	local ROVehicle ROHelo;
+
+    ACPC = ACPlayerController(NewPlayer);
+
+    if (ACPC == None)
     {
-        ACPC = ACPlayerController(NewPlayer);
+        `log("Error replacing roles");
+        return;
+    }
 
-        if (ACPC == None)
-        {
-            `log("Error replacing roles");
-            return;
-        }
+    ACPC.ReplacePawnHandler();
+    ACPC.ClientReplacePawnHandler();
+    ACPC.ReplaceRoles();
+    ACPC.ClientReplaceRoles();
+    ACPC.ReplaceInventoryManager();
+    ACPC.ClientReplaceInventoryManager();
 
-        ACPC.ReplacePawnHandler();
-        ACPC.ClientReplacePawnHandler();
-        ACPC.ReplaceRoles();
-        ACPC.ClientReplaceRoles();
-        ACPC.ReplaceInventoryManager();
-        ACPC.ClientReplaceInventoryManager();
+    LoadObjects();
         
-        super.NotifyLogin(NewPlayer);
+    super.NotifyLogin(NewPlayer);
     }
     
 function ClearVehicles()
@@ -212,8 +210,6 @@ function ClearVehicles()
 
 function SetJumpZ(PlayerController PC, float F )
 {
-    //while (ROGameInfo(WorldInfo.Game).bRoundHasBegun && PC.Pawn.JumpZ != F)
-    //{
         if (0.5 <= F && F <= 10)
 	    {
 	        PC.Pawn.JumpZ = F;
@@ -223,18 +219,10 @@ function SetJumpZ(PlayerController PC, float F )
             PC.Pawn.JumpZ = 1;
             `log("Error");
         }
-    //}
-
-    //while (!ROGameInfo(WorldInfo.Game).bRoundHasBegun && PC.Pawn.JumpZ != 1)
-    //{
-	//    PC.Pawn.JumpZ = 1;
-    //}
 }
 
 function SetGravity(PlayerController PC, float F )
 {
-    //while (ROGameInfo(WorldInfo.Game).bRoundHasBegun && WorldInfo.WorldGravityZ != WorldInfo.Default.WorldGravityZ * F)
-    //{
         if (-1000 <= F && F <= 1000)
 	    {
             WorldInfo.WorldGravityZ = WorldInfo.Default.WorldGravityZ * F;
@@ -244,63 +232,38 @@ function SetGravity(PlayerController PC, float F )
             WorldInfo.WorldGravityZ = WorldInfo.Default.WorldGravityZ;
             `log("Error");
         }
-    //}
-
-    /*while (!ROGameInfo(WorldInfo.Game).bRoundHasBegun && WorldInfo.WorldGravityZ != WorldInfo.Default.WorldGravityZ)
-    {
-        WorldInfo.WorldGravityZ = WorldInfo.Default.WorldGravityZ;
-    }*/
 }
 
 function SetSpeed(PlayerController PC, float F )
 {
-    //while (ROGameInfo(WorldInfo.Game).bRoundHasBegun && PC.Pawn.GroundSpeed != PC.Pawn.Default.GroundSpeed * F && PC.Pawn.WaterSpeed != PC.Pawn.Default.WaterSpeed * F)
-    //{
-        if (0.5 <= F && F <= 5)
-	    {
-            PC.Pawn.GroundSpeed = PC.Pawn.Default.GroundSpeed * F;
-	        PC.Pawn.WaterSpeed = PC.Pawn.Default.WaterSpeed * F;
-        }
-        else
-        {
-            PC.Pawn.GroundSpeed = PC.Pawn.Default.GroundSpeed;
-	        PC.Pawn.WaterSpeed = PC.Pawn.Default.WaterSpeed;
-            `log("Error");
-        }
-    //}
-
-    /*while (!ROGameInfo(WorldInfo.Game).bRoundHasBegun && PC.Pawn.GroundSpeed != PC.Pawn.Default.GroundSpeed && PC.Pawn.WaterSpeed != PC.Pawn.Default.WaterSpeed)
+    if (0.5 <= F && F <= 5)
+	{
+        PC.Pawn.GroundSpeed = PC.Pawn.Default.GroundSpeed * F;
+	    PC.Pawn.WaterSpeed = PC.Pawn.Default.WaterSpeed * F;
+    }
+    else
     {
         PC.Pawn.GroundSpeed = PC.Pawn.Default.GroundSpeed;
 	    PC.Pawn.WaterSpeed = PC.Pawn.Default.WaterSpeed;
-    } */
+        `log("Error");
+    }
 }
 
 function ChangeSize(PlayerController PC, float F )
 {
-    //while (ROGameInfo(WorldInfo.Game).bRoundHasBegun && PC.Pawn.CylinderComponent.CollisionHeight != PC.Pawn.Default.CylinderComponent.CollisionHeight * F)
-    //{
-        if (0.1 <= F && F <= 50)
-	    {
-            PC.Pawn.CylinderComponent.SetCylinderSize(PC.Pawn.CylinderComponent.CollisionRadius * F / 2, PC.Pawn.CylinderComponent.CollisionHeight * F);
-	        PC.Pawn.SetDrawScale(F);
-	        PC.Pawn.SetLocation(PC.Pawn.Location);
-        }
-        else
-        {
-            PC.Pawn.CylinderComponent.SetCylinderSize(PC.Pawn.Default.CylinderComponent.CollisionRadius, PC.Pawn.Default.CylinderComponent.CollisionHeight);
-	        PC.Pawn.SetDrawScale(1);
-	        PC.Pawn.SetLocation(PC.Pawn.Location);
-            `log("Error");
-        }
-    //}
-
-    //while (!ROGameInfo(WorldInfo.Game).bRoundHasBegun && PC.Pawn.CylinderComponent.CollisionHeight != PC.Pawn.Default.CylinderComponent.CollisionHeight)
-    //{
-    //    PC.Pawn.CylinderComponent.SetCylinderSize(PC.Pawn.Default.CylinderComponent.CollisionRadius, PC.Pawn.Default.CylinderComponent.CollisionHeight);
-	//    PC.Pawn.SetDrawScale(1);
-	//    PC.Pawn.SetLocation(PC.Pawn.Location);
-    //}
+    if (0.1 <= F && F <= 50)
+	{
+        PC.Pawn.CylinderComponent.SetCylinderSize(PC.Pawn.CylinderComponent.CollisionRadius * F / 2, PC.Pawn.CylinderComponent.CollisionHeight * F);
+	    PC.Pawn.SetDrawScale(F);
+	    PC.Pawn.SetLocation(PC.Pawn.Location);
+    }
+    else
+    {
+        PC.Pawn.CylinderComponent.SetCylinderSize(PC.Pawn.Default.CylinderComponent.CollisionRadius, PC.Pawn.Default.CylinderComponent.CollisionHeight);
+	    PC.Pawn.SetDrawScale(1);
+	    PC.Pawn.SetLocation(PC.Pawn.Location);
+        `log("Error");
+    }
 }
 
 function AddBots(int Num, optional int NewTeam = -1, optional bool bNoForceAdd)
@@ -538,7 +501,14 @@ function SpawnVehicle(PlayerController PC, string VehicleName)
     Loach = class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_OH6_Content", class'Class'));
     Huey = class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_UH1H_Content", class'Class'));
     Bushranger = class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_UH1H_Gunship_Content", class'Class'));
+
     M113ACAV = class<ROVehicle>(DynamicLoadObject("GOM3.GOMVehicle_M113_ACAV_ActualContent", class'Class'));
+
+    //M113ACAV = class<ROVehicle>(DynamicLoadObject("GOM4.GOMVehicle_M113_ACAV_ActualContent", class'Class'));
+    //T34 = class<ROVehicle>(DynamicLoadObject("GOM4.GOMVehicle_T34_ActualContent", class'Class'));
+    //T34 = class<ROVehicle>(DynamicLoadObject("GOM4.GOMVehicle_T34_ActualContent", class'Class'));
+    //T34 = class<ROVehicle>(DynamicLoadObject("GOM4.GOMVehicle_T34_ActualContent", class'Class'));
+
     T20 = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T20_ActualContent", class'Class'));
     T26 = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T26_EarlyWar_ActualContent", class'Class'));
     T28 = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T28_ActualContent", class'Class'));
@@ -549,6 +519,7 @@ function SpawnVehicle(PlayerController PC, string VehicleName)
 
     switch (VehicleName)
     {
+        // Vanilla
         case "Cobra":
         ROHelo = Spawn(Cobra, , , EndShot);
 		ROHelo.Mesh.AddImpulse(vect(0,0,1), ROHelo.Location);
@@ -569,11 +540,15 @@ function SpawnVehicle(PlayerController PC, string VehicleName)
 		ROHelo.Mesh.AddImpulse(vect(0,0,1), ROHelo.Location);
         break;
 
+        // GOM 3
         case "M113ACAV":
         ROHelo = Spawn(M113ACAV, , , EndShot);
 		ROHelo.Mesh.AddImpulse(vect(0,0,1), ROHelo.Location);
         break;
 
+        //GOM 4
+
+        //Winter War
         case "T20":
 		ROHelo = Spawn(T20, , , EndShot);
 		ROHelo.Mesh.AddImpulse(vect(0,0,1), ROHelo.Location);
@@ -618,33 +593,10 @@ function GiveWeapon(PlayerController PC, string WeaponName)
 
         switch (WeaponName)
         {
-            case "USAMMO":
-            InvManager.LoadAndCreateInventory("AmmoCrate.ACItem_USAmmoCrate_Content", false, true);
-            
-            break;
-
-            case "VCAMMO":
-            InvManager.LoadAndCreateInventory("AmmoCrate.ACItem_VCAmmoCrate_Content", false, true);
-
-            break;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Vanilla
 
             case "BHP":
             InvManager.LoadAndCreateInventory("ROGameContent.ROWeap_BHP_Pistol_Content", false, true);
-
-            break;
-
-            case "M79WP":
-            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_M79_GrenadeLauncher_Level3", false, true);
-
-            break;
-
-            case "MEME":
-            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_M79_MemeLauncher_Content", false, true);
-
-            break;
-
-            case "MG34":
-            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_MG34_LMG_Content", false, true);
 
             break;
 
@@ -953,11 +905,6 @@ function GiveWeapon(PlayerController PC, string WeaponName)
 
             break;
 
-            case "SATCHEL":
-            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_VietSatchel_Content", false, true);
-    
-            break;
-
             case "XM17730RND":
             InvManager.LoadAndCreateInventory("ROGameContent.ROWeap_XM177E1_Carbine_30rd", false, true);
 
@@ -971,6 +918,37 @@ function GiveWeapon(PlayerController PC, string WeaponName)
             case "XM21SNIPER":
             InvManager.LoadAndCreateInventory("ROGameContent.ROWeap_XM21Scoped_Rifle_Level2", false, true);
 
+            break;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 29th Extras
+
+            case "USAMMO":
+            InvManager.LoadAndCreateInventory("AmmoCrate.ACItem_USAmmoCrate_Content", false, true);
+            
+            break;
+
+            case "VCAMMO":
+            InvManager.LoadAndCreateInventory("AmmoCrate.ACItem_VCAmmoCrate_Content", false, true);
+
+            break;
+
+            case "MG34":
+            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_MG34_LMG_Content", false, true);
+
+            break;
+
+            case "M79WP":
+            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_M79_GrenadeLauncher_Level3", false, true);
+
+            break;
+
+            case "MEME":
+            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_M79_MemeLauncher_Content", false, true);
+
+            break;
+            
+            case "SATCHEL":
+            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_VietSatchel_Content", false, true);
+    
             break;
 
             case "XM21SILENCED":
@@ -999,17 +977,17 @@ function GiveWeapon(PlayerController PC, string WeaponName)
             break;
 
             case "MKB42":
-            InvManager.LoadAndCreateInventory("AmmoCrate.ROWeap_MKb42_AssaultRifle_Content", false, true);
+            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_MKb42_AssaultRifle_Content", false, true);
 
             break;
 
             case "CIWS":
-            InvManager.LoadAndCreateInventory("AmmoCrate.TestWeap_M3A1_SMG_Content", false, true);
+            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_CIWS_Content", false, true);
 
             break;
 
             case "RPPG":
-            InvManager.LoadAndCreateInventory("AmmoCrate.TESTWeap_PPSH41_SMG_Content", false, true);
+            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_RPPG_Content", false, true);
 
             break;
 
@@ -1017,6 +995,369 @@ function GiveWeapon(PlayerController PC, string WeaponName)
             InvManager.LoadAndCreateInventory("AmmoCrate.ACSaluteHands", false, true);
 
             break;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Winter War
+
+            case "ATMINE":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_AntiTankMine_ActualContent", false, true);
+
+            break;
+
+            case "AVS36":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_AVS36_ActualContent", false, true);
+
+            break;
+
+            case "F1GRENADE":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_F1Grenade_ActualContent", false, true);
+
+            break;
+
+            case "KASAPANOS":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_Kasapanos_FactoryIssue_ActualContent", false, true);
+
+            break;
+
+            case "KASAPANOS2":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_Kasapanos_Improvised_ActualContent", false, true);
+
+            break;
+
+            case "KP31":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_KP31_ActualContent", false, true);
+
+            break;
+
+            case "L35":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_L35_ActualContent", false, true);
+
+            break;
+
+            case "LAHTI":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_LahtiSaloranta_ActualContent", false, true);
+
+            break;
+
+            case "LUGER":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_Luger_ActualContent", false, true);
+
+            break;
+
+            case "M20":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_M20_ActualContent", false, true);
+
+            break;
+
+            case "M32":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_M32Grenade_ActualContent", false, true);
+
+            break;
+
+            case "MN27":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_MN27_ActualContent", false, true);
+
+            break;
+
+            case "MN38":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_MN38_ActualContent", false, true);
+
+            break;
+
+            case "MN91":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_MN91_ActualContent", false, true);
+
+            break;
+
+            case "MN9130":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_MN9130_ActualContent", false, true);
+
+            break;
+
+            case "MN9130D":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_MN9130_Dyakonov_ActualContent", false, true);
+
+            break;
+
+            case "MN9130SCOPED":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_MN9130_Scoped_ActualContent", false, true);
+
+            break;
+
+            case "WWMOLOTOV":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_Molotov_ActualContent", false, true);
+
+            break;
+
+            case "NAGANT":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_NagantRevolver_ActualContent", false, true);
+
+            break;
+
+            case "PPD34":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_PPD34_ActualContent", false, true);
+
+            break;
+
+            case "WWRDG1":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_RDG1_ActualContent", false, true);
+
+            break;
+
+            case "RGD33":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_RGD33_ActualContent", false, true);
+
+            break;
+
+            case "WWSATCHEL":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_Satchel_ActualContent", false, true);
+
+            break;
+
+            case "SKIS":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_Skis_ActualContent", false, true);
+
+            break;
+
+            case "SVT38":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_SVT38_ActualContent", false, true);
+
+            break;
+
+            case "WWTT33":
+            InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_TT33_ActualContent", false, true);
+
+            break;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// GOM 4
+
+            case "38BODYGUARD":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_38Bodyguard_ActualContent", false, true);
+
+            break;
+
+            case "BARSHOTGUN":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_BarShotgun_ActualContent", false, true);
+
+            break;
+
+            case "M4BAYO":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_Bayonet_M4_ActualContent", false, true);
+
+            break;
+
+            case "M5BAYO":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_Bayonet_M5_ActualContent", false, true);
+
+            break;
+
+            case "M7BAYO":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_Bayonet_M7_ActualContent", false, true);
+
+            break;
+
+            case "BOWIE":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_BowieKnife_ActualContent", false, true);
+
+            break;
+
+            case "CROSSBOW":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_Crossbow_ActualContent", false, true);
+
+            break;
+
+            case "DP27":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_DP27", false, true);
+
+            break;
+
+            case "DPM":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_DPM", false, true);
+
+            break;
+
+            case "GOMK50M":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_K50M_ActualContent", false, true);
+
+            break;
+
+            case "KABAR":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_Kabar_ActualContent", false, true);
+
+            break;
+
+            case "KAR98":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_Kar98k_ActualContent", false, true);
+
+            break;
+
+            case "GOMTRENCH":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M12_ActualContent", false, true);
+
+            break;
+
+            case "GOMM14":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M14_ActualContent", false, true);
+
+            break;
+
+            case "M16SCOPED":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M16A1_Scoped_ActualContent", false, true);
+
+            break;
+
+            case "M16UVC":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M16A1_UVC", false, true);
+
+            break;
+
+            case "M1897":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M1897_ActualContent", false, true);
+
+            break;
+
+            case "M18RR":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M18_Recoilless_ActualContent", false, true);
+
+            break;
+
+            case "GOM1911":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M1911A1_ActualContent", false, true);
+
+            break;
+
+            case "STOCKLESSM1A1":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M1A1_Stockless", false, true);
+
+            break;
+
+            case "GARANDNADE":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M7RifleGrenade_ActualContent", false, true);
+
+            break;
+
+            case "ITHACA":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M37_ActualContent", false, true);
+
+            break;
+
+            case "ITHACARIOT":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M37_Riot", false, true);
+
+            break;
+
+            case "M44CARBINE":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M44_Carbine_ActualContent", false, true);
+
+            break;
+
+            case "GOMMG34":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_MG34_Belt", false, true);
+
+            break;
+
+            case "MAC10":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_MAC10_ActualContent", false, true);
+
+            break;
+
+            case "MAC10SILENCED":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_MAC10_Silenced", false, true);
+
+            break;
+
+            case "P38":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_P38_ActualContent", false, true);
+
+            break;
+
+            case "PPS":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_PPS_ActualContent", false, true);
+
+            break;
+
+            case "RPDSAWNOFF":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_RPD_SawnOff_ActualContent", false, true);
+
+            break;
+
+            case "RPG2":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_RPG2_ActualContent", false, true);
+
+            break;
+
+            case "GOMSKS":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_SKS_ActualContent", false, true);
+
+            break;
+
+            case "GOMSVD":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_SVD_ActualContent", false, true);
+
+            break;
+
+            case "STEVENS":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_Stevens_ActualContent", false, true);
+
+            break;
+
+            case "STONER63":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_Stoner63A_ActualContent", false, true);
+
+            break;
+
+            case "TYPE67QUAD":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_Type67_Quad", false, true);
+
+            break;
+
+            case "UZI":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_UZI_ActualContent", false, true);
+
+            break;
+
+            case "VCGRENADE":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_VCGrenade_ActualContent", false, true);
+
+            break;
+
+            case "VZ23":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_VZ23", false, true);
+
+            break;
+
+            case "VZ25":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_VZ25", false, true);
+
+            break;
+
+            case "VZ58":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_VZ58_ActualContent", false, true);
+
+            break;
+
+            case "VZ61":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_VZ61_ActualContent", false, true);
+
+            break;
+
+            case "XM177E2":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_XM177E2", false, true);
+
+            break;
+
+            case "XM177E230RND":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_XM177E2_30", false, true);
+
+            break;
+
+            case "VCGRENADE":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_VCGrenade_ActualContent", false, true);
+
+            break;
+
+            case "VCGRENADE":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_VCGrenade_ActualContent", false, true);
+
+            break;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// GOM 3
 
             /*case "RPG2":
             InvManager.LoadAndCreateInventory("GOM3.GOMWeapon_RPG2_ActualContent", false, true);
@@ -1056,14 +1397,15 @@ function GiveWeapon(PlayerController PC, string WeaponName)
             case "GOMCARBINE":
             InvManager.LoadAndCreateInventory("GOM3.GOMWeapon_M1_Carbine_ActualContent", false, true);
 
-            break;
-
-            case "MG34HMG":
+            break;*/
+            
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Testing            
+                
+            /*case "MG34HMG":
             InvManager.LoadAndCreateInventory("AmmoCrate.ACItem_PlaceableHMG_MG34_Content", false, true);
 
-            break;
-            */
-
+            break;*/
+            
             default:
             `log("[29th Extras] Giveweapon failed! "$PlayerName$" tried to spawn a "$WeaponName$"");
             PrivateMessage(PC, "Not a valid weapon name.");

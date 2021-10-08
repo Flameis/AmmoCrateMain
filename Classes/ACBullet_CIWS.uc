@@ -1,10 +1,10 @@
 //=============================================================================
-// CIWSBulletTracer
+// ACBullet_CIWS
 //=============================================================================
 // Tracer Bullet for the CIWS
 //=============================================================================
 
-class CIWSBulletTracer extends M2BulletTracer;
+class ACBullet_CIWS extends M2BulletTracer;
 
 DefaultProperties
 {

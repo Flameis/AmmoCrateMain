@@ -7,7 +7,7 @@
 // Copyright (C) 2014 Tripwire Interactive LLC
 // - Sturt "Psycho Ch!cken" Jeffery @ Antimatter Games
 //=============================================================================
-class TestWeap_PPSH41_SMG extends ROProjectileWeapon
+class ACWeap_RPPG extends ROProjectileWeapon
 	abstract;
 
 // @TEMP - triple spread for most handheld weapons
@@ -18,7 +18,7 @@ simulated function float GetSpreadMod()
 
 defaultproperties
 {
-	WeaponContentClass(0)="TESTWeap_PPSH41_SMG_Content"
+	WeaponContentClass(0)="ACWeap_RPPG_Content"
 
 	AmmoContentClassStart=1
 	// class below here are available only through selecting alternative ammo loadouts
@@ -43,7 +43,7 @@ defaultproperties
 	// MAIN FIREMODE
 	FiringStatesArray(0)=WeaponFiring
 	WeaponFireTypes(0)=EWFT_Custom
-	WeaponProjectiles(0)=class'TestPG7VRocket'
+	WeaponProjectiles(0)=class'ACBullet_RPPG'
 	FireInterval(0)=+0.066
 	DelayedRecoilTime(0)=0.0
 	Spread(0)=0.0022 // 8 MOA
@@ -52,7 +52,7 @@ defaultproperties
 	// ALT FIREMODE
 	FiringStatesArray(ALTERNATE_FIREMODE)=WeaponSingleFiring
 	WeaponFireTypes(ALTERNATE_FIREMODE)=EWFT_Custom
-	WeaponProjectiles(ALTERNATE_FIREMODE)=class'TestPG7VRocket'
+	WeaponProjectiles(ALTERNATE_FIREMODE)=class'ACBullet_RPPG'
 	bLoopHighROFSounds(ALTERNATE_FIREMODE)=false
 	FireInterval(ALTERNATE_FIREMODE)=+0.066
 	DelayedRecoilTime(ALTERNATE_FIREMODE)=0.01
@@ -236,7 +236,7 @@ defaultproperties
 	ISFocusDepth=28
 
 	// Ammo
-	AmmoClass=class'TestROAmmo_762x25_PPSHStick'
+	AmmoClass=class'ACAmmo_762x25_RPPG'
 	MaxAmmoCount=35000
 	bUsesMagazines=true
 	InitialNumPrimaryMags=10//5
