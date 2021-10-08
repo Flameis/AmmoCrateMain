@@ -30,47 +30,30 @@ function PreBeginPlay()
     DynamicLoadObject("WinterWar.WWVehicle_HT130_ActualContent", class'Class');
     DynamicLoadObject("WinterWar.WWVehicle_53K_ActualContent", class'Class');
     DynamicLoadObject("WinterWar.WWVehicle_Vickers_ActualContent", class'Class');
-    DynamicLoadObject("AmmoCrate.ACVehicle_M113_APC_Content", class'Class');
     DynamicLoadObject("AmmoCrate.ACWeap_CIWS_Content", class'Class');
     DynamicLoadObject("AmmoCrate.ACWeap_RPPG_Content", class'Class');
-    /*DynamicLoadObject("GOM3.GOMWeapon_RPG2_ActualContent", class'Class');
-    DynamicLoadObject("GOM3.GOMWeapon_RPD_SawnOff_ActualContent", class'Class');
-    DynamicLoadObject("GOM3.GOMWeapon_PPS_ActualContent", class'Class');
-    DynamicLoadObject("GOM3.GOMWeapon_M38_Carbine_ActualContent", class'Class');
-    DynamicLoadObject("GOM3.GOMWeapon_M7RifleGrenade_ActualContent", class'Class');
-    DynamicLoadObject("GOM3.GOMWeapon_Kar98k_ActualContent", class'Class');
-    DynamicLoadObject("GOM3.GOMWeapon_BowieKnife_ActualContent", class'Class');
-    DynamicLoadObject("GOM3.GOMWeapon_M1_Carbine_ActualContent", class'Class');
-    */
-    
-    All = class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_AH1G_Content", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_OH6_Content", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_UH1H_Content", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_UH1H_Gunship_Content", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("GOM3.GOMVehicle_M113_ACAV_ActualContent", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T20_ActualContent", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T26_EarlyWar_ActualContent", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T28_ActualContent", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_HT130_ActualContent", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_53K_ActualContent", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_Vickers_ActualContent", class'Class'));
-    All = class<ROVehicle>(DynamicLoadObject("AmmoCrate.ACVehicle_M113_APC_Content", class'Class'));
-    /*
-    All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_RPG2_ActualContent", class'Class'));
-    All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_RPD_SawnOff_ActualContent", class'Class'));
-    All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_PPS_ActualContent", class'Class'));
-    All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_M38_Carbine_ActualContent", class'Class'));
-    All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_M7RifleGrenade_ActualContent", class'Class'));
-    All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_Kar98k_ActualContent", class'Class'));
-    All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_BowieKnife_ActualContent", class'Class'));
-    All = class<ROWeapon>(DynamicLoadObject("GOM3.GOMWeapon_M1_Carbine_ActualContent", class'Class'));
-    All = class<ROTurret>(DynamicLoadObject("AmmoCrate.ACWeap_CIWS_Content", class'Class'));
-    All = class<ROTurret>(DynamicLoadObject("AmmoCrate.ACWeap_RPPG_Content", class'Class'));
-    */
 
-    ROMI.SharedContentReferences.AddItem(All);
+    ROMI.SharedContentReferences.Remove(0, ROMI.SharedContentReferences.Length);
+	class'WorldInfo'.static.GetWorldInfo().ForceGarbageCollection(TRUE);
 
-    AddSharedContentRef(All);
+
+    ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_Maxim_ActualContent", class'Class')));
+	ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_QuadMaxims_ActualContent", class'Class')));
+	ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("ROGameContent.ROWeap_M2_HMG_Tripod_Content", class'Class')));
+	ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("ROGameContent.ROWeap_DShK_HMG_Tripod_Content", class'Class')));
+	ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_AH1G_Content", class'Class')));
+	ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_OH6_Content", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_UH1H_Content", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_UH1H_Gunship_Content", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("GOM3.GOMVehicle_M113_ACAV_ActualContent", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T20_ActualContent", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T26_EarlyWar_ActualContent", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T28_ActualContent", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_HT130_ActualContent", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_53K_ActualContent", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_Vickers_ActualContent", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.ROHeli_OH6_Content", class'Class')));
+
 
     ROGameInfo(WorldInfo.Game).PlayerControllerClass = class'ACPlayerController';
     ROGameInfo(WorldInfo.Game).PlayerReplicationInfoClass = class'ACPlayerReplicationInfo';
@@ -113,8 +96,6 @@ function PostBeginPlay()
     ReplacePawns();
 }
 
-function AddSharedContentRef(object ObjectToAdd);
-
 /*
 function ModifyPlayer(Pawn Other)
     {
@@ -155,24 +136,43 @@ simulated function ModifyPreLogin(string Options, string Address, out string Err
     ReplacePawns();
 }
 
+function LoadObjects()
+{
+    DynamicLoadObject("ROGameContent.ROHeli_AH1G_Content", class'Class');
+    DynamicLoadObject("ROGameContent.ROHeli_OH6_Content", class'Class');
+    DynamicLoadObject("ROGameContent.ROHeli_UH1H_Content", class'Class');
+    DynamicLoadObject("ROGameContent.ROHeli_UH1H_Gunship_Content", class'Class');
+    DynamicLoadObject("GOM3.GOMVehicle_M113_ACAV_ActualContent", class'Class');
+    DynamicLoadObject("WinterWar.WWVehicle_T20_ActualContent", class'Class');
+    DynamicLoadObject("WinterWar.WWVehicle_T26_EarlyWar_ActualContent", class'Class');
+    DynamicLoadObject("WinterWar.WWVehicle_T28_ActualContent", class'Class');
+    DynamicLoadObject("WinterWar.WWVehicle_HT130_ActualContent", class'Class');
+    DynamicLoadObject("WinterWar.WWVehicle_53K_ActualContent", class'Class');
+    DynamicLoadObject("WinterWar.WWVehicle_Vickers_ActualContent", class'Class');
+}
+
 function NotifyLogin(Controller NewPlayer)
+{
+	local ROVehicle ROHelo;
+
+    ACPC = ACPlayerController(NewPlayer);
+
+    if (ACPC == None)
     {
-        ACPC = ACPlayerController(NewPlayer);
+        `log("Error replacing roles");
+        return;
+    }
 
-        if (ACPC == None)
-        {
-            `log("Error replacing roles");
-            return;
-        }
+    ACPC.ReplacePawnHandler();
+    ACPC.ClientReplacePawnHandler();
+    ACPC.ReplaceRoles();
+    ACPC.ClientReplaceRoles();
+    ACPC.ReplaceInventoryManager();
+    ACPC.ClientReplaceInventoryManager();
 
-        ACPC.ReplacePawnHandler();
-        ACPC.ClientReplacePawnHandler();
-        ACPC.ReplaceRoles();
-        ACPC.ClientReplaceRoles();
-        ACPC.ReplaceInventoryManager();
-        ACPC.ClientReplaceInventoryManager();
+    LoadObjects();
         
-        super.NotifyLogin(NewPlayer);
+    super.NotifyLogin(NewPlayer);
     }
     
 function ClearVehicles()
