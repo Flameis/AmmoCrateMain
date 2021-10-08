@@ -501,7 +501,14 @@ function SpawnVehicle(PlayerController PC, string VehicleName)
     Loach = class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_OH6_Content", class'Class'));
     Huey = class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_UH1H_Content", class'Class'));
     Bushranger = class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_UH1H_Gunship_Content", class'Class'));
+
     M113ACAV = class<ROVehicle>(DynamicLoadObject("GOM3.GOMVehicle_M113_ACAV_ActualContent", class'Class'));
+
+    //M113ACAV = class<ROVehicle>(DynamicLoadObject("GOM4.GOMVehicle_M113_ACAV_ActualContent", class'Class'));
+    //T34 = class<ROVehicle>(DynamicLoadObject("GOM4.GOMVehicle_T34_ActualContent", class'Class'));
+    //T34 = class<ROVehicle>(DynamicLoadObject("GOM4.GOMVehicle_T34_ActualContent", class'Class'));
+    //T34 = class<ROVehicle>(DynamicLoadObject("GOM4.GOMVehicle_T34_ActualContent", class'Class'));
+
     T20 = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T20_ActualContent", class'Class'));
     T26 = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T26_EarlyWar_ActualContent", class'Class'));
     T28 = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T28_ActualContent", class'Class'));
@@ -512,6 +519,7 @@ function SpawnVehicle(PlayerController PC, string VehicleName)
 
     switch (VehicleName)
     {
+        // Vanilla
         case "Cobra":
         ROHelo = Spawn(Cobra, , , EndShot);
 		ROHelo.Mesh.AddImpulse(vect(0,0,1), ROHelo.Location);
@@ -532,11 +540,15 @@ function SpawnVehicle(PlayerController PC, string VehicleName)
 		ROHelo.Mesh.AddImpulse(vect(0,0,1), ROHelo.Location);
         break;
 
+        // GOM 3
         case "M113ACAV":
         ROHelo = Spawn(M113ACAV, , , EndShot);
 		ROHelo.Mesh.AddImpulse(vect(0,0,1), ROHelo.Location);
         break;
 
+        //GOM 4
+
+        //Winter War
         case "T20":
 		ROHelo = Spawn(T20, , , EndShot);
 		ROHelo.Mesh.AddImpulse(vect(0,0,1), ROHelo.Location);
@@ -581,33 +593,10 @@ function GiveWeapon(PlayerController PC, string WeaponName)
 
         switch (WeaponName)
         {
-            case "USAMMO":
-            InvManager.LoadAndCreateInventory("AmmoCrate.ACItem_USAmmoCrate_Content", false, true);
-            
-            break;
-
-            case "VCAMMO":
-            InvManager.LoadAndCreateInventory("AmmoCrate.ACItem_VCAmmoCrate_Content", false, true);
-
-            break;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Vanilla
 
             case "BHP":
             InvManager.LoadAndCreateInventory("ROGameContent.ROWeap_BHP_Pistol_Content", false, true);
-
-            break;
-
-            case "M79WP":
-            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_M79_GrenadeLauncher_Level3", false, true);
-
-            break;
-
-            case "MEME":
-            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_M79_MemeLauncher_Content", false, true);
-
-            break;
-
-            case "MG34":
-            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_MG34_LMG_Content", false, true);
 
             break;
 
@@ -916,11 +905,6 @@ function GiveWeapon(PlayerController PC, string WeaponName)
 
             break;
 
-            case "SATCHEL":
-            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_VietSatchel_Content", false, true);
-    
-            break;
-
             case "XM17730RND":
             InvManager.LoadAndCreateInventory("ROGameContent.ROWeap_XM177E1_Carbine_30rd", false, true);
 
@@ -934,6 +918,37 @@ function GiveWeapon(PlayerController PC, string WeaponName)
             case "XM21SNIPER":
             InvManager.LoadAndCreateInventory("ROGameContent.ROWeap_XM21Scoped_Rifle_Level2", false, true);
 
+            break;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 29th Extras
+
+            case "USAMMO":
+            InvManager.LoadAndCreateInventory("AmmoCrate.ACItem_USAmmoCrate_Content", false, true);
+            
+            break;
+
+            case "VCAMMO":
+            InvManager.LoadAndCreateInventory("AmmoCrate.ACItem_VCAmmoCrate_Content", false, true);
+
+            break;
+
+            case "MG34":
+            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_MG34_LMG_Content", false, true);
+
+            break;
+
+            case "M79WP":
+            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_M79_GrenadeLauncher_Level3", false, true);
+
+            break;
+
+            case "MEME":
+            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_M79_MemeLauncher_Content", false, true);
+
+            break;
+            
+            case "SATCHEL":
+            InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_VietSatchel_Content", false, true);
+    
             break;
 
             case "XM21SILENCED":
@@ -980,6 +995,7 @@ function GiveWeapon(PlayerController PC, string WeaponName)
             InvManager.LoadAndCreateInventory("AmmoCrate.ACSaluteHands", false, true);
 
             break;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Winter War
 
             case "ATMINE":
             InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_AntiTankMine_ActualContent", false, true);
@@ -1110,6 +1126,238 @@ function GiveWeapon(PlayerController PC, string WeaponName)
             InvManager.LoadAndCreateInventory("WinterWar.WWWeapon_TT33_ActualContent", false, true);
 
             break;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// GOM 4
+
+            case "38BODYGUARD":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_38Bodyguard_ActualContent", false, true);
+
+            break;
+
+            case "BARSHOTGUN":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_BarShotgun_ActualContent", false, true);
+
+            break;
+
+            case "M4BAYO":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_Bayonet_M4_ActualContent", false, true);
+
+            break;
+
+            case "M5BAYO":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_Bayonet_M5_ActualContent", false, true);
+
+            break;
+
+            case "M7BAYO":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_Bayonet_M7_ActualContent", false, true);
+
+            break;
+
+            case "BOWIE":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_BowieKnife_ActualContent", false, true);
+
+            break;
+
+            case "CROSSBOW":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_Crossbow_ActualContent", false, true);
+
+            break;
+
+            case "DP27":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_DP27", false, true);
+
+            break;
+
+            case "DPM":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_DPM", false, true);
+
+            break;
+
+            case "GOMK50M":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_K50M_ActualContent", false, true);
+
+            break;
+
+            case "KABAR":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_Kabar_ActualContent", false, true);
+
+            break;
+
+            case "KAR98":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_Kar98k_ActualContent", false, true);
+
+            break;
+
+            case "GOMTRENCH":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M12_ActualContent", false, true);
+
+            break;
+
+            case "GOMM14":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M14_ActualContent", false, true);
+
+            break;
+
+            case "M16SCOPED":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M16A1_Scoped_ActualContent", false, true);
+
+            break;
+
+            case "M16UVC":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M16A1_UVC", false, true);
+
+            break;
+
+            case "M1897":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M1897_ActualContent", false, true);
+
+            break;
+
+            case "M18RR":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M18_Recoilless_ActualContent", false, true);
+
+            break;
+
+            case "GOM1911":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M1911A1_ActualContent", false, true);
+
+            break;
+
+            case "STOCKLESSM1A1":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M1A1_Stockless", false, true);
+
+            break;
+
+            case "GARANDNADE":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M7RifleGrenade_ActualContent", false, true);
+
+            break;
+
+            case "ITHACA":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M37_ActualContent", false, true);
+
+            break;
+
+            case "ITHACARIOT":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M37_Riot", false, true);
+
+            break;
+
+            case "M44CARBINE":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_M44_Carbine_ActualContent", false, true);
+
+            break;
+
+            case "GOMMG34":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_MG34_Belt", false, true);
+
+            break;
+
+            case "MAC10":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_MAC10_ActualContent", false, true);
+
+            break;
+
+            case "MAC10SILENCED":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_MAC10_Silenced", false, true);
+
+            break;
+
+            case "P38":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_P38_ActualContent", false, true);
+
+            break;
+
+            case "PPS":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_PPS_ActualContent", false, true);
+
+            break;
+
+            case "RPDSAWNOFF":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_RPD_SawnOff_ActualContent", false, true);
+
+            break;
+
+            case "RPG2":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_RPG2_ActualContent", false, true);
+
+            break;
+
+            case "GOMSKS":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_SKS_ActualContent", false, true);
+
+            break;
+
+            case "GOMSVD":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_SVD_ActualContent", false, true);
+
+            break;
+
+            case "STEVENS":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_Stevens_ActualContent", false, true);
+
+            break;
+
+            case "STONER63":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_Stoner63A_ActualContent", false, true);
+
+            break;
+
+            case "TYPE67QUAD":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_Type67_Quad", false, true);
+
+            break;
+
+            case "UZI":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_UZI_ActualContent", false, true);
+
+            break;
+
+            case "VCGRENADE":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_VCGrenade_ActualContent", false, true);
+
+            break;
+
+            case "VZ23":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_VZ23", false, true);
+
+            break;
+
+            case "VZ25":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_VZ25", false, true);
+
+            break;
+
+            case "VZ58":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_VZ58_ActualContent", false, true);
+
+            break;
+
+            case "VZ61":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_VZ61_ActualContent", false, true);
+
+            break;
+
+            case "XM177E2":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_XM177E2", false, true);
+
+            break;
+
+            case "XM177E230RND":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_XM177E2_30", false, true);
+
+            break;
+
+            case "VCGRENADE":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_VCGrenade_ActualContent", false, true);
+
+            break;
+
+            case "VCGRENADE":
+            InvManager.LoadAndCreateInventory("GOM4.GOMWeapon_VCGrenade_ActualContent", false, true);
+
+            break;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// GOM 3
 
             /*case "RPG2":
             InvManager.LoadAndCreateInventory("GOM3.GOMWeapon_RPG2_ActualContent", false, true);
@@ -1149,14 +1397,15 @@ function GiveWeapon(PlayerController PC, string WeaponName)
             case "GOMCARBINE":
             InvManager.LoadAndCreateInventory("GOM3.GOMWeapon_M1_Carbine_ActualContent", false, true);
 
-            break;
-
-            case "MG34HMG":
+            break;*/
+            
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Testing            
+                
+            /*case "MG34HMG":
             InvManager.LoadAndCreateInventory("AmmoCrate.ACItem_PlaceableHMG_MG34_Content", false, true);
 
-            break;
-            */
-
+            break;*/
+            
             default:
             `log("[29th Extras] Giveweapon failed! "$PlayerName$" tried to spawn a "$WeaponName$"");
             PrivateMessage(PC, "Not a valid weapon name.");
