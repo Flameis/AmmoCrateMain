@@ -3,10 +3,7 @@ class AmmoCrateMutator extends ROMutator
 
 var string PlayerName;
 var ACPlayerController ACPC;
-var ROVolumeMapBounds ROMB;
-var ROPawnHandler ROPH;
 var ROGameInfo ROGI;
-var GameReplicationInfo GRI;
 var RORoleInfoClasses RORICSouth;
 var RORoleInfoClasses RORICNorth;
 //var bool bMatchLive;

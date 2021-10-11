@@ -57,29 +57,6 @@ simulated function ReplaceRoles()
     if (ROMI != None)
     { 
         `log("Replacing roles...");
-        
-        //Old stuff
-        /*ROMI.SouthernRoles.length = 10;
-        ROMI.SouthernRoles[0].Count = 255;
-        ROMI.SouthernRoles[1].Count = 255;
-        ROMI.SouthernRoles[2].Count = 255;
-        ROMI.SouthernRoles[3].Count = 255;
-        ROMI.SouthernRoles[4].Count = 255;
-        ROMI.SouthernRoles[5].Count = 255;
-        ROMI.SouthernRoles[6].Count = 255;
-        ROMI.SouthernRoles[7].Count = 19;
-        ROMI.SouthernRoles[8].Count = 255;
-        ROMI.SouthernRoles[9].Count = 255;
-
-        ROMI.NorthernRoles.length = 8;
-        ROMI.NorthernRoles[0].Count = 255;
-        ROMI.NorthernRoles[1].Count = 255;
-        ROMI.NorthernRoles[2].Count = 255;
-        ROMI.NorthernRoles[3].Count = 255;
-        ROMI.NorthernRoles[4].Count = 255;
-        ROMI.NorthernRoles[5].Count = 255;
-        ROMI.NorthernRoles[6].Count = 255;
-        ROMI.NorthernRoles[7].Count = 19;*/
 
         ROMI.SouthernTeamLeader.roleinfo = none;
         ROMI.NorthernTeamLeader.roleinfo = none;
@@ -197,88 +174,6 @@ simulated function ReplaceRoles()
             ROMI.NorthernRoles[6].RoleInfoClass = class'ACRoleInfoCommanderNorth';
             ROMI.NorthernRoles[7].RoleInfoClass = class'ACRoleInfoTankCrewNorth';
         }
-
-        //Old stuff
-
-        /*if (ROMI.SouthernForce == SFOR_USArmy)
-        {
-            ROMI.SouthernRoles[0].RoleInfoClass = class'RORoleInfoSouthernRifleman';
-            ROMI.SouthernRoles[1].RoleInfoClass = class'RORoleInfoSouthernPointman';
-            ROMI.SouthernRoles[2].RoleInfoClass = class'RORoleInfoSouthernMachineGunner';
-            ROMI.SouthernRoles[3].RoleInfoClass = class'RORoleInfoSouthernMarksman';
-            ROMI.SouthernRoles[4].RoleInfoClass = class'RORoleInfoSouthernEngineer';
-            ROMI.SouthernRoles[5].RoleInfoClass = class'ACRoleInfoSouthernGrenadier';
-            ROMI.SouthernRoles[6].RoleInfoClass = class'ACRoleInfoSouthernSupport';
-            ROMI.SouthernRoles[7].RoleInfoClass = class'RORoleInfoSouthernCommander';
-            ROMI.SouthernRoles[8].RoleInfoClass = class'RORoleInfoSouthernPilot';
-            ROMI.SouthernRoles[9].RoleInfoClass = class'RORoleInfoSouthernTransportPilot';
-        }
-
-        if (ROMI.SouthernForce == SFOR_USMC)
-        {
-            ROMI.SouthernRoles[0].RoleInfoClass = class'RORoleInfoSouthernRifleman';
-            ROMI.SouthernRoles[1].RoleInfoClass = class'RORoleInfoSouthernPointmanUSMC';
-            ROMI.SouthernRoles[2].RoleInfoClass = class'RORoleInfoSouthernMachineGunner';
-            ROMI.SouthernRoles[3].RoleInfoClass = class'RORoleInfoSouthernMarksmanUSMC';
-            ROMI.SouthernRoles[4].RoleInfoClass = class'RORoleInfoSouthernEngineerUSMC';
-            ROMI.SouthernRoles[5].RoleInfoClass = class'ACRoleInfoSouthernGrenadier';
-            ROMI.SouthernRoles[6].RoleInfoClass = class'ACRoleInfoSouthernSupport';
-            ROMI.SouthernRoles[7].RoleInfoClass = class'RORoleInfoSouthernCommanderUSMC';
-            ROMI.SouthernRoles[8].RoleInfoClass = class'RORoleInfoSouthernPilot';
-            ROMI.SouthernRoles[9].RoleInfoClass = class'RORoleInfoSouthernTransportPilot';
-        }
-
-        if (ROMI.SouthernForce == SFOR_AusArmy)
-        {
-            ROMI.SouthernRoles[0].RoleInfoClass = class'RORoleInfoSouthernRiflemanAUS';
-            ROMI.SouthernRoles[1].RoleInfoClass = class'RORoleInfoSouthernScoutAUS';
-            ROMI.SouthernRoles[2].RoleInfoClass = class'RORoleInfoSouthernMachineGunnerAUS';
-            ROMI.SouthernRoles[3].RoleInfoClass = class'RORoleInfoSouthernMarksmanAUS';
-            ROMI.SouthernRoles[4].RoleInfoClass = class'RORoleInfoSouthernEngineerAUS';
-            ROMI.SouthernRoles[5].RoleInfoClass = class'ACRoleInfoSouthernGrenadierAUS';
-            ROMI.SouthernRoles[6].RoleInfoClass = class'ACRoleInfoSouthernSupport';
-            ROMI.SouthernRoles[7].RoleInfoClass = class'RORoleInfoSouthernCommanderAUS';
-            ROMI.SouthernRoles[8].RoleInfoClass = class'RORoleInfoSouthernPilotAUS';
-            ROMI.SouthernRoles[9].RoleInfoClass = class'RORoleInfoSouthernTransportPilotAUS';
-        }
-
-        if (ROMI.SouthernForce == SFOR_ARVN)
-        {
-            ROMI.SouthernRoles[0].RoleInfoClass = class'RORoleInfoSouthernRiflemanARVN';
-            ROMI.SouthernRoles[1].RoleInfoClass = class'RORoleInfoSouthernPointmanARVN';
-            ROMI.SouthernRoles[2].RoleInfoClass = class'RORoleInfoSouthernMachineGunnerARVN';
-            ROMI.SouthernRoles[3].RoleInfoClass = class'RORoleInfoSouthernMarksmanARVN';
-            ROMI.SouthernRoles[4].RoleInfoClass = class'RORoleInfoSouthernEngineerARVN';
-            ROMI.SouthernRoles[5].RoleInfoClass = class'ACRoleInfoSouthernGrenadier';
-            ROMI.SouthernRoles[6].RoleInfoClass = class'ACRoleInfoSouthernSupport';
-            ROMI.SouthernRoles[7].RoleInfoClass = class'RORoleInfoSouthernCommanderARVN';
-            ROMI.SouthernRoles[8].RoleInfoClass = class'RORoleInfoSouthernPilotARVN';
-            ROMI.SouthernRoles[9].RoleInfoClass = class'RORoleInfoSouthernTransportPilotARVN';
-        }
-        
-        if (ROMI.NorthernForce == NFOR_NVA)
-        {
-            ROMI.NorthernRoles[0].RoleInfoClass = class'RORoleInfoNorthernGuerilla';
-            ROMI.NorthernRoles[1].RoleInfoClass = class'RORoleInfoNorthernScout';
-            ROMI.NorthernRoles[2].RoleInfoClass = class'ACRoleInfoNorthernMachineGunner';
-            ROMI.NorthernRoles[3].RoleInfoClass = class'RORoleInfoNorthernSniper';
-            ROMI.NorthernRoles[4].RoleInfoClass = class'ACRoleInfoNorthernSapper';
-            ROMI.NorthernRoles[5].RoleInfoClass = class'RORoleInfoNorthernRPG';
-            ROMI.NorthernRoles[6].RoleInfoClass = class'ACRoleInfoNorthernSupport';
-            ROMI.NorthernRoles[7].RoleInfoClass = class'RORoleInfoNorthernCommander';
-        }
-
-        if (ROMI.NorthernForce == NFOR_NLF)
-        {
-            ROMI.NorthernRoles[0].RoleInfoClass = class'RORoleInfoNorthernRifleman';
-            ROMI.NorthernRoles[1].RoleInfoClass = class'RORoleInfoNorthernScoutNLF';
-            ROMI.NorthernRoles[2].RoleInfoClass = class'ACRoleInfoNorthernMachineGunnerNLF';
-            ROMI.NorthernRoles[3].RoleInfoClass = class'RORoleInfoNorthernSniperNLF';
-            ROMI.NorthernRoles[4].RoleInfoClass = class'ACRoleInfoNorthernSapperNLF';
-            ROMI.NorthernRoles[5].RoleInfoClass = class'RORoleInfoNorthernRPGNLF';
-            ROMI.NorthernRoles[6].RoleInfoClass = class'ACRoleInfoNorthernSupport';
-            ROMI.NorthernRoles[7].RoleInfoClass = class'RORoleInfoNorthernCommanderNLF';
-        }*/
     }
 }
 
@@ -390,53 +285,4 @@ static function string GetClassNameByIndex(int TeamIndex, int ClassIndex, option
 defaultproperties
 {
 //CharacterSceneTemplate=ACUISceneCharacter'29thExtras.Character.ACUISceneCharacter2';
-
-
-/*
-ACNorthernRoles(`ACCI_Rifle    )=class'ACRoleInfoRiflemanNLF'
-ACNorthernRoles(`ACCI_Light    )=class'ACRoleInfoLightNLF'
-ACNorthernRoles(`ACCI_MG       )=class'ACRoleInfoMachineGunNorth'
-ACNorthernRoles(`ACCI_CE       )=class'ACRoleInfoCombatEngineerNLF'
-ACNorthernRoles(`ACCI_Sniper   )=class'ACRoleInfoMarksmanNorth'
-ACNorthernRoles(`ACCI_Radioman )=class'ACRoleInfoSupportNorth'
-ACNorthernRoles(`ACCI_Commander)=class'ACRoleInfoCommanderNorth'
-ACNorthernRoles(`ACCI_Tank     )=class'ACRoleInfoTankCrewNorth'
-
-ACSouthernRoles(`ACCI_Rifle         )=class'ACRoleInfoRiflemanUS'
-ACSouthernRoles(`ACCI_Light         )=class'ACRoleInfoLightUS'
-ACSouthernRoles(`ACCI_MG            )=class'ACRoleInfoMachineGunUS'
-ACSouthernRoles(`ACCI_CE            )=class'ACRoleInfoCombatEngineerUS'
-ACSouthernRoles(`ACCI_Sniper        )=class'ACRoleInfoMarksmanSouth'
-ACSouthernRoles(`ACCI_Radioman      )=class'ACRoleInfoSupportUS'
-ACSouthernRoles(`ACCI_Commander     )=class'ACRoleInfoCommanderSouth'
-ACSouthernRoles(`ACCI_Lineup        )=class'ACRoleInfoLineup'
-ACSouthernRoles(`ACCI_Tank          )=class'ACRoleInfoTankCrewSouth'
-ACSouthernRoles(`ACCI_CombatPilot   )=class'ACRoleInfoPilotSouth'
-ACSouthernRoles(`ACCI_TransportPilot)=class'ACRoleInfoTransportPilotSouth'
-*/
-
-ACNorthernRoles={(
-                class'ACRoleInfoRiflemanNLF',
-                class'ACRoleInfoLightNLF',
-                class'ACRoleInfoMachineGunNorth',
-                class'ACRoleInfoCombatEngineerNLF',
-                class'ACRoleInfoMarksmanNorth',
-                class'ACRoleInfoSupportNorth',
-                class'ACRoleInfoCommanderNorth',
-                class'ACRoleInfoTankCrewNorth'
-                )}
-
-ACSouthernRoles={(
-                class'ACRoleInfoRiflemanUS',
-                class'ACRoleInfoLightUS',
-                class'ACRoleInfoMachineGunUS',
-                class'ACRoleInfoCombatEngineerUS',
-                class'ACRoleInfoMarksmanSouth',
-                class'ACRoleInfoSupportUS',
-                class'ACRoleInfoCommanderSouth',
-                class'ACRoleInfoLineup',
-                class'ACRoleInfoTankCrewSouth',
-                class'ACRoleInfoPilotSouth',
-                class'ACRoleInfoTransportPilotSouth'
-			    )}
 }   

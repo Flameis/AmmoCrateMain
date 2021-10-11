@@ -1,7 +1,7 @@
 
 class ACUISceneCharacter extends ROUISceneCharacter;
 
-function InitPlayerConfig()
+/*function InitPlayerConfig()
 {
 	local LocalPlayer Player;
 	local ROMapInfo ROMI;
@@ -271,4 +271,4 @@ event bool CloseScene(optional UIScene SceneToClose=self, optional bool bCloseCh
 defaultproperties
 {
 	
-}
+}*/
