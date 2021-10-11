@@ -6,58 +6,39 @@ var ACPlayerController ACPC;
 var ROGameInfo ROGI;
 var RORoleInfoClasses RORICSouth;
 var RORoleInfoClasses RORICNorth;
-//var bool bMatchLive;
+var ROMapInfo ROMI;
 
 function PreBeginPlay()
-    {
-    local ROMapInfo ROMI;
-    local ROVolumeNoArtillery ROVA;
-    ROMI = ROMapInfo(WorldInfo.GetMapInfo());
+{
     `log("AmmoCrateMutator init");
-
-    LoadObjects();
-
-    ROMI.SharedContentReferences.Remove(0, ROMI.SharedContentReferences.Length);
-	class'WorldInfo'.static.GetWorldInfo().ForceGarbageCollection(TRUE);
-    ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_Maxim_ActualContent", class'Class')));
-	ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_QuadMaxims_ActualContent", class'Class')));
-	ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("ROGameContent.ROWeap_M2_HMG_Tripod_Content", class'Class')));
-	ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("ROGameContent.ROWeap_DShK_HMG_Tripod_Content", class'Class')));
-	ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_AH1G_Content", class'Class')));
-	ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_OH6_Content", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_UH1H_Content", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_UH1H_Gunship_Content", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("GOM3.GOMVehicle_M113_ACAV_ActualContent", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T20_ActualContent", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T26_EarlyWar_ActualContent", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T28_ActualContent", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_HT130_ActualContent", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_53K_ActualContent", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_Vickers_ActualContent", class'Class')));
 
     ROGameInfo(WorldInfo.Game).PlayerControllerClass = class'ACPlayerController';
     ROGameInfo(WorldInfo.Game).PlayerReplicationInfoClass = class'ACPlayerReplicationInfo';
     ROGameInfo(WorldInfo.Game).PawnHandlerClass = class'ACPawnHandler';
         
-        if (ROGameInfo(WorldInfo.Game).PawnHandlerClass != class'ACPawnHandler')
-        {
-        `log("Error replacing Pawn Handler");
-        }
-        Else
-        {
-        `log("Replaced Pawn Handler");
-        }
-
-    foreach allactors(class'ROVolumeNoArtillery', ROVA)
+    if (ROGameInfo(WorldInfo.Game).PawnHandlerClass != class'ACPawnHandler')
     {
-    ROVA.ShutDown();
-    ROVA.Destroy();
+        `log("Error replacing Pawn Handler");
+    }
+    Else
+    {
+        `log("Replaced Pawn Handler");
     }
 
+    LoadObjects();
+    RemoveROVA();
     StaticSaveConfig();
 
     super.PreBeginPlay();
-    }
+}
+
+function PostBeginPlay()
+{
+    RemoveROVA();
+    LoadObjects();
+
+    super.PostBeginPlay();
+}
 
 simulated function ModifyPlayer(Pawn Other)
 {
@@ -96,8 +77,24 @@ function NotifyLogin(Controller NewPlayer)
     super.NotifyLogin(NewPlayer);
 }
 
+function RemoveROVA()
+{
+    local ROVolumeNoArtillery ROVA;
+    local int count;
+
+    foreach allactors(class'ROVolumeNoArtillery', ROVA)
+    {
+    ROVA.ShutDown();
+    ROVA.Destroy();
+    ++Count;
+    }
+    `log ("Removed "$Count$" No arty volumes" );
+}
+
 function LoadObjects()
 {
+    ROMI = ROMapInfo(WorldInfo.GetMapInfo());
+
     DynamicLoadObject("ROGameContent.ROHeli_AH1G_Content", class'Class');
     DynamicLoadObject("ROGameContent.ROHeli_OH6_Content", class'Class');
     DynamicLoadObject("ROGameContent.ROHeli_UH1H_Content", class'Class');
@@ -113,6 +110,24 @@ function LoadObjects()
     DynamicLoadObject("WinterWar.WWVehicle_HT130_ActualContent", class'Class');
     DynamicLoadObject("WinterWar.WWVehicle_53K_ActualContent", class'Class');
     DynamicLoadObject("WinterWar.WWVehicle_Vickers_ActualContent", class'Class');
+
+    ROMI.SharedContentReferences.Remove(0, ROMI.SharedContentReferences.Length);
+	class'WorldInfo'.static.GetWorldInfo().ForceGarbageCollection(TRUE);
+    ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_Maxim_ActualContent", class'Class')));
+	ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_QuadMaxims_ActualContent", class'Class')));
+	ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("ROGameContent.ROWeap_M2_HMG_Tripod_Content", class'Class')));
+	ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("ROGameContent.ROWeap_DShK_HMG_Tripod_Content", class'Class')));
+	ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_AH1G_Content", class'Class')));
+	ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_OH6_Content", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_UH1H_Content", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_UH1H_Gunship_Content", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("GOM3.GOMVehicle_M113_ACAV_ActualContent", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T20_ActualContent", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T26_EarlyWar_ActualContent", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T28_ActualContent", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_HT130_ActualContent", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_53K_ActualContent", class'Class')));
+    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_Vickers_ActualContent", class'Class')));
 }
 
 static function ENorthernForces GetNorthernForce()
@@ -349,11 +364,11 @@ function PrivateMessage(PlayerController receiver, coerce string msg)
 
 function SpawnObject(PlayerController PC, string S)
 {
-    
+    //For spawning barricades maybe?
 }
 
 function Mutate(string MutateString, PlayerController PC) //no prefixes, also call super function!
-    {
+{
         local array<string> Args;
         local string        command;
         local string NameValid;
@@ -369,8 +384,13 @@ function Mutate(string MutateString, PlayerController PC) //no prefixes, also ca
 
                 if (NameValid != "False")
                 {
-                    WorldInfo.Game.Broadcast(self, "[29th Extras] "$PlayerName$" spawned a "$Args[1]$"");
+                    WorldInfo.Game.Broadcast(self, "[29th Extras] "$PlayerName$" spawned a "$Args[1]);
                     `log("[29th Extras] "$PlayerName$" spawned a "$Args[1]$"");
+                }
+                else
+                {
+                    `log("[29th Extras] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
+                    PrivateMessage(PC, "Not a valid weapon name.");
                 }
 
                 break;
@@ -380,8 +400,13 @@ function Mutate(string MutateString, PlayerController PC) //no prefixes, also ca
 
                 if (NameValid != "False")
                 {
-                    WorldInfo.Game.Broadcast(self, "[29th Extras] "$PlayerName$" spawned a "$Args[1]$"");
+                    WorldInfo.Game.Broadcast(self, "[29th Extras] "$PlayerName$" spawned a "$Args[1]);
                     `log("[29th Extras] "$PlayerName$" spawned a "$Args[1]$"");
+                }
+                else
+                {
+                    `log("[29th Extras] Spawnvehicle failed! "$PlayerName$" tried to spawn a "$Args[1]);
+                    PrivateMessage(PC, "Not a valid vehicle name.");
                 }
 
                 break;
@@ -399,25 +424,25 @@ function Mutate(string MutateString, PlayerController PC) //no prefixes, also ca
                 case "SetJumpZ":
                 SetJumpZ(PC, float(Args[1]));
                 `log("SetJumpZ");
-                WorldInfo.Game.Broadcast(self, "[29th Extras] "$PlayerName$" set their JumpZ to "$Args[1]$"");
+                WorldInfo.Game.Broadcast(self, "[29th Extras] "$PlayerName$" set their JumpZ to "$Args[1]);
                 break;
 
                 case "SetGravity":
                 SetGravity(PC, float(Args[1]));
                 `log("SetGravity");
-                WorldInfo.Game.Broadcast(self, "[29th Extras] "$PlayerName$" set gravity to "$Args[1]$"");
+                WorldInfo.Game.Broadcast(self, "[29th Extras] "$PlayerName$" set gravity to "$Args[1]);
                 break;
 
                 case "SetSpeed":
                 SetSpeed(PC, float(Args[1]));
                 `log("SetSpeed");
-                WorldInfo.Game.Broadcast(self, "[29th Extras] "$PlayerName$" set their speed to "$Args[1]$"");
+                WorldInfo.Game.Broadcast(self, "[29th Extras] "$PlayerName$" set their speed to "$Args[1]);
                 break;
 
                 case "ChangeSize":
                 ChangeSize(PC, float(Args[1]));
                 `log("ChangeSize");
-                WorldInfo.Game.Broadcast(self, "[29th Extras] "$PlayerName$" set their size to "$Args[1]$"");
+                WorldInfo.Game.Broadcast(self, "[29th Extras] "$PlayerName$" set their size to "$Args[1]);
                 break;
 
                 case "ADDBOTS":
@@ -439,7 +464,7 @@ function Mutate(string MutateString, PlayerController PC) //no prefixes, also ca
 
 
     super.Mutate(MutateString, PC);
-    }
+}
 
 function SpawnVehicle(PlayerController PC, string VehicleName, out string NameValid)
 {
@@ -474,21 +499,17 @@ function SpawnVehicle(PlayerController PC, string VehicleName, out string NameVa
     Loach = class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_OH6_Content", class'Class'));
     Huey = class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_UH1H_Content", class'Class'));
     Bushranger = class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_UH1H_Gunship_Content", class'Class'));
-
     M113ACAV = class<ROVehicle>(DynamicLoadObject("GOM3.GOMVehicle_M113_ACAV_ActualContent", class'Class'));
-
     //M113ACAV = class<ROVehicle>(DynamicLoadObject("GOM4.GOMVehicle_M113_ACAV_ActualContent", class'Class'));
     //MUTT = class<ROVehicle>(DynamicLoadObject("GOM4.GOMVehicle_M151_MUTT_US", class'Class'));
     //T34 = class<ROVehicle>(DynamicLoadObject("GOM4.GOMVehicle_T34_ActualContent", class'Class'));
     //M113ARVN = class<ROVehicle>(DynamicLoadObject("GOM4.GOMVehicle_M113_APC_ARVN", class'Class'));
-
     T20 = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T20_ActualContent", class'Class'));
     T26 = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T26_EarlyWar_ActualContent", class'Class'));
     T28 = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T28_ActualContent", class'Class'));
     HT130 = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_HT130_ActualContent", class'Class'));
     ATGun = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_53K_ActualContent", class'Class'));
     Vickers = class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_Vickers_ActualContent", class'Class'));
-
     //M113 = class<ROVehicle>(DynamicLoadObject("AmmoCrate.ACVehicle_M113_APC_Content", class'Class'));
 
     switch (VehicleName)
@@ -567,15 +588,13 @@ function SpawnVehicle(PlayerController PC, string VehicleName, out string NameVa
         break;
 
         default:
-        `log("[29th Extras] Spawnvehicle failed! "$PlayerName$" tried to spawn a "$VehicleName$" at" $EndShot);
-        PrivateMessage(PC, "Not a valid vehicle name.");
         NameValid = "False";
         break;
     }
 }
 
 function GiveWeapon(PlayerController PC, string WeaponName, out string NameValid)
-    {
+{
 	local ROInventoryManager InvManager;
 
 	InvManager = ROInventoryManager(PC.Pawn.InvManager);   
@@ -1397,12 +1416,10 @@ function GiveWeapon(PlayerController PC, string WeaponName, out string NameValid
             break;*/
             
             default:
-            `log("[29th Extras] Giveweapon failed! "$PlayerName$" tried to spawn a "$WeaponName$"");
-            PrivateMessage(PC, "Not a valid weapon name.");
             NameValid = "False";
             break;
         }
-    }
+}
 
 DefaultProperties
 {
