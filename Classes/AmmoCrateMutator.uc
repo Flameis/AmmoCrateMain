@@ -1,12 +1,12 @@
 class AmmoCrateMutator extends ROMutator
 	config(AmmoCrate);
 
-var string PlayerName;
-var ACPlayerController ACPC;
-var ROGameInfo ROGI;
-var RORoleInfoClasses RORICSouth;
-var RORoleInfoClasses RORICNorth;
-var ROMapInfo ROMI;
+var string              PlayerName;
+var ACPlayerController  ACPC;
+var ROGameInfo          ROGI;
+var RORoleInfoClasses   RORICSouth;
+var RORoleInfoClasses   RORICNorth;
+var ROMapInfo           ROMI;
 
 function PreBeginPlay()
 {
@@ -481,9 +481,9 @@ function SpawnVehicle(PlayerController PC, string VehicleName, out string NameVa
     local class<ROVehicle>          HT130;
     local class<ROVehicle>          ATGun;
     local class<ROVehicle>          Vickers;
-    local class<ROVehicle>          T34;
-    local class<ROVehicle>          MUTT;
-    local class<ROVehicle>          M113ARVN;
+    //local class<ROVehicle>          T34;
+    //local class<ROVehicle>          MUTT;
+    //local class<ROVehicle>          M113ARVN;
     //local class<ROVehicle>          M113;
 	local ROVehicle ROHelo;
 
