@@ -21,7 +21,7 @@ simulated function ReplacePawnHandler()
     ROGameInfo(WorldInfo.Game).PawnHandlerClass = class'ACPawnHandler';
     ROGameInfo(WorldInfo.Game).DefaultPawnClass = class'ACPawn';
     ROGameInfo(WorldInfo.Game).AIPawnClass = class'ACPawn';
-    `log("Replacing PawnHandler...");
+    //`log("Replacing PawnHandler...");
 }
 
 reliable client function ClientReplacePawnHandler()
@@ -56,7 +56,7 @@ simulated function ReplaceRoles()
 
     if (ROMI != None)
     { 
-        `log("Replacing roles...");
+        //`log("Replacing roles...");
 
         ROMI.SouthernTeamLeader.roleinfo = none;
         ROMI.NorthernTeamLeader.roleinfo = none;
