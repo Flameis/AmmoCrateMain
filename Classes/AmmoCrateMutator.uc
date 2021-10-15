@@ -26,7 +26,7 @@ function PreBeginPlay()
     }
 
     ACPC.LoadObjects();
-    RemoveROVNA();
+    RemoveVolumes();
     StaticSaveConfig();
 
     super.PreBeginPlay();
@@ -34,7 +34,7 @@ function PreBeginPlay()
 
 function PostBeginplay()
 {
-    RemoveROVNA();
+    RemoveVolumes();
 }
 
 function ModifyPlayer(Pawn Other)
@@ -66,9 +66,10 @@ function NotifyLogin(Controller NewPlayer)
     super.NotifyLogin(NewPlayer);
 }
 
-function RemoveROVNA()
+function RemoveVolumes()
 {
     local ROVolumeNoArtillery ROVNA;
+    local ROVolumeSpawnProtection ROVSP;
     local int count;
 
     foreach allactors(class'ROVolumeNoArtillery', ROVNA)
@@ -76,7 +77,23 @@ function RemoveROVNA()
     ROVNA.SetEnabled( False );
     ++Count;
     }
-    `log ("Removed "$Count$" No arty volumes" );
+    foreach allactors(class'ROVolumeSpawnProtection', ROVSP)
+    {
+    ROVSP.SetEnabled( False );
+    ++Count;
+    }
+    `log ("Removed "$Count$" Volumes" );
+}
+
+auto state StartUp
+{
+    function timer()
+    {
+        RemoveVolumes();
+    }
+        
+    Begin:
+    SetTimer( 5, true );
 }
 
 static function ENorthernForces GetNorthernForce()
