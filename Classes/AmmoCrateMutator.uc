@@ -32,6 +32,11 @@ function PreBeginPlay()
     super.PreBeginPlay();
 }
 
+function PostBeginplay()
+{
+    RemoveROVA();
+}
+
 function ModifyPlayer(Pawn Other)
 {
     ReplacePawns();
@@ -68,6 +73,7 @@ function RemoveROVA()
 
     foreach allactors(class'ROVolumeNoArtillery', ROVA)
     {
+    ROVA.SetEnabled(False);
     ROVA.ShutDown();
     ROVA.Destroy();
     ++Count;
