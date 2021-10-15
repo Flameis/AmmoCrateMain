@@ -50,6 +50,7 @@ function NotifyLogin(Controller NewPlayer)
     }
 
     ACPC.ClientLoadObjects();
+
     ACPC.ReplacePawnHandler();
     ACPC.ClientReplacePawnHandler();
     ACPC.ReplaceRoles();
@@ -324,7 +325,23 @@ function Mutate(string MutateString, PlayerController PC) //no prefixes, also ca
             Switch (Command)
             {
                 case "GIVEWEAPON":
-                GiveWeapon(PC, Args[1], NameValid);
+                GiveWeapon(PC, Args[1], NameValid, false);
+
+                if (NameValid != "False")
+                {
+                    WorldInfo.Game.Broadcast(self, "[29th Extras] "$PlayerName$" spawned a "$Args[1]);
+                    `log("[29th Extras] "$PlayerName$" spawned a "$Args[1]$"");
+                }
+                else
+                {
+                    `log("[29th Extras] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
+                    PrivateMessage(PC, "Not a valid weapon name.");
+                }
+
+                break;
+
+                case "GIVEWEAPONALL":
+                GiveWeapon(PC, Args[1], NameValid, true);
 
                 if (NameValid != "False")
                 {
@@ -545,11 +562,22 @@ function SpawnVehicle(PlayerController PC, string VehicleName, out string NameVa
     }
 }
 
-function GiveWeapon(PlayerController PC, string WeaponName, out string NameValid)
+function GiveWeapon(PlayerController PC, string WeaponName, out string NameValid, bool GiveAll)
 {
-	local ROInventoryManager InvManager;
+	local ROInventoryManager    InvManager;
+    local ROPawn                ROP;
 
-	InvManager = ROInventoryManager(PC.Pawn.InvManager);   
+    ROP = ROPawn(ACPC.Pawn);
+
+    if (GiveAll)
+    {
+    InvManager = ROInventoryManager(ROP.InvManager);  
+    }
+    else 
+    {
+    InvManager = ROInventoryManager(PC.Pawn.InvManager); 
+    }
+    
     NameValid = "True";  
 
         switch (WeaponName)
