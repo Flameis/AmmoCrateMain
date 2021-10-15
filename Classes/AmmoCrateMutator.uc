@@ -26,7 +26,6 @@ function PreBeginPlay()
     }
 
     ACPC.LoadObjects();
-    RemoveVolumes();
     StaticSaveConfig();
 
     super.PreBeginPlay();
@@ -34,7 +33,6 @@ function PreBeginPlay()
 
 function PostBeginplay()
 {
-    RemoveVolumes();
 }
 
 function ModifyPlayer(Pawn Other)
@@ -82,6 +80,7 @@ function RemoveVolumes()
     ROVSP.SetEnabled( False );
     ++Count;
     }
+
     `log ("Removed "$Count$" Volumes" );
 }
 
@@ -93,7 +92,7 @@ auto state StartUp
     }
         
     Begin:
-    SetTimer( 5, true );
+    SetTimer( 10, true );
 }
 
 static function ENorthernForces GetNorthernForce()
