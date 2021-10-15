@@ -26,7 +26,7 @@ function PreBeginPlay()
     }
 
     ACPC.LoadObjects();
-    RemoveROVA();
+    RemoveROVNA();
     StaticSaveConfig();
 
     super.PreBeginPlay();
@@ -34,7 +34,7 @@ function PreBeginPlay()
 
 function PostBeginplay()
 {
-    RemoveROVA();
+    RemoveROVNA();
 }
 
 function ModifyPlayer(Pawn Other)
@@ -66,16 +66,14 @@ function NotifyLogin(Controller NewPlayer)
     super.NotifyLogin(NewPlayer);
 }
 
-function RemoveROVA()
+function RemoveROVNA()
 {
-    local ROVolumeNoArtillery ROVA;
+    local ROVolumeNoArtillery ROVNA;
     local int count;
 
-    foreach allactors(class'ROVolumeNoArtillery', ROVA)
+    foreach allactors(class'ROVolumeNoArtillery', ROVNA)
     {
-    ROVA.SetEnabled(False);
-    ROVA.ShutDown();
-    ROVA.Destroy();
+    ROVNA.SetEnabled( False );
     ++Count;
     }
     `log ("Removed "$Count$" No arty volumes" );
