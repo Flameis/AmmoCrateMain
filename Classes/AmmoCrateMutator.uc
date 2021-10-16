@@ -87,8 +87,6 @@ function RemoveVolumes()
     ROVSP.SetEnabled( False );
     ++Count;
     }
-
-    `log ("Removed "$Count$" Volumes" );
 }
 
 /*static function ENorthernForces GetNorthernForce()
@@ -522,6 +520,15 @@ function Mutate(string MutateString, PlayerController PC) //no prefixes, also ca
                 AllAmmo(PC);
                 `log("Infinite Ammo");
                 WorldInfo.Game.Broadcast(self, "[29th Extras] "$PlayerName$" toggled AllAmmo");
+                break;
+
+                case"THIRDPERSON":
+                ACPC.Camera(PC);
+                WorldInfo.Game.Broadcast(self, "[29th Extras] "$PlayerName$" went thirdperson");
+                break;
+
+                case"FIRSTPERSON":
+                ACPC.Camera(PC, true);
                 break;
             }
 

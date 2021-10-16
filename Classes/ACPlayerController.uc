@@ -87,16 +87,11 @@ reliable client function ClientReplaceInventoryManager()
     ReplaceInventoryManager();
 }
 
-exec function Camera(optional bool free = false)
+unreliable client function Camera(playercontroller PC, optional bool First = false)
 {
-	ServerCamera(free);
-}
-
-unreliable server function ServerCamera(bool free)
-{
-	if (free)
+    if (First)
 	{
-		SetCameraMode('FreeCam');
+		SetCameraMode('FirstPerson');
 	}
 	else
 	{
