@@ -87,6 +87,23 @@ reliable client function ClientReplaceInventoryManager()
     ReplaceInventoryManager();
 }
 
+exec function Camera(optional bool free = false)
+{
+	ServerCamera(free);
+}
+
+unreliable server function ServerCamera(bool free)
+{
+	if (free)
+	{
+		SetCameraMode('FreeCam');
+	}
+	else
+	{
+		SetCameraMode('ThirdPerson');
+	}
+}
+
 simulated function ReplaceRoles()
 {
     ROMI = ROMapInfo(WorldInfo.GetMapInfo());
