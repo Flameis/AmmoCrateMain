@@ -94,12 +94,6 @@ simulated function ReplaceRoles()
     if (ROMI != None)
     { 
         //`log("Replacing roles...");
-
-        ROMI.SouthernTeamLeader.roleinfo = none;
-        ROMI.NorthernTeamLeader.roleinfo = none;
-
-        ROMI.SouthernTeamLeader.roleinfo = new ACSouthernRoles[6];
-        ROMI.NorthernTeamLeader.roleinfo = new ACNorthernRoles[6];
         
         //Gotta make the array length right.
         ROMI.SouthernRoles.length = 11;
@@ -211,6 +205,11 @@ simulated function ReplaceRoles()
             ROMI.NorthernRoles[6].RoleInfoClass = class'ACRoleInfoCommanderNorth';
             ROMI.NorthernRoles[7].RoleInfoClass = class'ACRoleInfoTankCrewNorth';
         }
+        ROMI.SouthernTeamLeader.roleinfo = none;
+        ROMI.NorthernTeamLeader.roleinfo = none;
+
+        ROMI.SouthernTeamLeader.roleinfo = new ROMI.SouthernRoles[6].RoleInfoClass;
+        ROMI.NorthernTeamLeader.roleinfo = new ROMI.SouthernRoles[6].RoleInfoClass;
     }
 }
 
@@ -287,7 +286,7 @@ function InitialiseCCMs()
 	}
 }
 
-static function string GetClassNameByIndex(int TeamIndex, int ClassIndex, optional bool bShortName)
+/*static function string GetClassNameByIndex(int TeamIndex, int ClassIndex, optional bool bShortName)
 {
 	local int i;
     //ROMI = ROMapInfo(default.WorldInfo.GetMapInfo());
@@ -315,9 +314,33 @@ static function string GetClassNameByIndex(int TeamIndex, int ClassIndex, option
 	}
     
     return "Error!"; 
-}
+}*/
 
 defaultproperties
 {
 //CharacterSceneTemplate=ACUISceneCharacter'29thExtras.Character.ACUISceneCharacter2';
+ACNorthernRoles={(
+                class'ACRoleInfoRiflemanNLF',
+                class'ACRoleInfoLightNLF',
+                class'ACRoleInfoMachineGunNorth',
+                class'ACRoleInfoCombatEngineerNLF',
+                class'ACRoleInfoMarksmanNorth',
+                class'ACRoleInfoSupportNorth',
+                class'ACRoleInfoCommanderNorth',
+                class'ACRoleInfoTankCrewNorth'
+                )}
+
+ACSouthernRoles={(
+                class'ACRoleInfoRiflemanUS',
+                class'ACRoleInfoLightUS',
+                class'ACRoleInfoMachineGunUS',
+                class'ACRoleInfoCombatEngineerUS',
+                class'ACRoleInfoMarksmanSouth',
+                class'ACRoleInfoSupportUS',
+                class'ACRoleInfoCommanderSouth',
+                class'ACRoleInfoLineup',
+                class'ACRoleInfoTankCrewSouth',
+                class'ACRoleInfoPilotSouth',
+                class'ACRoleInfoTransportPilotSouth'
+                )}
 }   

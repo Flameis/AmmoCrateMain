@@ -1,5 +1,4 @@
-class ACpawn extends ROPawn
-    abstract;
+class ACpawn extends ROPawn;
 
 simulated event PreBeginPlay()
 {
