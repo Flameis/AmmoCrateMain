@@ -87,18 +87,6 @@ reliable client function ClientReplaceInventoryManager()
     ReplaceInventoryManager();
 }
 
-unreliable client function Camera(playercontroller PC, optional bool First = false)
-{
-    if (First)
-	{
-		SetCameraMode('FirstPerson');
-	}
-	else
-	{
-		SetCameraMode('ThirdPerson');
-	}
-}
-
 simulated function ReplaceRoles()
 {
     ROMI = ROMapInfo(WorldInfo.GetMapInfo());

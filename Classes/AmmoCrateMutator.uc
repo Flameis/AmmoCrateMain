@@ -366,6 +366,18 @@ function ClearWeapons(PlayerController PC, bool GiveAll, optional int TeamIndex)
     }
 }
 
+function Camera(playercontroller PC, optional bool First = false)
+{
+    if (First)
+	{
+		PC.SetCameraMode('FirstPerson');
+	}
+	else
+	{
+		PC.SetCameraMode('ThirdPerson');
+	}
+}
+
 function PrivateMessage(PlayerController receiver, coerce string msg)
 {
     receiver.TeamMessage(None, msg, '');
@@ -523,12 +535,12 @@ function Mutate(string MutateString, PlayerController PC) //no prefixes, also ca
                 break;
 
                 case"THIRDPERSON":
-                ACPC.Camera(PC);
+                Camera(PC);
                 WorldInfo.Game.Broadcast(self, "[29th Extras] "$PlayerName$" went thirdperson");
                 break;
 
                 case"FIRSTPERSON":
-                ACPC.Camera(PC, true);
+                Camera(PC, true);
                 break;
             }
 
