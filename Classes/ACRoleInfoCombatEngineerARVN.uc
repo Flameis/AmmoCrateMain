@@ -23,9 +23,9 @@ DefaultProperties
 					// Secondary Weapons
 					SecondaryWeapons=(class'ROGame.ROWeap_M1911_Pistol',class'ROGame.ROWeap_M1917_Pistol',),
 					// Other Items
-					OtherItems=(class'ROGame.ROWeap_M34_WP',class'ROGame.ROWeap_C4_Explosive'),
-					OtherItemsStartIndexForPrimary=(0, 0, 0, 0, 0),
-					NumOtherItemsForPrimary=(0, 0, 0, 255, 255)
+					OtherItems=(class'ROGame.ROWeap_C4_Explosive',class'ROGame.ROWeap_M34_WP',class'ROGame.ROItem_BinocularsUS'),
+					OtherItemsStartIndexForPrimary=(0, 0, 0, 2, 1),
+					NumOtherItemsForPrimary=(3, 3, 3, 1, 2)
 		)}
 
 	bAllowPistolsInRealism=true

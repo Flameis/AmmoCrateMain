@@ -26,7 +26,7 @@ DefaultProperties
 					// Other Items
 					OtherItems=(class'ROGame.ROWeap_C4_Explosive',class'ROGame.ROWeap_M34_WP',class'ROGame.ROItem_BinocularsUS'),
 					OtherItemsStartIndexForPrimary=(0, 0, 0, 2, 1),
-					NumOtherItemsForPrimary=(0, 0, 0, 0, 0)
+					NumOtherItemsForPrimary=(3, 3, 3, 1, 2)
 		)}
 
 	bAllowPistolsInRealism=true
