@@ -25,7 +25,6 @@ function PreBeginPlay()
         `log("Replaced Pawn Handler");
     }
 
-    ACPC.LoadObjects();
     StaticSaveConfig();
 
     super.PreBeginPlay();
@@ -58,8 +57,6 @@ function NotifyLogin(Controller NewPlayer)
         `log("Error replacing roles");
         return;
     }
-
-    ACPC.ClientLoadObjects();
 
     ACPC.ReplacePawnHandler();
     ACPC.ClientReplacePawnHandler();
