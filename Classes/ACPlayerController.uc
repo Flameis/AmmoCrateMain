@@ -16,43 +16,34 @@ simulated function PreBeginPlay()
     }
 }
 
-simulated function LoadObjects()
+simulated function PostBeginPlay()
 {
+    local RORoleCount RORC;
+
+    `log("ACPlayerController.PostBeginPlay()");
+
+    super.PostBeginPlay();
+
     ROMI = ROMapInfo(WorldInfo.GetMapInfo());
 
-    ROMI.SharedContentReferences.Remove(0, ROMI.SharedContentReferences.Length);
-	class'WorldInfo'.static.GetWorldInfo().ForceGarbageCollection(TRUE);
-    ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_Maxim_ActualContent", class'Class')));
-	ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_QuadMaxims_ActualContent", class'Class')));
-	ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("ROGameContent.ROWeap_M2_HMG_Tripod_Content", class'Class')));
-	ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("ROGameContent.ROWeap_DShK_HMG_Tripod_Content", class'Class')));
-	ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_AH1G_Content", class'Class')));
-	ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_OH6_Content", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_UH1H_Content", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("ROGameContent.ROHeli_UH1H_Gunship_Content", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("GOM3.GOMVehicle_M113_ACAV_ActualContent", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T20_ActualContent", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T26_EarlyWar_ActualContent", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T28_ActualContent", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_HT130_ActualContent", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_53K_ActualContent", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_Vickers_ActualContent", class'Class')));
-    /*ROMI.SharedContentReferences.AddItem(class<ROWeapon>(DynamicLoadObject("GOM4.GOMWeapon_MAC10_Silenced", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROWeapon>(DynamicLoadObject("GOM4.GOMWeapon_VZ61_ActualContent", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROWeapon>(DynamicLoadObject("GOM4.GOMWeapon_VZ25", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROWeapon>(DynamicLoadObject("GOM4.GOMWeapon_VZ25", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROWeapon>(DynamicLoadObject("GOM4.GOMWeapon_VZ25", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROWeapon>(DynamicLoadObject("GOM4.GOMWeapon_VZ25", class'Class')));
-    ROMI.SharedContentReferences.AddItem(class<ROWeapon>(DynamicLoadObject("GOM4.GOMWeapon_VZ25", class'Class')));
+    ForEach ROMI.NorthernRoles(RORC)
+    {
+        `log("RoleInfoClass = " $ RORC.RoleInfoClass);
+    }
 
-
-
-    */
+    ForEach ROMI.SouthernRoles(RORC)
+    {
+        `log("RoleInfoClass = " $ RORC.RoleInfoClass);
+    }
 }
 
-reliable client function ClientLoadObjects()
+simulated function ReceivedGameClass(class<GameInfo> GameClass)
 {
-    LoadObjects();
+    super.ReceivedGameClass(GameClass);
+
+    ReplaceRoles();
+    ReplaceInventoryManager();
+    ReplacePawnHandler();
 }
 
 simulated function ReplacePawnHandler()
@@ -65,15 +56,6 @@ simulated function ReplacePawnHandler()
 
 reliable client function ClientReplacePawnHandler()
 {
-    ReplacePawnHandler();
-}
-
-simulated function ReceivedGameClass(class<GameInfo> GameClass)
-{
-    super.ReceivedGameClass(GameClass);
-
-    ReplaceRoles();
-    ReplaceInventoryManager();
     ReplacePawnHandler();
 }
 
@@ -216,27 +198,6 @@ simulated function ReplaceRoles()
 reliable client function ClientReplaceRoles()
 {
     ReplaceRoles();
-}
-
-simulated function PostBeginPlay()
-{
-    local RORoleCount RORC;
-
-    `log("ACPlayerController.PostBeginPlay()");
-
-    super.PostBeginPlay();
-
-    ROMI = ROMapInfo(WorldInfo.GetMapInfo());
-
-    ForEach ROMI.NorthernRoles(RORC)
-    {
-        `log("RoleInfoClass = " $ RORC.RoleInfoClass);
-    }
-
-    ForEach ROMI.SouthernRoles(RORC)
-    {
-        `log("RoleInfoClass = " $ RORC.RoleInfoClass);
-    }
 }
 
 function InitialiseCCMs()
