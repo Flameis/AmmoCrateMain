@@ -1,14 +1,14 @@
 //=============================================================================
-// RORoleInfoNorthernMachineGunnerNLF
+// RORoleInfoSouthernMachineGunnerARVN
 //=============================================================================
-// Default settings for the Vietnamese Machine Gunner role, NLF specifically.
+// Default settings for the ARVN Machine Gunner role.
 //=============================================================================
 // Rising Storm 2: Vietnam Source
-// Copyright (C) 2016 Tripwire Interactive LLC
+// Copyright (C) 2018 Tripwire Interactive LLC
 // - Sturt "Psycho Ch!cken" Jeffery @ Antimatter Games
-// Edited for the 29th by Reimer, published by Scovel
+// Edited for the 29th by Reimer, Published by Scovel
 //=============================================================================
-class ACRoleInfoMachineGunNorth extends RORoleInfoNorthernInfantry
+class ACRoleInfoMachineGunnerAUS extends ACRoleInfoMachineGunnerUS
 	HideDropDown;
 
 DefaultProperties
@@ -17,12 +17,11 @@ DefaultProperties
 	ClassTier=2
 	ClassIndex=2
 
-
 	Items[RORIGM_Default]={(
 					// Primary : DEFAULTS
-					PrimaryWeapons=(class'ROGame.ROWeap_RPD_LMG',class'ROGame.ROWeap_DP28_LMG',class'ROGame.ROWeap_M1918_BAR',class'ROGame.ROWeap_RP46_LMG'),
-					SecondaryWeapons=(class'ROGame.ROWeap_TT33_Pistol',class'ROGame.ROWeap_PM_Pistol'),
-					OtherItems=(class'ROGame.ROWeap_Type67_Grenade',class'ROGame.ROWeap_PunjiTrap',class'ROItem_Binoculars'),		
+					PrimaryWeapons=(class'ROGame.ROWeap_L2A1_LMG',class'ROGame.ROWeap_M60_GPMG'),
+					SecondaryWeapons=(class'ROGame.ROWeap_BHP_Pistol'),
+					OtherItems=(class'ROGame.ROWeap_M61_GrenadeDouble',class'ROGame.ROItem_BinocularsUS'),
 		)}
 
 	ClassIcon=Texture2D'VN_UI_Textures.menu.class_icon_mg'

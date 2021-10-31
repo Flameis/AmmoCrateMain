@@ -108,7 +108,7 @@ simulated function ReplaceRoles()
         {
             ROMI.SouthernRoles[0].RoleInfoClass = class'ACRoleInfoRiflemanUS';
             ROMI.SouthernRoles[1].RoleInfoClass = class'ACRoleInfoLightUS';
-            ROMI.SouthernRoles[2].RoleInfoClass = class'ACRoleInfoMachineGunUS';
+            ROMI.SouthernRoles[2].RoleInfoClass = class'ACRoleInfoMachineGunnerUS';
             ROMI.SouthernRoles[3].RoleInfoClass = class'ACRoleInfoCombatEngineerUS';
             ROMI.SouthernRoles[4].RoleInfoClass = class'ACRoleInfoMarksmanSouth';
             ROMI.SouthernRoles[5].RoleInfoClass = class'ACRoleInfoSupportUS';
@@ -123,7 +123,7 @@ simulated function ReplaceRoles()
         {
             ROMI.SouthernRoles[0].RoleInfoClass = class'ACRoleInfoRiflemanUSMC';
             ROMI.SouthernRoles[1].RoleInfoClass = class'ACRoleInfoLightUSMC';
-            ROMI.SouthernRoles[2].RoleInfoClass = class'ACRoleInfoMachineGunUSMC';
+            ROMI.SouthernRoles[2].RoleInfoClass = class'ACRoleInfoMachineGunnerUSMC';
             ROMI.SouthernRoles[3].RoleInfoClass = class'ACRoleInfoCombatEngineerUS';
             ROMI.SouthernRoles[4].RoleInfoClass = class'ACRoleInfoMarksmanSouth';
             ROMI.SouthernRoles[5].RoleInfoClass = class'ACRoleInfoSupportUS';
@@ -138,7 +138,7 @@ simulated function ReplaceRoles()
         {
             ROMI.SouthernRoles[0].RoleInfoClass = class'ACRoleInfoRiflemanAUS';
             ROMI.SouthernRoles[1].RoleInfoClass = class'ACRoleInfoLightAUS';
-            ROMI.SouthernRoles[2].RoleInfoClass = class'ACRoleInfoMachineGunAUS';
+            ROMI.SouthernRoles[2].RoleInfoClass = class'ACRoleInfoMachineGunnerAUS';
             ROMI.SouthernRoles[3].RoleInfoClass = class'ACRoleInfoCombatEngineerAUS';
             ROMI.SouthernRoles[4].RoleInfoClass = class'ACRoleInfoMarksmanAUS';
             ROMI.SouthernRoles[5].RoleInfoClass = class'ACRoleInfoSupportAUS';
@@ -153,7 +153,7 @@ simulated function ReplaceRoles()
         {
             ROMI.SouthernRoles[0].RoleInfoClass = class'ACRoleInfoRiflemanARVN';
             ROMI.SouthernRoles[1].RoleInfoClass = class'ACRoleInfoLightARVN';
-            ROMI.SouthernRoles[2].RoleInfoClass = class'ACRoleInfoMachineGunARVN';
+            ROMI.SouthernRoles[2].RoleInfoClass = class'ACRoleInfoMachineGunnerARVN';
             ROMI.SouthernRoles[3].RoleInfoClass = class'ACRoleInfoCombatEngineerARVN';
             ROMI.SouthernRoles[4].RoleInfoClass = class'ACRoleInfoMarksmanSouth';
             ROMI.SouthernRoles[5].RoleInfoClass = class'ACRoleInfoSupportUS';
@@ -168,7 +168,7 @@ simulated function ReplaceRoles()
         {
             ROMI.NorthernRoles[0].RoleInfoClass = class'ACRoleInfoRiflemanPAVN';
             ROMI.NorthernRoles[1].RoleInfoClass = class'ACRoleInfoLightPAVN';
-            ROMI.NorthernRoles[2].RoleInfoClass = class'ACRoleInfoMachineGunNorth';
+            ROMI.NorthernRoles[2].RoleInfoClass = class'ACRoleInfoMachineGunnerNorth';
             ROMI.NorthernRoles[3].RoleInfoClass = class'ACRoleInfoCombatEngineerPAVN';
             ROMI.NorthernRoles[4].RoleInfoClass = class'ACRoleInfoMarksmanNorth';
             ROMI.NorthernRoles[5].RoleInfoClass = class'ACRoleInfoSupportNorth';
@@ -180,7 +180,7 @@ simulated function ReplaceRoles()
         {
             ROMI.NorthernRoles[0].RoleInfoClass = class'ACRoleInfoRiflemanNLF';
             ROMI.NorthernRoles[1].RoleInfoClass = class'ACRoleInfoLightNLF';
-            ROMI.NorthernRoles[2].RoleInfoClass = class'ACRoleInfoMachineGunNorth';
+            ROMI.NorthernRoles[2].RoleInfoClass = class'ACRoleInfoMachineGunnerNorth';
             ROMI.NorthernRoles[3].RoleInfoClass = class'ACRoleInfoCombatEngineerNLF';
             ROMI.NorthernRoles[4].RoleInfoClass = class'ACRoleInfoMarksmanNorth';
             ROMI.NorthernRoles[5].RoleInfoClass = class'ACRoleInfoSupportNorth';
@@ -283,7 +283,7 @@ defaultproperties
 ACNorthernRoles={(
                 class'ACRoleInfoRiflemanNLF',
                 class'ACRoleInfoLightNLF',
-                class'ACRoleInfoMachineGunNorth',
+                class'ACRoleInfoMachineGunnerNorth',
                 class'ACRoleInfoCombatEngineerNLF',
                 class'ACRoleInfoMarksmanNorth',
                 class'ACRoleInfoSupportNorth',
@@ -294,7 +294,7 @@ ACNorthernRoles={(
 ACSouthernRoles={(
                 class'ACRoleInfoRiflemanUS',
                 class'ACRoleInfoLightUS',
-                class'ACRoleInfoMachineGunUS',
+                class'ACRoleInfoMachineGunnerUS',
                 class'ACRoleInfoCombatEngineerUS',
                 class'ACRoleInfoMarksmanSouth',
                 class'ACRoleInfoSupportUS',

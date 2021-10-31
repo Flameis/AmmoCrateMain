@@ -11,7 +11,7 @@ var ROMapInfo           ROMI;
 function PreBeginPlay()
 {
     `log("AmmoCrateMutator init");
-
+    
     ROGameInfo(WorldInfo.Game).PlayerControllerClass = class'ACPlayerController';
     ROGameInfo(WorldInfo.Game).PlayerReplicationInfoClass = class'ACPlayerReplicationInfo';
     ROGameInfo(WorldInfo.Game).PawnHandlerClass = class'ACPawnHandler';

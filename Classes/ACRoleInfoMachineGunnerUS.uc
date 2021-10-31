@@ -8,7 +8,7 @@
 // - Sturt "Psycho Ch!cken" Jeffery @ Antimatter Games
 // Edited for the 29th by Reimer, Published by Scovel
 //=============================================================================
-class ACRoleInfoMachineGunARVN extends ACRoleInfoMachineGunUS
+class ACRoleInfoMachineGunnerUS extends RORoleInfoSouthernInfantry
 	HideDropDown;
 
 DefaultProperties
@@ -16,6 +16,7 @@ DefaultProperties
 	RoleType=RORIT_MachineGunner
 	ClassTier=2
 	ClassIndex=2
+
 
 	Items[RORIGM_Default]={(
 					// Primary : DEFAULTS
