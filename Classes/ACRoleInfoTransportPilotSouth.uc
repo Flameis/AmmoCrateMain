@@ -7,7 +7,7 @@
 // Copyright (C) 2015 Tripwire Interactive LLC
 // - Sturt "Psycho Ch!cken" Jeffery @ Antimatter Games
 //=============================================================================
-class ACRoleInfoTransportPilotSouth extends RORoleInfoSouthernInfantry;
+class ACRoleInfoTransportPilotSouth extends ACRoleInfoSouthernInfantry;
 
 DefaultProperties
 {

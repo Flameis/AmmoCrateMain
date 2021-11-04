@@ -8,7 +8,7 @@
 // - Sturt "Psycho Ch!cken" Jeffery @ Antimatter Games
 // Edited for the 29th by Reimer, published by Scovel
 //=============================================================================
-class ACRoleInfoMachineGunnerNorth extends RORoleInfoNorthernInfantry
+class ACRoleInfoMachineGunnerNorth extends ACRoleInfoNorthernInfantry
 	HideDropDown;
 
 DefaultProperties

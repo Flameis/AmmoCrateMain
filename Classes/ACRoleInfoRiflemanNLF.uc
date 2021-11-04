@@ -8,7 +8,7 @@
 // - Sturt "Psycho Ch!cken" Jeffery @ Antimatter Games
 // - Edited for the 29th by Reimer, published by Scovel
 //=============================================================================
-class ACRoleInfoRiflemanNLF extends RORoleInfoNorthernRifleman
+class ACRoleInfoRiflemanNLF extends ACRoleInfoNorthernInfantry
 	HideDropDown;
 
 defaultproperties
@@ -24,6 +24,9 @@ defaultproperties
 					SecondaryWeapons=(class'ROGame.ROWeap_TT33_Pistol',class'ROGame.ROWeap_PM_Pistol'),
 					OtherItems=(class'ROGame.ROWeap_Type67_Grenade',class'ROGame.ROWeap_PunjiTrap',class'ROItem_Binoculars')
 		)}
+
+		
+	bAllowPistolsInRealism=false
 
 	ClassIcon=Texture2D'VN_UI_Textures.menu.class_icon_guerilla'
 	ClassIconLarge=Texture2D'VN_UI_Textures.menu.ProfileStats.class_icon_large_guerilla'

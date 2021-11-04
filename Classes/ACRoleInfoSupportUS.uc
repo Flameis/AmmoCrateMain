@@ -1,5 +1,5 @@
 
-class ACRoleInfoSupportUS extends RORoleInfoSouthernInfantry;
+class ACRoleInfoSupportUS extends ACRoleInfoSouthernInfantry;
 
 DefaultProperties
 {
