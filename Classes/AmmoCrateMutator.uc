@@ -128,11 +128,6 @@ function Mutate(string MutateString, PlayerController PC) //no prefixes, also ca
                     WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" spawned a "$Args[1]);
                     `log("[29thExtras] "$PlayerName$" spawned a "$Args[1]$"");
                 }
-                else
-                {
-                    `log("[29thExtras] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
-                    PrivateMessage(PC, "Not a valid weapon name.");
-                }
                 break;
 
                 case "GIVEWEAPONALL":
@@ -141,11 +136,6 @@ function Mutate(string MutateString, PlayerController PC) //no prefixes, also ca
                 {
                     WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" gave a "$Args[1]$" to everyone");
                     `log("[29thExtras] "$PlayerName$" spawned a "$Args[1]$"");
-                }
-                else
-                {
-                    `log("[29thExtras] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
-                    PrivateMessage(PC, "Not a valid weapon name.");
                 }
                 break;
 
@@ -156,11 +146,6 @@ function Mutate(string MutateString, PlayerController PC) //no prefixes, also ca
                     WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" gave a "$Args[1]$" to the north");
                     `log("[29thExtras] "$PlayerName$" gave a "$Args[1]$" to the north");
                 }
-                else
-                {
-                    `log("[29thExtras] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
-                    PrivateMessage(PC, "Not a valid weapon name.");
-                }
                 break;
 
                 case "GIVEWEAPONSOUTH":
@@ -169,11 +154,6 @@ function Mutate(string MutateString, PlayerController PC) //no prefixes, also ca
                 {
                     WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" gave a "$Args[1]$" to the south");
                     `log("[29thExtras] "$PlayerName$" gave a "$Args[1]$" to the south");
-                }
-                else
-                {
-                    `log("[29thExtras] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
-                    PrivateMessage(PC, "Not a valid weapon name.");
                 }
                 break;
             }
