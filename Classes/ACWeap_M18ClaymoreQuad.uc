@@ -7,11 +7,9 @@ class ACWeap_M18ClaymoreQuad extends ROWeap_M18_Claymore;
 DefaultProperties
 {
 	InitialNumPrimaryMags=4
+	MaxAmmoCount=4
 	WeaponContentClass(0)="AmmoCrate.ACWeap_M18ClaymoreQuadContent"
 	PlantedChargeClass=class'ACM18ClaymoreMine'
 
 	WeaponProjectiles(0)=class'ACM18ClaymoreMine'
-
-	// ALT FIREMODE
-	WeaponProjectiles(ALTERNATE_FIREMODE)=class'ACM18ClaymoreMine'
 }
