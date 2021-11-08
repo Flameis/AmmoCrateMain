@@ -38,7 +38,7 @@ auto state StartUp
     }
         
     Begin:
-    SetTimer( 10, true );
+    SetTimer( 20, true );
 }
 
 function ModifyPlayer(Pawn Other)

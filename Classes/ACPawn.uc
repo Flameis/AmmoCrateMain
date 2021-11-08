@@ -97,22 +97,7 @@ simulated function CreatePawnMesh()
 	
 	CompositedBodyMesh.Characterization = PlayerHIKCharacterization;
 	ROSkeletalMeshComponent(mesh).ReplaceSkeletalMesh(CompositedBodyMesh);
-	
-	// GetCachedCompositedPawnMesh() CREATES A LIST OF UNIQUE MATERIALS! IT DOES NOT OVERLAP INDEXES!
-	// THAT SHIT TOOK ME ALMOST 12 HOURS STRAIGHT TO FIGURE OUT
-	// Wait, no it doesn't??? Seems to be a combination of both! Fuck this stupid system!
-	// Certainly doesn't help that GetCachedCompositedPawnMesh() is a NATIVE function...
-	
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// OKAY. SO. IT ONLY TOOK 16 HOURS, BUT IT'S WORKING. FOR FUTURE REFERENCE: GetCachedCompositedPawnMesh()
-	// TAKES THE MIC VALUES OF THE SECOND ARGUMENT MESH, AND SYNCS THEM TO ANY MATCHING MICS IN THE FIRST ARGUMENT MESH.
-	// HOWEVER, IF A MATERIAL SLOT DOES NOT HAVE ANY PART OF THE MESH ASSIGNED TO IT, IT GETS THROWN OUT OF THE LIST!
-	// ALL SLOTS MUST HAVE A PIECE OF THE MESH ASSIGNED TO THEM, EVEN IF IT'S JUST A SINGLE HIDDEN TRIANGLE.
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////// DO NOT FORGET ABOUT THESE VALUES WHEN MODIFYING MESH ////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	GearMIC.SetParent(FieldgearMesh.Materials[0]);
 	//GearMIC2.SetParent(FieldgearMesh.Materials[1]);
 	//GearMIC3.SetParent(FieldgearMesh.Materials[2]);
