@@ -191,7 +191,7 @@ simulated function ReplaceRoles()
         ROMI.NorthernTeamLeader.roleinfo = none;
 
         ROMI.SouthernTeamLeader.roleinfo = new ROMI.SouthernRoles[6].RoleInfoClass;
-        ROMI.NorthernTeamLeader.roleinfo = new ROMI.SouthernRoles[6].RoleInfoClass;
+        ROMI.NorthernTeamLeader.roleinfo = new ROMI.NorthernRoles[6].RoleInfoClass;
     }
 }
 
