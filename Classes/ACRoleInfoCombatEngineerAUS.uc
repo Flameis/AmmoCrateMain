@@ -19,13 +19,13 @@ DefaultProperties
 
 	Items[RORIGM_Default]={(
 					// Primary : DEFAULTS
-					PrimaryWeapons=(class'ROGame.ROWeap_L1A1_Rifle',class'ROGame.ROWeap_M16A1_AssaultRifle',class'ROGame.ROWeap_M2_Carbine',class'ROGame.ROWeap_M9_Flamethrower',class'AmmoCrate.ACWeap_M79_GrenadeLauncher'),
+					PrimaryWeapons=(class'ROGame.ROWeap_M16A1_AssaultRifle',class'ROGame.ROWeap_M2_Carbine',class'ROGame.ROWeap_M9_Flamethrower',class'AmmoCrate.ACWeap_M79_GrenadeLauncher'),
 					// Secondary Weapons
 					SecondaryWeapons=(class'ROGame.ROWeap_BHP_Pistol'),
 					// Other Items
 					OtherItems=(class'ROGame.ROWeap_M34_WP',class'ROGame.ROWeap_C4_Explosive'),
-					OtherItemsStartIndexForPrimary=(0, 0, 0, 0, 0),
-					NumOtherItemsForPrimary=(0, 0, 0, 255, 255)
+					OtherItemsStartIndexForPrimary=( 0, 0, 0, 0),
+					NumOtherItemsForPrimary=( 0, 0, 255, 255)
 		)}
 
 	bAllowPistolsInRealism=true
