@@ -92,6 +92,26 @@ function RemoveVolumes()
     ++Count;
     }*/
 }
+
+function bool IsMutThere()
+{
+	local Mutator mut;
+    ROGI = ROGameInfo(WorldInfo.Game);
+    mut = ROGI.BaseMutator;
+
+    if ((string(mut.name)) ~= "MutCommands_0" || (string(mut.NextMutator.name)) ~= "MutCommands_0" || (string(mut.NextMutator.NextMutator.name)) ~= "MutCommands_0" || (string(mut.NextMutator.NextMutator.NextMutator.name)) ~= "MutCommands_0" 
+    || (string(mut.NextMutator.NextMutator.NextMutator.NextMutator.name)) ~= "MutCommands_0" || (string(mut.NextMutator.NextMutator.NextMutator.NextMutator.NextMutator.name)) ~= "MutCommands_0" 
+    || (string(mut.NextMutator.NextMutator.NextMutator.NextMutator.NextMutator.NextMutator.NextMutator.name)) ~= "MutCommands_0")
+    {
+        `log("MutCommands is activated");
+        return true;
+    }
+    else
+    {
+        `log("MutCommands is not activated");
+        return false;
+    }
+}
     
 function PrivateMessage(PlayerController receiver, coerce string msg)
 {
@@ -117,13 +137,13 @@ function Mutate(string MutateString, PlayerController PC) //no prefixes, also ca
         ROGI = ROGameInfo(WorldInfo.Game);
         Args = SplitString(MutateString, " ", true);
         command = Caps(Args[0]);
-        PlayerName = PC.PlayerReplicationInfo.PlayerName; 
+        PlayerName = PC.PlayerReplicationInfo.PlayerName;
 
 			Switch (Command)
             {
                 case "GIVEWEAPON":
                 GiveWeapon(PC, Args[1], NameValid, false, 100);
-                if (NameValid != "False")
+                if (NameValid != "False" && !IsMutThere())
                 {
                     WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" spawned a "$Args[1]);
                     `log("[29thExtras] "$PlayerName$" spawned a "$Args[1]$"");
@@ -132,7 +152,7 @@ function Mutate(string MutateString, PlayerController PC) //no prefixes, also ca
 
                 case "GIVEWEAPONALL":
                 GiveWeapon(PC, Args[1], NameValid, true);
-                if (NameValid != "False")
+                if (NameValid != "False" && !IsMutThere())
                 {
                     WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" gave a "$Args[1]$" to everyone");
                     `log("[29thExtras] "$PlayerName$" spawned a "$Args[1]$"");
@@ -141,7 +161,7 @@ function Mutate(string MutateString, PlayerController PC) //no prefixes, also ca
 
                 case "GIVEWEAPONNORTH":
                 GiveWeapon(PC, Args[1], NameValid, false, `AXIS_TEAM_INDEX);
-                if (NameValid != "False")
+                if (NameValid != "False" && !IsMutThere())
                 {
                     WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" gave a "$Args[1]$" to the north");
                     `log("[29thExtras] "$PlayerName$" gave a "$Args[1]$" to the north");
@@ -150,7 +170,7 @@ function Mutate(string MutateString, PlayerController PC) //no prefixes, also ca
 
                 case "GIVEWEAPONSOUTH":
                 GiveWeapon(PC, Args[1], NameValid, false, `ALLIES_TEAM_INDEX);
-                if (NameValid != "False")
+                if (NameValid != "False" && !IsMutThere())
                 {
                     WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" gave a "$Args[1]$" to the south");
                     `log("[29thExtras] "$PlayerName$" gave a "$Args[1]$" to the south");
