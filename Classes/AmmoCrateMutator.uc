@@ -99,6 +99,11 @@ function bool IsMutThere()
     ROGI = ROGameInfo(WorldInfo.Game);
     mut = ROGI.BaseMutator;
 
+    for (mut = ROGI.BaseMutator; mut !=none; mut = mut.NextMutator)
+    {
+        `log("IsMutThere test "$mut.name);
+    }
+
     if ((string(mut.name)) ~= "MutCommands_0" || (string(mut.NextMutator.name)) ~= "MutCommands_0" || (string(mut.NextMutator.NextMutator.name)) ~= "MutCommands_0" || (string(mut.NextMutator.NextMutator.NextMutator.name)) ~= "MutCommands_0" 
     || (string(mut.NextMutator.NextMutator.NextMutator.NextMutator.name)) ~= "MutCommands_0" || (string(mut.NextMutator.NextMutator.NextMutator.NextMutator.NextMutator.name)) ~= "MutCommands_0" 
     || (string(mut.NextMutator.NextMutator.NextMutator.NextMutator.NextMutator.NextMutator.NextMutator.name)) ~= "MutCommands_0")
