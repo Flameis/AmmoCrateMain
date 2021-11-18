@@ -77,9 +77,8 @@ simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponen
 				//If it isn't then subtract the health and see if it needs to be blown up
 				if (!bNameIsBadVIC)
 				{		
-				ROProj = spawn(class'WinterWar.WWVehicleProjectile_T26_AP' , ROPlayerController(Instigator.Controller),, Instigator.location, Rotation);
-				ROProj.speed = vsize(Velocity);
-				ROProj.init(ImpactLocation, Velocity);
+				ROProj = spawn(class'WinterWar.WWVehicleProjectile_T26_AP' , ROPlayerController(Instigator.Controller),, ImpactLocation, self.Rotation);
+				ROProj.init(ImpactLocation);
 				
 				//vehbase.Health -= 200;
 				//Hits += 1;
