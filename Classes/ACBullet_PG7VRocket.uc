@@ -9,6 +9,8 @@
 //=============================================================================
 class ACBullet_PG7VRocket extends PG7VRocket;
 
+var array<Byte> Hits;
+
 simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponent WallComp, optional PhysicalMaterial WallPhysMaterial)
 {
 	local ImpactInfo CurrentImpact;
@@ -19,7 +21,10 @@ simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponen
 	local vector ArmorNormal, ImpactLocation;
 	local bool bPenetratedAWall;
 	local ROPhysicalMaterialProperty PhysicalProperty;
-	local int TeamNum;
+	local int TeamNum, I;
+	local array<string> ROVName;
+	local bool bNameIsBadVIC;
+	local ROProjectile ROProj;
 
 	// debugging info
 	if (bDebugBallistics)
@@ -43,53 +48,62 @@ simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponen
 	VehBase = ROVehicleBase(Wall);
 	ImpactLocation = Location;
 
-	// Handle a big cannon shell penetrating the world
-	if( !bDoSmallArmsPenetration && Wall.bWorldGeometry )
-	{
-		// Convert Trace Information to ImpactInfo type.
-		CurrentImpact.HitActor		= Wall;
-		CurrentImpact.HitLocation	= Location;
-		CurrentImpact.HitNormal		= HitNormal;
-		// If the bullet has gone some distance, use the original location
-		// instead of velocity for the RayDir. This will give us a more accurate
-		// trace back to the original firing location, especially when we
-		// replicate this stuff - Ramm
-		if( OrigLoc != Location )
-		{
-		   CurrentImpact.RayDir	= Normal(Location - OrigLoc);
-		}
-		else
-		{
-		   CurrentImpact.RayDir	= Normal(Velocity);
-		}
-
-		CurrentImpact.HitInfo.HitComponent = WallComp;
-		CurrentImpact.HitInfo.PhysMaterial = WallPhysMaterial;
-
-		if( bProjectileIsHEAT && HandleWorldPenetration(Location, CurrentImpact) )
-		{
-			bPenetratedAWall = true;
-		}
-	}
-
 	if ( !Wall.bStatic /*&& !Wall.bWorldGeometry*/ ) // Damaging non-Static world geometry so we can damage destructible meshes - Ramm
 	{
 		if( VehBase != none )
 		{
 			bHitAVehicle=true;
-			`log("TESTING DAMAGE ON "$vehbase.name);
 			// On the server do the damage/sounds, on the client just disappear,
 			// as we want all effect to be handled server side so we can do stuff
 			// like random penetration probability
 			if( Role == ROLE_Authority )
-			{
+			{	
 				// ReplicatedEffectLocation = Location;
-				if (vehbase.name != "GOMVehicle_M113_ACAV_0" || vehbase.name != "GOMVehicle_M113_ACAV_1" || vehbase.name != "GOMVehicle_M113_ACAV_2")
+				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				//Split the name into an array 
+				ROVName = splitstring((string(vehbase.name)), "_", true);
+				`log("TESTING DAMAGE ON "$vehbase.name);
+
+				//Sees if the vehicle is a vehicle we don't want to damage
+				for (I = 0; I < ROVName.length ; I++)
 				{
-				`log("DAMAGE TEST SUCCESFUL ON "$vehbase.name);
-				vehbase.Health -= 100;
+					if (ROVName[I] ~= "ACAV" || ROVName[I] ~= "ROHeli")
+					{
+					bNameIsBadVIC = true;
+					`log("bNameIsBadVIC = true");
+					}
 				}
 
+				//If it isn't then subtract the health and see if it needs to be blown up
+				if (!bNameIsBadVIC)
+				{		
+				ROProj = spawn(class'WinterWar.WWVehicleProjectile_T26_AP' , ROPlayerController(Instigator.Controller),, Instigator.location, Rotation);
+				ROProj.speed = vsize(Velocity);
+				ROProj.init(ImpactLocation, Velocity);
+				
+				//vehbase.Health -= 200;
+				//Hits += 1;
+				//if (hits > 3)
+				//{
+				/*vehbase.Health -= 200;
+					if (vehbase.Health <= 0)
+					{
+					ROV = ROVehicle(vehbase);
+					ROV.BlowupVehicle();
+					`log ("Blew up the "$vehbase.name);
+					}
+					else{`log("DAMAGE TEST SUCCESFUL ON "$vehbase.name$" Vehicle health = "$vehbase.Health);}
+				//}*/
+
+				bSuppressExplosionFX = true;
+				bStopAmbientSoundOnExplode = true;
+				Damage = 0;
+				ImpactDamage = 0;
+				PenetrationDamage = 0;
+				MomentumTransfer = 0;
+				self.Shutdown();
+				}
+				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				if( bDebugPenetration )
 				{
 					FlushPersistentDebugLines();
@@ -147,6 +161,35 @@ simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponen
 		else if ( DamageRadius == 0 )
 		{
 			Wall.TakeDamage( ImpactDamage, Instigator.Controller, Location, MomentumTransfer * Normal(Velocity), ImpactDamageType,, self);
+		}
+	}
+
+	// Handle a big cannon shell penetrating the world
+	if( !bDoSmallArmsPenetration && Wall.bWorldGeometry )
+	{
+		// Convert Trace Information to ImpactInfo type.
+		CurrentImpact.HitActor		= Wall;
+		CurrentImpact.HitLocation	= Location;
+		CurrentImpact.HitNormal		= HitNormal;
+		// If the bullet has gone some distance, use the original location
+		// instead of velocity for the RayDir. This will give us a more accurate
+		// trace back to the original firing location, especially when we
+		// replicate this stuff - Ramm
+		if( OrigLoc != Location )
+		{
+		   CurrentImpact.RayDir	= Normal(Location - OrigLoc);
+		}
+		else
+		{
+		   CurrentImpact.RayDir	= Normal(Velocity);
+		}
+
+		CurrentImpact.HitInfo.HitComponent = WallComp;
+		CurrentImpact.HitInfo.PhysMaterial = WallPhysMaterial;
+
+		if( bProjectileIsHEAT && HandleWorldPenetration(Location, CurrentImpact) )
+		{
+			bPenetratedAWall = true;
 		}
 	}
 
@@ -227,75 +270,4 @@ simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponen
 
 defaultproperties
 {
-	bProjectileIsHEAT=True
-	bExplodeOnDeflect=True
-
-	BallisticCoefficient=0.15
-	ProjExplosionTemplate=ParticleSystem'FX_VN_Weapons.Explosions.FX_VN_RPG_impactblast'
-	WaterExplosionTemplate=ParticleSystem'FX_VN_Impacts.Water.FX_VN_70mm_Water'
-	NonPenetrationExplosionTemplate=ParticleSystem'FX_VN_Weapons.Explosions.FX_VN_RPG_explosion'
-	PenetrationExplosionTemplate=ParticleSystem'FX_VN_Weapons.Explosions.FX_VN_RPG_exitblast'
-	// vehicle penetration
-	ProjPenetrateTemplate=ParticleSystem'FX_VN_Weapons.Explosions.FX_VN_RPG_explosion'
- 	ImpactDamage=600
-	Damage=150
-	DamageRadius=200	// NOTE: This is the exterior damage radius when a rocket penetrates
-	PenetrationDamage=300
-	PenetrationDamageRadius=500 // This is the interior damage radius when a rocket penetrates and the exterior damage radius when a rocket does NOT penetrate
-	MomentumTransfer=50000
-	bCollideWorld=true
-	Speed=5750		// 115m/s
-	MaxSpeed=14750	// 295m/s
-	bUpdateSimulatedPosition=true
-	ExplosionSound=AkEvent'WW_WEP_RPG.Play_WEP_RPG_Explode'
-	PenetrationSound=none //SoundCue'AUD_EXP_AntiTank_German.Discharge.AntiTank_German_Discharge_Cue'
-	bRotationFollowsVelocity=true
-	MyDamageType=class'RODmgType_RPG7Rocket'
-	ImpactDamageType=class'RODmgType_RPG7RocketImpact'
-	GeneralDamageType=class'RODmgType_RPG7RocketGeneral'
-
-	AmbientSound=AkEvent'WW_WEP_RPG.Play_WEP_RPG_Projectile_Loop'
-
-
-	FueledFlightTime=1.5
-	InitialAccelerationTime=0.75//0.25
-	GradualSpreadMultiplier=2000//600
-	SpreadStartDelay=0.35//0
-	RocketIgnitionTime=0.11 // seconds after launch when rocket ignites
-	Lifespan=4.5
-
-	ShakeScale=5.0//2.3
-	//MaxSuppressBlurDuration=12.0 //4.25
-	//SuppressBlurScalar=1.4
-	//SuppressAnimationScalar=0.6
-	//ExplodeExposureScale=0.3//0.45
-
-	Begin Object Name=CollisionCylinder
-		CollisionRadius=4
-		CollisionHeight=4
-		AlwaysLoadOnClient=True
-		AlwaysLoadOnServer=True
-	End Object
-
-	Begin Object Class=DynamicLightEnvironmentComponent Name=MyLightEnvironment
-		bIsCharacterLightEnvironment=true
-	End Object
-	Components.Add(MyLightEnvironment)
-
-	Begin Object Class=StaticMeshComponent Name=ProjectileMesh
-		StaticMesh=StaticMesh'WP_VN_3rd_Projectile.Mesh.RPG_Projectile_FinsOut'
-		MaxDrawDistance=5000
-		CollideActors=true
-		CastShadow=false
-		LightEnvironment=MyLightEnvironment
-		BlockActors=false
-		BlockZeroExtent=true
-		BlockNonZeroExtent=true
-		BlockRigidBody=true
-		Scale=1
-	End Object
-	Components.Add(ProjectileMesh)
-
-	DecalHeight=200
-	DecalWidth=200
 }
