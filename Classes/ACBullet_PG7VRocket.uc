@@ -268,6 +268,3 @@ simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponen
 	ImpactedActor = None;
 }
 
-defaultproperties
-{
-}
