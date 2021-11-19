@@ -1,15 +1,8 @@
-//=============================================================================
-// PG7VRocket
-//=============================================================================
-// PG7V Rocket for the RPG-7 Rocket Launcher
-//=============================================================================
-// Rising Storm 2: Vietnam Source
-// Copyright (C) 2014 Tripwire Interactive LLC
-// - Sturt "Psycho Ch!cken" Jeffery @ Antimatter Games
+//RPG Rocket for killing tanks
 //=============================================================================
 class ACBullet_PG7VRocket extends PG7VRocket;
 
-var array<Byte> Hits;
+var AmmoCrateMutator 	ACM;
 
 simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponent WallComp, optional PhysicalMaterial WallPhysMaterial)
 {
@@ -25,6 +18,7 @@ simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponen
 	local array<string> ROVName;
 	local bool bNameIsBadVIC;
 	local ROProjectile ROProj;
+	local ROGameInfo Rogi;
 
 	// debugging info
 	if (bDebugBallistics)
@@ -47,6 +41,7 @@ simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponen
 	ImpactedActor = Wall;
 	VehBase = ROVehicleBase(Wall);
 	ImpactLocation = Location;
+	ROV = ROVehicle(VehBase);
 
 	if ( !Wall.bStatic /*&& !Wall.bWorldGeometry*/ ) // Damaging non-Static world geometry so we can damage destructible meshes - Ramm
 	{
@@ -62,44 +57,39 @@ simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponen
 				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				//Split the name into an array 
 				ROVName = splitstring((string(vehbase.name)), "_", true);
-				`log("TESTING DAMAGE ON "$vehbase.name);
+				//`log("TESTING DAMAGE ON "$vehbase.name);
 
 				//Sees if the vehicle is a vehicle we don't want to damage
 				for (I = 0; I < ROVName.length ; I++)
 				{
-					if (ROVName[I] ~= "ACAV" || ROVName[I] ~= "ROHeli")
+					if (ROVName[I] ~= "ACAV" || ROVName[I] ~= "ROHeli" || ROVName[I] ~= "Skis")
 					{
 					bNameIsBadVIC = true;
-					`log("bNameIsBadVIC = true");
+					//`log("bNameIsBadVIC = true");
 					}
 				}
 
-				//If it isn't then subtract the health and see if it needs to be blown up
-				if (!bNameIsBadVIC)
+				//If it isn't then spawn the AT round and see if it needs to be blown up
+				if (!bNameIsBadVIC && !ROV.bDeadVehicle)
 				{		
-				ROProj = spawn(class'WinterWar.WWVehicleProjectile_T26_AP' , ROPlayerController(Instigator.Controller),, ImpactLocation, self.Rotation);
-				ROProj.init(ImpactLocation);
+				ROProj = spawn(class'WinterWar.WWVehicleProjectile_T26_AP');
+				ROProj.init(vector(Rotation));
+				//`log ("Projectile rotation = pitch "$Rotation.pitch$" yaw "$Rotation.yaw$" roll "$Rotation.roll);
 				
-				//vehbase.Health -= 200;
-				//Hits += 1;
-				//if (hits > 3)
-				//{
-				/*vehbase.Health -= 200;
-					if (vehbase.Health <= 0)
-					{
-					ROV = ROVehicle(vehbase);
-					ROV.BlowupVehicle();
-					`log ("Blew up the "$vehbase.name);
-					}
-					else{`log("DAMAGE TEST SUCCESFUL ON "$vehbase.name$" Vehicle health = "$vehbase.Health);}
-				//}*/
+				ROGI = ROGameInfo(WorldInfo.Game);
+				ACM = AmmoCrateMutator(ROGI.BaseMutator);
+				
+				ACM.NameExists(VehBase);
 
-				bSuppressExplosionFX = true;
-				bStopAmbientSoundOnExplode = true;
-				Damage = 0;
-				ImpactDamage = 0;
-				PenetrationDamage = 0;
-				MomentumTransfer = 0;
+				DamageRadius=200;
+				PenetrationDamage=100;
+				PenetrationDamageRadius=200;
+				//bSuppressExplosionFX = true;
+				//bStopAmbientSoundOnExplode = true;
+				//Damage = 0;
+				//MomentumTransfer = 0;
+				//ImpactDamage = 0;
+				//PenetrationDamage = 0;			
 				self.Shutdown();
 				}
 				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

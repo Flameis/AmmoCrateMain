@@ -43,7 +43,7 @@ defaultproperties
 	// MAIN FIREMODE
 	FiringStatesArray(0)=WeaponFiring
 	WeaponFireTypes(0)=EWFT_Custom
-	WeaponProjectiles(0)=class'ACBullet_RPPG'
+	WeaponProjectiles(0)=class'ACBullet_PG7VRocket'
 	FireInterval(0)=+0.066
 	DelayedRecoilTime(0)=0.0
 	Spread(0)=0.0022 // 8 MOA
@@ -52,7 +52,7 @@ defaultproperties
 	// ALT FIREMODE
 	FiringStatesArray(ALTERNATE_FIREMODE)=WeaponSingleFiring
 	WeaponFireTypes(ALTERNATE_FIREMODE)=EWFT_Custom
-	WeaponProjectiles(ALTERNATE_FIREMODE)=class'ACBullet_RPPG'
+	WeaponProjectiles(ALTERNATE_FIREMODE)=class'ACBullet_PG7VRocket'
 	bLoopHighROFSounds(ALTERNATE_FIREMODE)=false
 	FireInterval(ALTERNATE_FIREMODE)=+0.066
 	DelayedRecoilTime(ALTERNATE_FIREMODE)=0.01

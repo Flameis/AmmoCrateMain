@@ -8,6 +8,9 @@ var RORoleInfoClasses   RORICSouth;
 var RORoleInfoClasses   RORICNorth;
 var ROMapInfo           ROMI;
 
+var array<Byte> 		HitNum;
+var array<String> 	HitVicName;
+
 function PreBeginPlay()
 {
     `log("AmmoCrateMutator init");
@@ -91,6 +94,63 @@ function RemoveVolumes()
     ROVSP.SetEnabled( False );
     ++Count;
     }*/
+}
+
+reliable server function NameExists(ROVehicleBase VehBase)
+{
+	local int 				I, MaxHitsForVic;
+	local bool 				bNameExists;
+	local ROVehicle 		ROV;
+    local array<string> ROVName;
+    
+    bNameExists = false;
+
+    ROV = ROVehicle(vehbase);
+    ROVName = splitstring((string(vehbase.name)), "_", true);
+
+	for (I = 0; I < ROVName.length ; I++)
+	{
+		if (ROVName[I] ~= "53K"){MaxHitsForVic = 1; break;}
+		if (ROVName[I] ~= "HT130"){MaxHitsForVic = 4; break;}
+		if (ROVName[I] ~= "T20"){MaxHitsForVic = 3; break;}
+		if (ROVName[I] ~= "T26"){MaxHitsForVic = 4; break;}
+		if (ROVName[I] ~= "T28"){MaxHitsForVic = 5; break;}
+		if (ROVName[I] ~= "Vickers"){MaxHitsForVic = 4; break;}
+        else {MaxHitsForVic = 3;}
+	}
+
+	for (I = 0; I < HitVicName.Length; I++)
+	{
+        `log ("Hitvicname = "$HitVicName[I]$" HitNum = "$HitNum[I]);
+		if (HitVicName[I] ~= string(vehbase.name))
+		{
+		bNameExists = true;
+		HitNum[I] += 1;
+        PrivateMessage(PlayerController(ROV.Seats[0].StoragePawn.Controller), "You have "$MaxHitsForVic-HitNum[I]$" hits left before your vehicle is blown up!");
+        PrivateMessage(PlayerController(ROV.Seats[1].StoragePawn.Controller), "You have "$MaxHitsForVic-HitNum[I]$" hits left before your vehicle is blown up!");
+        `log ("Hitvicname "$HitVicName[I]$" has "$MaxHitsForVic-HitNum[I]$" hits remaining");
+			if (HitNum[I] >= MaxHitsForVic)
+			{
+			ROV.Health = 0;
+			ROV.BlowupVehicle();
+            ROV.bDeadVehicle = true;
+            `log ("Blew up the "$vehbase.name$" on hit # "$HitNum[I]);
+            HitVicName.removeitem(HitVicName[I]);
+            HitNum.removeitem(HitNum[I]);
+			}
+            else {`log("DAMAGE TEST SUCCESFUL ON "$vehbase.name$" Vehicle health = "$vehbase.Health$" Hit #"$HitNum[I]);}
+		break;
+		}
+	}
+    if (bNameExists == false)
+	{
+	HitVicName.additem(string(vehbase.name));
+	HitNum.additem(byte(1));
+    PrivateMessage(PlayerController(ROV.Seats[0].StoragePawn.Controller), "You have "$MaxHitsForVic-1$" hits left before your vehicle is blown up!");
+    PrivateMessage(PlayerController(ROV.Seats[1].StoragePawn.Controller), "You have "$MaxHitsForVic-1$" hits left before your vehicle is blown up!");
+    `log ("Hitvicname "$HitVicName[I]$" has "$MaxHitsForVic-HitNum[I]$" hits remaining");
+	`log (vehbase.name$" doesn't exist on the array, adding it");
+	}
 }
 
 function bool IsMutThere()
