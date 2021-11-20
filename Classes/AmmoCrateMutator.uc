@@ -193,7 +193,7 @@ static function ESouthernForces GetSouthernForce()
 	return ROMapInfo(default.WorldInfo.GetMapInfo()).default.SouthernForce;
 }*/
 
-function Mutate(string MutateString, PlayerController PC) //no prefixes, also call super function!
+singular function Mutate(string MutateString, PlayerController PC) //no prefixes, also call super function!
 {
         local array<string>     Args;
         local string            command;
