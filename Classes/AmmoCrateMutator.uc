@@ -101,9 +101,7 @@ reliable server function NameExists(ROVehicleBase VehBase)
 	local int 				I, MaxHitsForVic;
 	local bool 				bNameExists;
 	local ROVehicle 		ROV;
-    local array<string> ROVName;
-    
-    bNameExists = false;
+    local array<string>     ROVName;
 
     ROV = ROVehicle(vehbase);
     ROVName = splitstring((string(vehbase.name)), "_", true);
@@ -121,7 +119,7 @@ reliable server function NameExists(ROVehicleBase VehBase)
 
 	for (I = 0; I < HitVicName.Length; I++)
 	{
-        `log ("Hitvicname = "$HitVicName[I]$" HitNum = "$HitNum[I]);
+        //`log ("Hitvicname = "$HitVicName[I]$" HitNum = "$HitNum[I]);
 		if (HitVicName[I] ~= string(vehbase.name))
 		{
 		bNameExists = true;
@@ -159,22 +157,14 @@ function bool IsMutThere()
     ROGI = ROGameInfo(WorldInfo.Game);
     mut = ROGI.BaseMutator;
 
-    for (mut = ROGI.BaseMutator; mut !=none; mut = mut.NextMutator)
+    for (mut = ROGI.BaseMutator; mut != none; mut = mut.NextMutator)
     {
-        `log("IsMutThere test "$mut.name);
-    }
-
-    if ((string(mut.name)) ~= "MutCommands_0" || (string(mut.NextMutator.name)) ~= "MutCommands_0" || (string(mut.NextMutator.NextMutator.name)) ~= "MutCommands_0" || (string(mut.NextMutator.NextMutator.NextMutator.name)) ~= "MutCommands_0" 
-    || (string(mut.NextMutator.NextMutator.NextMutator.NextMutator.name)) ~= "MutCommands_0" || (string(mut.NextMutator.NextMutator.NextMutator.NextMutator.NextMutator.name)) ~= "MutCommands_0" 
-    || (string(mut.NextMutator.NextMutator.NextMutator.NextMutator.NextMutator.NextMutator.NextMutator.name)) ~= "MutCommands_0")
-    {
+    `log("IsMutThere test "$string(mut.name));
+        if (string(mut.name) ~= "MutCommands_0")
+        {
         `log("MutCommands is activated");
         return true;
-    }
-    else
-    {
-        `log("MutCommands is not activated");
-        return false;
+        }
     }
 }
     
@@ -206,6 +196,10 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
 
 			Switch (Command)
             {
+                case "ISMUTTHERE":
+                IsMutThere();
+                break;
+
                 case "GIVEWEAPON":
                 GiveWeapon(PC, Args[1], NameValid, false, 100);
                 if (NameValid != "False" && !IsMutThere())

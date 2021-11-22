@@ -17,8 +17,8 @@ simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponen
 	local int TeamNum, I;
 	local array<string> ROVName;
 	local bool bNameIsBadVIC;
-	local ROProjectile ROProj;
-	local ROGameInfo Rogi;
+	//local ROProjectile ROProj;
+	local ROGameInfo ROGI;
 
 	// debugging info
 	if (bDebugBallistics)
@@ -69,28 +69,25 @@ simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponen
 					}
 				}
 
-				//If it isn't then spawn the AT round and see if it needs to be blown up
+				//If it isn't then see if it needs to be blown up
 				if (!bNameIsBadVIC && !ROV.bDeadVehicle)
-				{		
-				ROProj = spawn(class'WinterWar.WWVehicleProjectile_T26_AP');
-				ROProj.init(vector(Rotation));
-				//`log ("Projectile rotation = pitch "$Rotation.pitch$" yaw "$Rotation.yaw$" roll "$Rotation.roll);
-				
+				{
 				ROGI = ROGameInfo(WorldInfo.Game);
-				ACM = AmmoCrateMutator(ROGI.BaseMutator);
-				
+				ACM = AmmoCrateMutator(ROGI.BaseMutator);			
 				ACM.NameExists(VehBase);
-
-				DamageRadius=200;
-				PenetrationDamage=100;
-				PenetrationDamageRadius=200;
+				//ROProj = spawn(class'WinterWar.WWVehicleProjectile_T26_AP');
+				//ROProj.init(vector(Rotation));
+				//`log ("Projectile rotation = pitch "$Rotation.pitch$" yaw "$Rotation.yaw$" roll "$Rotation.roll);				
+				//DamageRadius=200;
+				//PenetrationDamage=100;
+				//PenetrationDamageRadius=200;
 				//bSuppressExplosionFX = true;
 				//bStopAmbientSoundOnExplode = true;
 				//Damage = 0;
 				//MomentumTransfer = 0;
 				//ImpactDamage = 0;
 				//PenetrationDamage = 0;			
-				self.Shutdown();
+				//self.Shutdown();
 				}
 				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				if( bDebugPenetration )
@@ -257,3 +254,21 @@ simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponen
 	ImpactedActor = None;
 }
 
+defaultproperties
+{
+	ImpactDamage=350
+	Damage=100
+	DamageRadius=200
+	MomentumTransfer=43000
+	
+	Caliber=85
+	ActualRHA=58
+	TestPlateHardness=400
+	SlopeEffect=0.09559
+	ShatterNumber=0.85
+	ShatterTd=0.85
+	ShatteredPenEffectiveness=0.8
+	
+	PenetrationDepth=95
+	MaxPenetrationTests=6
+}
