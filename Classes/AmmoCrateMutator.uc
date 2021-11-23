@@ -96,7 +96,7 @@ function RemoveVolumes()
     }*/
 }
 
-reliable server function NameExists(ROVehicleBase VehBase)
+function NameExists(ROVehicleBase VehBase)
 {
 	local int 				I, MaxHitsForVic;
 	local bool 				bNameExists;
