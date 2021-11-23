@@ -9,7 +9,7 @@
 // All Rights Reserved.
 //=============================================================================
 
-class ACDestructibleSkyraider extends ACDestructible;
+class ACDestructibleCanberra extends ACDestructible;
 
 defaultproperties
 {

@@ -9,7 +9,7 @@
 // All Rights Reserved.
 //=============================================================================
 
-class ACDestructibles extends ROStaticMeshDestructible;
+class ACDestructible extends ROStaticMeshDestructible;
 
 defaultproperties
 {

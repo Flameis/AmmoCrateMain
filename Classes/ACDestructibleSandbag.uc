@@ -9,7 +9,7 @@
 // All Rights Reserved.
 //=============================================================================
 
-class ACDestructibleSandbag extends ACDestructibles;
+class ACDestructibleSandbag extends ACDestructible;
 
 defaultproperties
 {

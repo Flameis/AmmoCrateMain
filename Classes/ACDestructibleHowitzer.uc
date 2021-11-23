@@ -9,7 +9,7 @@
 // All Rights Reserved.
 //=============================================================================
 
-class ACDestructibleSkyraider extends ACDestructible;
+class ACDestructibleHowitzer extends ACDestructible;
 
 defaultproperties
 {
@@ -46,9 +46,9 @@ defaultproperties
 	Components.Add(Sphere)
 
 	Begin Object Name=DestructibleStaticMeshComponent0
-		DestructibleAssets(0)=(MeshOverride=StaticMesh'VH_VN_ARVN_Skyraider.Meshes.Skyraider_SM')
-        DestructibleAssets(1)=(MeshOverride=StaticMesh'VH_VN_ARVN_Skyraider.Meshes.Skyraider_Wreck_SM')
-        StaticMesh=StaticMesh'VH_VN_ARVN_Skyraider.Meshes.Skyraider_SM'
+		DestructibleAssets(0)=(MeshOverride=StaticMesh'VH_VN_US_M102Howitzer.Meshes.VH_VN_US_M102_Howitzer_up')
+        DestructibleAssets(1)=(MeshOverride=StaticMesh'VH_VN_US_M102Howitzer.Meshes.VH_VN_US_M102_destroyed')
+        StaticMesh=StaticMesh'VH_VN_US_M102Howitzer.Meshes.VH_VN_US_M102_Howitzer_up'
        	WireframeColor=(B=0,G=80,R=255,A=255)
        	ReplacementPrimitive=None
        	CachedMaxDrawDistance=12000.000000
