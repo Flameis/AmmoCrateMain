@@ -9,11 +9,13 @@
 // All Rights Reserved.
 //=============================================================================
 
-class ACDestructibleSandbag extends ACDestructible;
+class ACDestructibleFrenchBunker extends ACDestructible;
 
 defaultproperties
 {
-	StartingHealth=100
+	DestructionSound=AkEvent'WW_EXP_C4.Play_EXP_C4_Explosion'
+	DestructionEmitterTemplate=ParticleSystem'FX_VN_Weapons.Explosions.FX_VN_C4'
+	StartingHealth=1000
 
 	AcceptedDamageTypes(0)=Class'ROGame.RODmgType_RPG7Rocket'
     AcceptedDamageTypes(1)=Class'ROGame.RODmgType_RPG7RocketGeneral'
@@ -21,10 +23,8 @@ defaultproperties
 	AcceptedDamageTypes(3)=Class'ROGame.RODmgType_AC47Gunship'
 	AcceptedDamageTypes(4)=Class'ROGame.RODmgType_C4_Explosive'
 	AcceptedDamageTypes(5)=Class'ROGame.RODmgType_AntiVehicleGeneral'
-	AcceptedDamageTypes(6)=Class'ROGame.RODmgType_M18_Claymore'
-	AcceptedDamageTypes(7)=Class'ROGame.RODmgType_MattockBash'
-	AcceptedDamageTypes(8)=Class'ROGame.RODmgType_Satchel'
-	AcceptedDamageTypes(9)=Class'ROGame.RODmgTypeArtillery'
+	AcceptedDamageTypes(6)=Class'ROGame.RODmgType_Satchel'
+	AcceptedDamageTypes(7)=Class'ROGame.RODmgTypeArtillery'
 
 	bEdShouldSnap=true
 	bTickIsDisabled=false
@@ -40,7 +40,6 @@ defaultproperties
 	bCanBeDamaged=true
 	bProjTarget=true
 	bPathColliding=true
-	bCanStepUpOn=true;
 
 	Components.Empty
 
@@ -62,16 +61,18 @@ defaultproperties
 	Components.Add(Sphere)
 
 	Begin Object Name=DestructibleStaticMeshComponent0
-		DestructibleAssets(0)=(MeshOverride=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_112uu')
-        DestructibleAssets(1)=(MeshOverride=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter')
-        StaticMesh=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_112uu'
+		DestructibleAssets(0)=(MeshOverride=StaticMesh'ENV_VN_FrenchBunker.Meshes.SM_FrenchBunker')
+        DestructibleAssets(1)=(MeshOverride=StaticMesh'ENV_VN_FrenchBunker.Meshes.SM_FrenchBunkerDamaged')
+		DestructibleAssets(2)=(MeshOverride=StaticMesh'ENV_VN_Debris.Mesh_Pile.S_ENV_Debris_Pile_AM43')
+        StaticMesh=StaticMesh'ENV_VN_FrenchBunker.Meshes.SM_FrenchBunker'
        	WireframeColor=(B=0,G=80,R=255,A=255)
        	ReplacementPrimitive=None
        	CachedMaxDrawDistance=12000.000000
        	PreviewEnvironmentShadowing=122
        	bAllowApproximateOcclusion=True
-       	
-		//bCastHiddenShadow=true
+       	bCastDynamicShadow=false
+       	LightingChannels=(static=true,bInitialized=True,Dynamic=True)
+		
 		LightEnvironment=MyLightEnvironment
 	End Object
 	CollisionComponent=DestructibleStaticMeshComponent0

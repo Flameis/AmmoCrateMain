@@ -13,6 +13,7 @@ class ACDestructible extends ROStaticMeshDestructible;
 
 defaultproperties
 {
+	DestructionSound=AkEvent'WW_EXP_C4.Play_EXP_C4_Explosion'
 	DestructionEmitterTemplate=ParticleSystem'FX_VEH_Tank_Three.FX_VEH_Tank_B_TankShell_Penetrate'
 	StartingHealth=800
 
@@ -30,16 +31,18 @@ defaultproperties
 	bCanBeDamaged=true
 	bProjTarget=true
 	bPathColliding=true
+	bCanStepUpOn=true;
 
 	Components.Empty
 
 	Begin Object Name=MyLightEnvironment
-		bEnabled=TRUE
+		bEnabled=true
+		bDynamic=false
+		bSynthesizeSHLight=false
 	End Object
-	DynamicLightEnvironment=MyLightEnvironment
 	Components.Add(MyLightEnvironment)
 
-	AcceptedDamageTypes(0)=Class'ROGame.RODmgType_RPG7Rocket'
+	/*AcceptedDamageTypes(0)=Class'ROGame.RODmgType_RPG7Rocket'
     AcceptedDamageTypes(1)=Class'ROGame.RODmgType_RPG7RocketGeneral'
     AcceptedDamageTypes(2)=Class'ROGame.RODmgType_RPG7RocketImpact'
     AcceptedDamageTypes(3)=Class'ROGame.RODmgType_Type67Grenade'
@@ -52,7 +55,7 @@ defaultproperties
 	AcceptedDamageTypes(10)=Class'ROGame.RODmgType_MAS49Grenade'
 	AcceptedDamageTypes(11)=Class'ROGame.RODmgType_MattockBash'
 	AcceptedDamageTypes(12)=Class'ROGame.RODmgType_Satchel'
-	AcceptedDamageTypes(13)=Class'ROGame.RODmgTypeArtillery'
+	AcceptedDamageTypes(13)=Class'ROGame.RODmgTypeArtillery'*/
 
 	Begin Object Name=Sphere
 		SphereRadius=10.0

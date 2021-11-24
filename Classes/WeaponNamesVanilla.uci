@@ -351,6 +351,10 @@
             InvManager.LoadAndCreateInventory("AmmoCrate.ACWeap_RPG7_RocketLauncher_Content", false, true);
             break;
 
+            case "SANDBAGS":
+            InvManager.LoadAndCreateInventory("AmmoCrate.ACItemPlaceableContent", false, true);
+            break;
+
             default:
             NameValid = "False";
             break;

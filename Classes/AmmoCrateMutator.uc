@@ -196,6 +196,14 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
 
 			Switch (Command)
             {
+                case "SPAWNBARRICADETOOL":
+                SpawnBarricadeTool(PC, Args[1], int(Args[2]));
+                break;
+
+                case "CLEARBARRICADES":
+                ClearBarricades();
+                break;
+
                 case "ISMUTTHERE":
                 IsMutThere();
                 break;
@@ -237,6 +245,99 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
                 break;
             }
     super.Mutate(MutateString, PC);
+}
+
+function SpawnBarricadeTool(PlayerController PC, string ObjectName, int Amount)
+{
+    //local vector                        CamLoc, StartShot, EndShot, X, Y, Z, Hitnormal, BelowVector;
+	//local rotator                       CamRot;
+    local ACItemPlaceableContent            ACIPC;
+    local class<ACDestructible>             DC;
+    local ROInventoryManager                InvManager;
+    local array<ROWeapon>                   WeaponList;
+    local ROWeapon                          Weapon;
+    //local class<ACDestructible>         SANDBAGS;
+    //local class<ACDestructible>         SKYRAIDER;
+    //local class<ACDestructible>         PHANTOM;
+    //local class<ACDestructible>         BIRDDOG;
+    //local class<ACDestructible>         CANBERRA;
+    //local class<ACDestructible>         HOWITZER; 
+
+    InvManager = ROInventoryManager(PC.Pawn.InvManager);
+    /*PC.GetPlayerViewPoint(CamLoc, CamRot);
+    GetAxes(CamRot, X, Y, Z );
+
+    StartShot       = CamLoc;
+    EndShot         = StartShot + (100.0 * X) + (-50 * Y);   
+    Camrot.Roll     = 0;
+    CamRot.Pitch    = 0;
+    Camrot.Yaw      = Camrot.Yaw + (90 * DegToUnrRot);
+    //EndShot.Z       = PC.Pawn.Location.Z - 50;
+
+    BelowVector = EndShot;
+    BelowVector.Z = -7000;
+    trace(EndShot, Hitnormal, BelowVector, EndShot, true);*/
+    
+    switch (ObjectName)
+    {
+        case "SANDBAGS":
+        InvManager.CreateInventory(class'ACItemPlaceableContent', false, true);
+        DC = class'ACDestructibleSandbag';
+        break;
+
+        case "SKYRAIDER":
+        InvManager.CreateInventory(class'ACItemPlaceableContent', false, true);
+        DC = class'ACDestructibleSkyraider';
+        break;
+
+        case "PHANTOM":
+        InvManager.CreateInventory(class'ACItemPlaceableContent', false, true);
+        DC = class'ACDestructiblePhantom';
+        break;
+
+        case "BIRDDOG":
+        InvManager.CreateInventory(class'ACItemPlaceableContent', false, true);
+        DC = class'ACDestructibleBirddog';
+        break;
+
+        case "CANBERRA":
+        InvManager.CreateInventory(class'ACItemPlaceableContent', false, true);
+        DC = class'ACDestructibleCanberra';
+        break;
+
+        case "HOWITZER":
+        InvManager.CreateInventory(class'ACItemPlaceableContent', false, true);
+        DC = class'ACDestructibleHowitzer';
+        break;
+
+        case "FRENCHBUNKER":
+        InvManager.CreateInventory(class'ACItemPlaceableContent', false, true);
+        DC = class'ACDestructibleFrenchBunker';
+        break;
+    }
+    InvManager.GetWeaponList(WeaponList);
+    foreach WeaponList(Weapon)
+        {
+            if (ClassIsChildOf(Weapon.Class, class'ACItemPlaceable'))
+            {
+                ACIPC = ACItemPlaceableContent(Weapon);
+                ACIPC.DestructibleClass = DC;
+                ACIPC.MaxAmmoCount = Amount;
+                ACIPC.AmmoCount = Amount;
+                //ACIPC.InitialNumPrimaryMags = Amount;
+                ACIPC.PostBeginPlay();
+            }
+        }
+}
+
+function ClearBarricades()
+{
+    local ACDestructible ACD;
+
+    foreach WorldInfo.AllActors(class'AmmoCrate.ACDestructible', ACD)
+    {
+        ACD.Destroy();
+    }
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function GiveWeapon(PlayerController PC, string WeaponName, out string NameValid, bool GiveAll, optional int TeamIndex)
