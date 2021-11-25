@@ -11,16 +11,15 @@
 class ACItemPlaceable extends ROItemPlaceable
 	abstract;
 
-var class<ACDestructible>	DestructibleClass; 				// Spawning Class Reference
+var class<ACDestructible2>		DestructibleClass;				// Spawning Class Reference
 var vector						ConfigLoc;
 var rotator						ConfigRot;
 
 simulated function PostBeginPlay()
 {
-
 	if ( DestructibleClass != none )
 	{
-		ReferenceStaticMesh = DestructibleClass.default.DestructibleMeshComponent.StaticMesh;
+		ReferenceStaticMesh = DestructibleClass.default.CrateMesh.StaticMesh;
 	}
 	else
 	{
@@ -41,20 +40,9 @@ simulated function AlertPlacingTime(float PlacingTime)
 
 simulated function PlayPlacingItem()
 {
-	local float PlacingTime;
-
 	HidePreviewMesh();
-
-	// Get Placing Time before Out Anim Plays and scale it based on that one only!
-	PlacingTime = 0.01;
-
-	if ( Instigator.IsLocallyControlled() )
-	{
-		PlacingFinishInto();
-	}
-
-	SetTimer(PlacingTime, false, 'SpawnPlaceable');
-	SetTimer(PlacingTime, false, 'GotoActiveState');
+	SpawnPlaceable();
+	GotoActiveState();
 }
 
 simulated function SpawnPlaceable()
@@ -528,7 +516,7 @@ simulated function StartPlacingItem()
 
 function bool DoActualSpawn()
 {
-	local ACDestructible ACD;
+	local ACDestructible2 ACD;
 	local Controller ConOwner;
 	//local ROPlayerController ROPC;
 

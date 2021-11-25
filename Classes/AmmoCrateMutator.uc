@@ -253,6 +253,7 @@ function SpawnBarricadeTool(PlayerController PC, string ObjectName, int Amount)
 	//local rotator                       CamRot;
     local ACItemPlaceableContent            ACIPC;
     local class<ACDestructible>             DC;
+    local class<ACDestructible2>             DC2;
     local ROInventoryManager                InvManager;
     local array<ROWeapon>                   WeaponList;
     local ROWeapon                          Weapon;
@@ -282,7 +283,8 @@ function SpawnBarricadeTool(PlayerController PC, string ObjectName, int Amount)
     {
         case "SANDBAGS":
         InvManager.CreateInventory(class'ACItemPlaceableContent', false, true);
-        DC = class'ACDestructibleSandbag';
+        //DC = class'ACDestructibleSandbag';
+        DC2 = class'ACDestructible2';
         break;
 
         case "SKYRAIDER":
@@ -321,7 +323,7 @@ function SpawnBarricadeTool(PlayerController PC, string ObjectName, int Amount)
             if (ClassIsChildOf(Weapon.Class, class'ACItemPlaceable'))
             {
                 ACIPC = ACItemPlaceableContent(Weapon);
-                ACIPC.DestructibleClass = DC;
+                ACIPC.DestructibleClass = DC2;
                 ACIPC.MaxAmmoCount = Amount;
                 ACIPC.AmmoCount = Amount;
                 //ACIPC.InitialNumPrimaryMags = Amount;

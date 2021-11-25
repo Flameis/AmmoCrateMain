@@ -44,14 +44,9 @@ defaultproperties
 
 	Components.Empty
 
-	Begin Object  Name=MyLightEnvironment
-		bEnabled=TRUE
-		bDynamic=FALSE
-		bCastShadows=true
-	    bIsCharacterLightEnvironment=true
-	    bAffectedBySmallDynamicLights=FALSE
-	    bSynthesizeSHLight=false
-	    bUseBooleanEnvironmentShadowing=false
+	Begin Object Name=MyLightEnvironment
+		bDynamic=false
+		bIsCharacterLightEnvironment=false//true
 	End Object
 	Components.Add(MyLightEnvironment)
 
