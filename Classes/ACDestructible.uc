@@ -11,22 +11,41 @@
 
 class ACDestructible extends ROStaticMeshDestructible;
 
+event TakeDamage(int DamageAmount, Controller EventInstigator, vector HitLocation, vector Momentum, class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor DamageCauser)
+{
+	if (Health <= 0)
+	{
+	bBlockActors=false;
+		if ( WorldInfo.NetMode != NM_DedicatedServer )
+		{
+			ClientMeshDestroyed();
+		}
+		else
+		{
+			SwitchToDestroyedMesh();
+		}
+	}
+	super.TakeDamage(DamageAmount, EventInstigator, HitLocation, Momentum, DamageType, HitInfo, DamageCauser);
+}
+
 defaultproperties
 {
 	DestructionSound=AkEvent'WW_EXP_C4.Play_EXP_C4_Explosion'
 	DestructionEmitterTemplate=ParticleSystem'FX_VEH_Tank_Three.FX_VEH_Tank_B_TankShell_Penetrate'
 	StartingHealth=800
 
-	bEdShouldSnap=true
+	RemoteRole=ROLE_SimulatedProxy
+
 	bTickIsDisabled=false
 	bStatic=false
 	bNoDelete=false
-	bMovable=false
+	bMovable=true
 	bCollideActors=true
 	bBlockActors=true
-	bWorldGeometry=true
+	CollisionType=COLLIDE_BlockAll
+	bWorldGeometry=false
+	bCollideWorld=false
 	bGameRelevant=true
-	bRouteBeginPlayEvenIfStatic=false
 	bCollideWhenPlacing=false
 	bCanBeDamaged=true
 	bProjTarget=true

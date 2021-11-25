@@ -26,16 +26,16 @@ defaultproperties
 	AcceptedDamageTypes(8)=Class'ROGame.RODmgType_Satchel'
 	AcceptedDamageTypes(9)=Class'ROGame.RODmgTypeArtillery'
 
-	bEdShouldSnap=true
 	bTickIsDisabled=false
 	bStatic=false
 	bNoDelete=false
-	bMovable=false
+	bMovable=true
 	bCollideActors=true
 	bBlockActors=true
-	bWorldGeometry=true
+	CollisionType=COLLIDE_BlockAll
+	bWorldGeometry=false
+	bCollideWorld=false
 	bGameRelevant=true
-	bRouteBeginPlayEvenIfStatic=false
 	bCollideWhenPlacing=false
 	bCanBeDamaged=true
 	bProjTarget=true
@@ -66,12 +66,12 @@ defaultproperties
         DestructibleAssets(1)=(MeshOverride=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter')
         StaticMesh=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_112uu'
        	WireframeColor=(B=0,G=80,R=255,A=255)
-       	ReplacementPrimitive=None
-       	CachedMaxDrawDistance=12000.000000
-       	PreviewEnvironmentShadowing=122
-       	bAllowApproximateOcclusion=True
-       	
-		//bCastHiddenShadow=true
+       	CastShadow=true
+		bCastDynamicShadow=true
+		//bAllowMergedDynamicShadows=false
+		bUsePrecomputedShadows=false
+		bForceDirectLightMap=false
+		MaxDrawDistance=15000
 		LightEnvironment=MyLightEnvironment
 	End Object
 	CollisionComponent=DestructibleStaticMeshComponent0

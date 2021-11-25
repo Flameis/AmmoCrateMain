@@ -26,20 +26,21 @@ defaultproperties
 	AcceptedDamageTypes(6)=Class'ROGame.RODmgType_Satchel'
 	AcceptedDamageTypes(7)=Class'ROGame.RODmgTypeArtillery'
 
-	bEdShouldSnap=true
 	bTickIsDisabled=false
 	bStatic=false
 	bNoDelete=false
-	bMovable=false
+	bMovable=true
 	bCollideActors=true
 	bBlockActors=true
-	bWorldGeometry=true
+	CollisionType=COLLIDE_BlockAll
+	bWorldGeometry=false
+	bCollideWorld=false
 	bGameRelevant=true
-	bRouteBeginPlayEvenIfStatic=false
 	bCollideWhenPlacing=false
 	bCanBeDamaged=true
 	bProjTarget=true
 	bPathColliding=true
+	bCanStepUpOn=true;
 
 	Components.Empty
 
