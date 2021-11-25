@@ -13,9 +13,7 @@ class ACDestructibleCanberra extends ACDestructible;
 
 defaultproperties
 {
-	DestructionSound=AkEvent'WW_EXP_C4.Play_EXP_C4_Explosion'
-	DestructionEmitterTemplate=ParticleSystem'FX_VN_Weapons.Explosions.FX_VN_C4'
-	StartingHealth=300
+	StartingHealth=1000
 
 	AcceptedDamageTypes(0)=Class'ROGame.RODmgType_RPG7Rocket'
     AcceptedDamageTypes(1)=Class'ROGame.RODmgType_RPG7RocketGeneral'
@@ -25,51 +23,45 @@ defaultproperties
 	AcceptedDamageTypes(5)=Class'ROGame.RODmgType_AntiVehicleGeneral'
 	AcceptedDamageTypes(6)=Class'ROGame.RODmgType_Satchel'
 	AcceptedDamageTypes(7)=Class'ROGame.RODmgTypeArtillery'
-
-	bTickIsDisabled=false
-	bStatic=false
-	bNoDelete=false
-	bMovable=true
-	bCollideActors=true
-	bBlockActors=true
-	CollisionType=COLLIDE_BlockAll
-	bWorldGeometry=false
-	bCollideWorld=false
-	bGameRelevant=true
-	bCollideWhenPlacing=false
-	bCanBeDamaged=true
-	bProjTarget=true
-	bPathColliding=true
-	bCanStepUpOn=true;
-
+	
 	Components.Empty
 
 	Begin Object Name=MyLightEnvironment
-		bDynamic=false
 		bIsCharacterLightEnvironment=false//true
 	End Object
 	Components.Add(MyLightEnvironment)
+	LightEnvironment=MyLightEnvironment
 
-	Begin Object Name=Sphere
-		SphereRadius=10.0
-	End Object
-	DestructionEmitterOffsetVis=Sphere
-	Components.Add(Sphere)
-
-	Begin Object Name=DestructibleStaticMeshComponent0
-		DestructibleAssets(0)=(MeshOverride=StaticMesh'VH_VN_AUS_Canberra.Meshes.Canberra_Bomber_SM')
-        DestructibleAssets(1)=(MeshOverride=StaticMesh'ENV_VN_Debris.Mesh_Pile.S_ENV_Debris_Pile_AM43')
-        StaticMesh=StaticMesh'VH_VN_AUS_Canberra.Meshes.Canberra_Bomber_SM'
-       	WireframeColor=(B=0,G=80,R=255,A=255)
-       	CastShadow=true
+	Begin Object Name=DestructibleMeshComponent
+		StaticMesh=StaticMesh'VH_VN_AUS_Canberra.Meshes.Canberra_Bomber_SM'
+		CollideActors=true
+		BlockActors=true
+		BlockZeroExtent=true
+		BlockNonZeroExtent=true
+		BlockRigidBody=false
+		bNotifyRigidBodyCollision=false
+		Translation=(X=0,Y=0,Z=2)
+		CastShadow=true
 		bCastDynamicShadow=true
 		//bAllowMergedDynamicShadows=false
 		bUsePrecomputedShadows=false
 		bForceDirectLightMap=false
-		MaxDrawDistance=15000
+		MaxDrawDistance=7500
 		LightEnvironment=MyLightEnvironment
 	End Object
-	CollisionComponent=DestructibleStaticMeshComponent0
-	DestructibleMeshComponent=DestructibleStaticMeshComponent0
-	Components.Add(DestructibleStaticMeshComponent0)
+	Components.Add(DestructibleMeshComponent)
+	DestructibleMesh=DestructibleMeshComponent
+	
+
+	Begin Object Name=DestroyedPFXComp
+		Template=ParticleSystem'FX_VN_Weapons.Explosions.FX_VN_C4'
+		bAutoActivate=false
+		Translation=(X=0,Y=0,Z=2)
+		TranslucencySortPriority=1
+	End Object
+	DestroyedPFX=DestroyedPFXComp
+	Components.Add(DestroyedPFXComp)
+
+	DestructionSound=AkEvent'WW_EXP_C4.Play_EXP_C4_Explosion'
+	DestroyedMesh=StaticMesh'ENV_VN_Debris.Mesh_Pile.S_ENV_Debris_Pile_AM43'
 }

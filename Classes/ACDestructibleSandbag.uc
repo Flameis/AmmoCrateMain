@@ -13,7 +13,7 @@ class ACDestructibleSandbag extends ACDestructible;
 
 defaultproperties
 {
-	StartingHealth=100
+	StartingHealth=800
 
 	AcceptedDamageTypes(0)=Class'ROGame.RODmgType_RPG7Rocket'
     AcceptedDamageTypes(1)=Class'ROGame.RODmgType_RPG7RocketGeneral'
@@ -26,50 +26,42 @@ defaultproperties
 	AcceptedDamageTypes(8)=Class'ROGame.RODmgType_Satchel'
 	AcceptedDamageTypes(9)=Class'ROGame.RODmgTypeArtillery'
 
-	bTickIsDisabled=false
-	bStatic=false
-	bNoDelete=false
-	bMovable=true
-	bCollideActors=true
-	bBlockActors=true
-	CollisionType=COLLIDE_BlockAll
-	bWorldGeometry=false
-	bCollideWorld=false
-	bGameRelevant=true
-	bCollideWhenPlacing=false
-	bCanBeDamaged=true
-	bProjTarget=true
-	bPathColliding=true
-	bCanStepUpOn=true;
-
-	Components.Empty
-
 	Begin Object Name=MyLightEnvironment
-		bDynamic=false
 		bIsCharacterLightEnvironment=false//true
 	End Object
 	Components.Add(MyLightEnvironment)
+	LightEnvironment=MyLightEnvironment
 
-	Begin Object Name=Sphere
-		SphereRadius=10.0
-	End Object
-	DestructionEmitterOffsetVis=Sphere
-	Components.Add(Sphere)
-
-	Begin Object Name=DestructibleStaticMeshComponent0
-		DestructibleAssets(0)=(MeshOverride=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_112uu')
-        DestructibleAssets(1)=(MeshOverride=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter')
-        StaticMesh=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_112uu'
-       	WireframeColor=(B=0,G=80,R=255,A=255)
-       	CastShadow=true
+	Begin Object Name=DestructibleMeshComponent
+		StaticMesh=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_112uu'
+		CollideActors=true
+		BlockActors=true
+		BlockZeroExtent=true
+		BlockNonZeroExtent=true
+		BlockRigidBody=false
+		bNotifyRigidBodyCollision=false
+		Translation=(X=0,Y=0,Z=2)
+		CastShadow=true
 		bCastDynamicShadow=true
 		//bAllowMergedDynamicShadows=false
 		bUsePrecomputedShadows=false
 		bForceDirectLightMap=false
-		MaxDrawDistance=15000
+		MaxDrawDistance=7500
 		LightEnvironment=MyLightEnvironment
 	End Object
-	CollisionComponent=DestructibleStaticMeshComponent0
-	DestructibleMeshComponent=DestructibleStaticMeshComponent0
-	Components.Add(DestructibleStaticMeshComponent0)
+	Components.Add(DestructibleMeshComponent)
+	DestructibleMesh=DestructibleMeshComponent
+	
+
+	Begin Object Name=DestroyedPFXComp
+		Template=ParticleSystem'FX_VEH_Tank_Three.FX_VEH_Tank_B_TankShell_Penetrate'
+		bAutoActivate=false
+		Translation=(X=0,Y=0,Z=2)
+		TranslucencySortPriority=1
+	End Object
+	DestroyedPFX=DestroyedPFXComp
+	Components.Add(DestroyedPFXComp)
+
+	DestructionSound=AkEvent'WW_Global.Play_GLO_Spawn_Tunnel_Destroyed'
+	DestroyedMesh=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter'
 }

@@ -196,6 +196,10 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
 
 			Switch (Command)
             {
+                case "SPAWNBARRICADE":
+                SpawnBarricade(PC);
+                break;
+
                 case "SPAWNBARRICADETOOL":
                 SpawnBarricadeTool(PC, Args[1], int(Args[2]));
                 break;
@@ -247,13 +251,42 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
     super.Mutate(MutateString, PC);
 }
 
+function SpawnBarricade(PlayerController PC)
+{
+    local vector                        CamLoc, StartShot, EndShot, X, Y, Z, Hitnormal, BelowVector;
+	local rotator                       CamRot;
+    local class<ACDestructible>        DC2;
+    //local class<ACDestructible>         SANDBAGS;
+    //local class<ACDestructible>         SKYRAIDER;
+    //local class<ACDestructible>         PHANTOM;
+    //local class<ACDestructible>         BIRDDOG;
+    //local class<ACDestructible>         CANBERRA;
+    //local class<ACDestructible>         HOWITZER; 
+
+    PC.GetPlayerViewPoint(CamLoc, CamRot);
+    GetAxes(CamRot, X, Y, Z );
+
+    StartShot       = CamLoc;
+    EndShot         = StartShot + (100.0 * X) + (-50 * Y);   
+    Camrot.Roll     = 0;
+    CamRot.Pitch    = 0;
+    Camrot.Yaw      = Camrot.Yaw + (90 * DegToUnrRot);
+    //EndShot.Z       = PC.Pawn.Location.Z - 50;
+
+    BelowVector = EndShot;
+    BelowVector.Z = -7000;
+    trace(EndShot, Hitnormal, BelowVector, EndShot, true);
+    DC2 = class'ACDestructible';
+
+    spawn(DC2,,, EndShot, CamRot);
+}
+
 function SpawnBarricadeTool(PlayerController PC, string ObjectName, int Amount)
 {
     //local vector                        CamLoc, StartShot, EndShot, X, Y, Z, Hitnormal, BelowVector;
 	//local rotator                       CamRot;
     local ACItemPlaceableContent            ACIPC;
     local class<ACDestructible>             DC;
-    local class<ACDestructible2>             DC2;
     local ROInventoryManager                InvManager;
     local array<ROWeapon>                   WeaponList;
     local ROWeapon                          Weapon;
@@ -284,7 +317,7 @@ function SpawnBarricadeTool(PlayerController PC, string ObjectName, int Amount)
         case "SANDBAGS":
         InvManager.CreateInventory(class'ACItemPlaceableContent', false, true);
         //DC = class'ACDestructibleSandbag';
-        DC2 = class'ACDestructible2';
+        DC = class'ACDestructibleSandbag';
         break;
 
         case "SKYRAIDER":
@@ -323,7 +356,7 @@ function SpawnBarricadeTool(PlayerController PC, string ObjectName, int Amount)
             if (ClassIsChildOf(Weapon.Class, class'ACItemPlaceable'))
             {
                 ACIPC = ACItemPlaceableContent(Weapon);
-                ACIPC.DestructibleClass = DC2;
+                ACIPC.DestructibleClass = DC;
                 ACIPC.MaxAmmoCount = Amount;
                 ACIPC.AmmoCount = Amount;
                 //ACIPC.InitialNumPrimaryMags = Amount;

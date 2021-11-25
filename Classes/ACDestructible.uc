@@ -9,76 +9,193 @@
 // All Rights Reserved.
 //=============================================================================
 
-class ACDestructible extends ROStaticMeshDestructible;
+class ACDestructible extends Actor
+	config(AmmoCrate);
+
+var()	array<class<DamageType> >	AcceptedDamageTypes;	// Types of Damage that harm this Destructible
+var()	int							StartingHealth;			// Initial Health of this Destructible
+var		int							Health;					// Current Health of this Destructible
+var 	StaticMeshComponent 		DestructibleMesh;
+var 	StaticMesh 					DestroyedMesh;
+var 	ParticleSystemComponent 	DestroyedPFX;
+var 	AkBaseSoundObject			DestructionSound;
+var 	bool 						bWaitingForEffects;
+
+enum ECrateMeshDisplayStuats
+{
+	CMDS_Default,
+	CMDS_Destroyed,
+};
+
+var repnotify ECrateMeshDisplayStuats CrateDisplayStatus;
+
+var() DynamicLightEnvironmentComponent LightEnvironment;
+
+replication
+{
+	if (Role == ROLE_Authority)
+		CrateDisplayStatus;
+}
+
+simulated event ReplicatedEvent( name VarName )
+{
+	if (VarName == 'CrateDisplayStatus')
+	{
+		UpdateMeshStatus(CrateDisplayStatus);
+	}
+	else
+	{
+		Super.ReplicatedEvent(VarName);
+	}
+}
+
+simulated event PostBeginPlay()
+{
+	Health = StartingHealth;
+	LightEnvironment.SetEnabled(TRUE);
+	SetTickIsDisabled(false);
+}
 
 event TakeDamage(int DamageAmount, Controller EventInstigator, vector HitLocation, vector Momentum, class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor DamageCauser)
 {
-	if (Health <= 0)
+	local int i;
+	// If we're already dead, bail.
+	if( Health <= 0 )
+		return;
+
+	for ( i = 0; i < AcceptedDamageTypes.Length; i++ )
 	{
-	bBlockActors=false;
-		if ( WorldInfo.NetMode != NM_DedicatedServer )
+		if ( ClassIsChildOf(DamageType, AcceptedDamageTypes[i]) )
 		{
-			ClientMeshDestroyed();
+			Health -= DamageAmount;
+			break;
 		}
-		else
-		{
-			SwitchToDestroyedMesh();
-		}
+	}
+
+	if( Health <= 0 )
+	{
+		// Update our lifespan.
+		Lifespan = 60;
+
+		Shutdown();
+		SetTimer(Lifespan, false, 'Destroy');
 	}
 	super.TakeDamage(DamageAmount, EventInstigator, HitLocation, Momentum, DamageType, HitInfo, DamageCauser);
 }
 
+simulated event UpdateMeshStatus(ECrateMeshDisplayStuats newStatus )
+{
+	CrateDisplayStatus = newStatus;
+
+	if( WorldInfo.NetMode != NM_DedicatedServer )
+	{
+		if( CrateDisplayStatus == CMDS_Destroyed )
+			PlayDestructionEffects();
+	}
+}
+
+// Overridden so we can hang around for 60 seconds and then get destroyed. -Nate
+simulated event ShutDown()
+{
+	if(Health <= 0 && CrateDisplayStatus != CMDS_Empty)
+	{
+		UpdateMeshStatus(CMDS_Destroyed);
+	}
+
+	SetPhysics(PHYS_None);
+
+	// shut down collision
+	SetCollision(false, false);
+	if (CollisionComponent != None)
+	{
+		CollisionComponent.SetBlockRigidBody(false);
+	}
+
+	// So joining clients see me.
+	ForceNetRelevant();
+
+	if (RemoteRole != ROLE_None)
+	{
+		// force replicate flags if necessary
+		SetForcedInitialReplicatedProperty(Property'Engine.Actor.bCollideActors', (bCollideActors == default.bCollideActors));
+		SetForcedInitialReplicatedProperty(Property'Engine.Actor.bBlockActors', (bBlockActors == default.bBlockActors));
+		SetForcedInitialReplicatedProperty(Property'Engine.Actor.bHidden', (bHidden == default.bHidden));
+		SetForcedInitialReplicatedProperty(Property'Engine.Actor.Physics', (Physics == default.Physics));
+	}
+
+	NetUpdateFrequency = 0.1;
+	// force immediate network update of these changes
+	bForceNetUpdate = TRUE;
+}
+
+simulated function PlayDestructionEffects()
+{
+	if ( WorldInfo.NetMode != NM_DedicatedServer )
+	{
+		DestructibleMesh.SetStaticMesh(DestroyedMesh);
+		DestroyedPFX.SetActive(true);
+
+		if ( DestructionSound != none )
+		{
+			PlaySoundBase(DestructionSound, true);
+		}
+	}
+}
+
 defaultproperties
 {
-	DestructionSound=AkEvent'WW_EXP_C4.Play_EXP_C4_Explosion'
-	DestructionEmitterTemplate=ParticleSystem'FX_VEH_Tank_Three.FX_VEH_Tank_B_TankShell_Penetrate'
-	StartingHealth=800
-
 	RemoteRole=ROLE_SimulatedProxy
 
-	bTickIsDisabled=false
-	bStatic=false
-	bNoDelete=false
-	bMovable=true
 	bCollideActors=true
 	bBlockActors=true
 	CollisionType=COLLIDE_BlockAll
-	bWorldGeometry=false
-	bCollideWorld=false
-	bGameRelevant=true
-	bCollideWhenPlacing=false
-	bCanBeDamaged=true
 	bProjTarget=true
-	bPathColliding=true
-	bCanStepUpOn=true;
+	bWorldGeometry=true
+	bCollideWorld=false
 
-	Components.Empty
+	StartingHealth=500//100
 
-	Begin Object Name=MyLightEnvironment
-		bEnabled=true
-		bDynamic=false
-		bSynthesizeSHLight=false
+	bStatic=false
+	bNoDelete=false
+	bHidden=false
+	bCanBeDamaged=true
+
+	Begin Object Class=DynamicLightEnvironmentComponent Name=MyLightEnvironment
+		bIsCharacterLightEnvironment=false//true
 	End Object
 	Components.Add(MyLightEnvironment)
+	LightEnvironment=MyLightEnvironment
 
-	/*AcceptedDamageTypes(0)=Class'ROGame.RODmgType_RPG7Rocket'
-    AcceptedDamageTypes(1)=Class'ROGame.RODmgType_RPG7RocketGeneral'
-    AcceptedDamageTypes(2)=Class'ROGame.RODmgType_RPG7RocketImpact'
-    AcceptedDamageTypes(3)=Class'ROGame.RODmgType_Type67Grenade'
-	AcceptedDamageTypes(4)=Class'ROGame.RODmgType_M61Grenade'
-	AcceptedDamageTypes(5)=Class'ROGame.RODmgType_AC47Gunship'
-	AcceptedDamageTypes(6)=Class'ROGame.RODmgType_C4_Explosive'
-	AcceptedDamageTypes(7)=Class'ROGame.RODmgType_AntiVehicleGeneral'
-	AcceptedDamageTypes(8)=Class'ROGame.RODmgType_M18_Claymore'
-	AcceptedDamageTypes(9)=Class'ROGame.RODmgType_M79Grenade'
-	AcceptedDamageTypes(10)=Class'ROGame.RODmgType_MAS49Grenade'
-	AcceptedDamageTypes(11)=Class'ROGame.RODmgType_MattockBash'
-	AcceptedDamageTypes(12)=Class'ROGame.RODmgType_Satchel'
-	AcceptedDamageTypes(13)=Class'ROGame.RODmgTypeArtillery'*/
-
-	Begin Object Name=Sphere
-		SphereRadius=10.0
+	Begin Object Class=StaticMeshComponent Name=DestructibleMeshComponent
+		StaticMesh=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_112uu'
+		CollideActors=true
+		BlockActors=true
+		BlockZeroExtent=true
+		BlockNonZeroExtent=true
+		BlockRigidBody=false
+		bNotifyRigidBodyCollision=false
+		Translation=(X=0,Y=0,Z=2)
+		CastShadow=true
+		bCastDynamicShadow=true
+		//bAllowMergedDynamicShadows=false
+		bUsePrecomputedShadows=false
+		bForceDirectLightMap=false
+		MaxDrawDistance=7500
+		LightEnvironment=MyLightEnvironment
 	End Object
-	DestructionEmitterOffsetVis=Sphere
-	Components.Add(Sphere)
+	Components.Add(DestructibleMeshComponent)
+	DestructibleMesh=DestructibleMeshComponent
+	
+
+	Begin Object Class=ParticleSystemComponent Name=DestroyedPFXComp
+		Template=ParticleSystem'FX_VEH_Tank_Three.FX_VEH_Tank_B_TankShell_Penetrate'
+		bAutoActivate=false
+		Translation=(X=0,Y=0,Z=2)
+		TranslucencySortPriority=1
+	End Object
+	DestroyedPFX=DestroyedPFXComp
+	Components.Add(DestroyedPFXComp)
+
+	DestructionSound=AkEvent'WW_Global.Play_GLO_Spawn_Tunnel_Destroyed'
+	DestroyedMesh=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter'
 }
