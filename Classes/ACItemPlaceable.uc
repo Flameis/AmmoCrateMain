@@ -15,6 +15,20 @@ var class<ACDestructible>	DestructibleClass; 				// Spawning Class Reference
 var vector						ConfigLoc;
 var rotator						ConfigRot;
 
+simulated function PostBeginPlay()
+{
+
+	if ( DestructibleClass != none )
+	{
+		ReferenceStaticMesh = DestructibleClass.default.DestructibleMeshComponent.StaticMesh;
+	}
+	else
+	{
+		`Warn("No or Invalid 'DestructibleClass' set in 'ROItem_PlaceableAmmoCrate'");
+	}
+	super.PostBeginPlay();
+}
+
 simulated function AlertPlacingTime(float PlacingTime)
 {
 	if ( Role == ROLE_Authority )
@@ -408,20 +422,6 @@ simulated function bool CanPhysicallyPlace(optional bool bIsInitialCheck = true)
 	}
 
 	return true;
-}
-
-simulated function PostBeginPlay()
-{
-
-	if ( DestructibleClass != none )
-	{
-		ReferenceStaticMesh = DestructibleClass.default.DestructibleMeshComponent.StaticMesh;
-	}
-	else
-	{
-		`Warn("No or Invalid 'DestructibleClass' set in 'ROItem_PlaceableAmmoCrate'");
-	}
-	super.PostBeginPlay();
 }
 
 simulated exec function IronSights(){}
