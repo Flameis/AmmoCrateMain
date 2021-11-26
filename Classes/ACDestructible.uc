@@ -161,12 +161,6 @@ defaultproperties
 
 	Begin Object Name=MyLightEnvironment
 		bEnabled=true
-	   	bAffectedBySmallDynamicLights=FALSE
-	   	MinTimeBetweenFullUpdates=0.15
-		bShadowFromEnvironment=true
-		bForceCompositeAllLights=true
-		bDynamic=false
-		bIsCharacterLightEnvironment=true
 	End Object
 	LightEnvironment=MyLightEnvironment
 	Components.Add(MyLightEnvironment)
