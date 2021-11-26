@@ -19,7 +19,7 @@ simulated function PostBeginPlay()
 {
 	if ( DestructibleClass != none )
 	{
-		ReferenceStaticMesh = DestructibleClass.default.DestructibleMesh.StaticMesh;
+		ReferenceStaticMesh = DestructibleClass.default.StaticMeshComponent.StaticMesh;
 	}
 	else
 	{
@@ -543,6 +543,7 @@ function bool DoActualSpawn()
 		return false;
 	}*/
 	ACD = Spawn(DestructibleClass,,, PlaceLoc, PlaceRot);
+	ACD.PostBeginPlay();
 
 	if ( ACD != none && ConOwner != none)
 	{
@@ -596,11 +597,11 @@ DefaultProperties
 
 	MaxVelBeforeUpdatePlaceLocation=25
 
-	PlaceStandingDist=100
-	PlaceCrouchDist=60
+	PlaceStandingDist=1000
+	PlaceCrouchDist=600
 	DownTraceDist=25
-	MaxAngleForViewDirForStanding=38.2
-	MaxAngleForViewDirForCrouching=50
+	MaxAngleForViewDirForStanding=90
+	MaxAngleForViewDirForCrouching=90
 
 	// Ammo
 	MaxAmmoCount=1

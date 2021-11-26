@@ -11,6 +11,13 @@
 
 class ACDestructibleSandbag extends ACDestructible;
 
+simulated event PostBeginPlay()
+{
+	Health = StartingHealth;
+	LightEnvironment.SetEnabled(TRUE);
+	super.PostBeginPlay();
+}
+
 defaultproperties
 {
 	StartingHealth=800
@@ -27,32 +34,32 @@ defaultproperties
 	AcceptedDamageTypes(9)=Class'ROGame.RODmgTypeArtillery'
 
 	Begin Object Name=MyLightEnvironment
-		bIsCharacterLightEnvironment=false//true
+		bEnabled=true
+	   	bAffectedBySmallDynamicLights=FALSE
+	   	MinTimeBetweenFullUpdates=0.15
+		bShadowFromEnvironment=true
+		bForceCompositeAllLights=true
+		bDynamic=false
+		bIsCharacterLightEnvironment=true
 	End Object
-	Components.Add(MyLightEnvironment)
 	LightEnvironment=MyLightEnvironment
+	Components.Add(MyLightEnvironment)
 
 	Begin Object Name=DestructibleMeshComponent
 		StaticMesh=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_112uu'
+		LightingChannels=(Dynamic=TRUE,Unnamed_1=FALSE,bInitialized=TRUE)
+		LightEnvironment = MyLightEnvironment
+		CastShadow=true
+		DepthPriorityGroup=SDPG_World
 		CollideActors=true
 		BlockActors=true
 		BlockZeroExtent=true
 		BlockNonZeroExtent=true
-		BlockRigidBody=false
-		bNotifyRigidBodyCollision=false
-		Translation=(X=0,Y=0,Z=2)
-		CastShadow=true
-		bCastDynamicShadow=true
-		//bAllowMergedDynamicShadows=false
-		bUsePrecomputedShadows=false
-		bForceDirectLightMap=false
-		MaxDrawDistance=7500
-		LightEnvironment=MyLightEnvironment
 	End Object
+	StaticMeshComponent=DestructibleMeshComponent
 	Components.Add(DestructibleMeshComponent)
-	DestructibleMesh=DestructibleMeshComponent
+	CollisionComponent=DestructibleMeshComponent
 	
-
 	Begin Object Name=DestroyedPFXComp
 		Template=ParticleSystem'FX_VEH_Tank_Three.FX_VEH_Tank_B_TankShell_Penetrate'
 		bAutoActivate=false

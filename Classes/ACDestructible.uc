@@ -9,13 +9,12 @@
 // All Rights Reserved.
 //=============================================================================
 
-class ACDestructible extends Actor
+class ACDestructible extends ROInterpActor
 	config(AmmoCrate);
 
 var()	array<class<DamageType> >	AcceptedDamageTypes;	// Types of Damage that harm this Destructible
 var()	int							StartingHealth;			// Initial Health of this Destructible
 var		int							Health;					// Current Health of this Destructible
-var 	StaticMeshComponent 		DestructibleMesh;
 var 	StaticMesh 					DestroyedMesh;
 var 	ParticleSystemComponent 	DestroyedPFX;
 var 	AkBaseSoundObject			DestructionSound;
@@ -28,8 +27,6 @@ enum ECrateMeshDisplayStuats
 };
 
 var repnotify ECrateMeshDisplayStuats CrateDisplayStatus;
-
-var() DynamicLightEnvironmentComponent LightEnvironment;
 
 replication
 {
@@ -54,6 +51,8 @@ simulated event PostBeginPlay()
 	Health = StartingHealth;
 	LightEnvironment.SetEnabled(TRUE);
 	SetTickIsDisabled(false);
+	StaticMeshComponent.SetLightEnvironment(LightEnvironment);
+	super.PostBeginPlay();
 }
 
 event TakeDamage(int DamageAmount, Controller EventInstigator, vector HitLocation, vector Momentum, class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor DamageCauser)
@@ -132,7 +131,7 @@ simulated function PlayDestructionEffects()
 {
 	if ( WorldInfo.NetMode != NM_DedicatedServer )
 	{
-		DestructibleMesh.SetStaticMesh(DestroyedMesh);
+		StaticMeshComponent.SetStaticMesh(DestroyedMesh);
 		DestroyedPFX.SetActive(true);
 
 		if ( DestructionSound != none )
@@ -160,33 +159,33 @@ defaultproperties
 	bHidden=false
 	bCanBeDamaged=true
 
-	Begin Object Class=DynamicLightEnvironmentComponent Name=MyLightEnvironment
-		bIsCharacterLightEnvironment=false//true
+	Begin Object Name=MyLightEnvironment
+		bEnabled=true
+	   	bAffectedBySmallDynamicLights=FALSE
+	   	MinTimeBetweenFullUpdates=0.15
+		bShadowFromEnvironment=true
+		bForceCompositeAllLights=true
+		bDynamic=false
+		bIsCharacterLightEnvironment=true
 	End Object
-	Components.Add(MyLightEnvironment)
 	LightEnvironment=MyLightEnvironment
+	Components.Add(MyLightEnvironment)
 
-	Begin Object Class=StaticMeshComponent Name=DestructibleMeshComponent
+	Begin Object class=StaticMeshComponent Name=DestructibleMeshComponent
 		StaticMesh=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_112uu'
+		LightingChannels=(Dynamic=TRUE,Unnamed_1=FALSE,bInitialized=TRUE)
+		LightEnvironment = MyLightEnvironment
+		CastShadow=true
+		DepthPriorityGroup=SDPG_World
 		CollideActors=true
 		BlockActors=true
 		BlockZeroExtent=true
 		BlockNonZeroExtent=true
-		BlockRigidBody=false
-		bNotifyRigidBodyCollision=false
-		Translation=(X=0,Y=0,Z=2)
-		CastShadow=true
-		bCastDynamicShadow=true
-		//bAllowMergedDynamicShadows=false
-		bUsePrecomputedShadows=false
-		bForceDirectLightMap=false
-		MaxDrawDistance=7500
-		LightEnvironment=MyLightEnvironment
 	End Object
+	StaticMeshComponent=DestructibleMeshComponent
 	Components.Add(DestructibleMeshComponent)
-	DestructibleMesh=DestructibleMeshComponent
+	CollisionComponent=DestructibleMeshComponent
 	
-
 	Begin Object Class=ParticleSystemComponent Name=DestroyedPFXComp
 		Template=ParticleSystem'FX_VEH_Tank_Three.FX_VEH_Tank_B_TankShell_Penetrate'
 		bAutoActivate=false

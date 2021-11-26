@@ -28,6 +28,7 @@ defaultproperties
 
 	Begin Object Name=MyLightEnvironment
 		bIsCharacterLightEnvironment=false//true
+		bUseBooleanEnvironmentShadowing=false
 	End Object
 	Components.Add(MyLightEnvironment)
 	LightEnvironment=MyLightEnvironment
@@ -47,10 +48,12 @@ defaultproperties
 		bUsePrecomputedShadows=false
 		bForceDirectLightMap=false
 		MaxDrawDistance=7500
+		LightingChannels=(Dynamic=TRUE,Unnamed_1=TRUE,bInitialized=TRUE)
 		LightEnvironment=MyLightEnvironment
 	End Object
 	Components.Add(DestructibleMeshComponent)
-	DestructibleMesh=DestructibleMeshComponent
+	StaticMeshComponent=DestructibleMeshComponent
+	CollisionComponent=DestructibleMeshComponent
 	
 
 	Begin Object Name=DestroyedPFXComp
