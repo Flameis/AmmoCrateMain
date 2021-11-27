@@ -15,6 +15,26 @@ var class<ACDestructible>		DestructibleClass;				// Spawning Class Reference
 var vector						ConfigLoc;
 var rotator						ConfigRot;
 
+var	repnotify StaticMeshComponent		PreviewStaticMesh;			// Static Mesh for preview
+
+replication
+{
+	if (Role == ROLE_Authority)
+		PreviewStaticMesh;
+}
+
+simulated event ReplicatedEvent( name VarName )
+{
+	if (VarName == 'PreviewStaticMesh')
+	{
+		UpdatePreviewMesh();
+	}
+	else
+	{
+		Super.ReplicatedEvent(VarName);
+	}
+}
+
 simulated function PostBeginPlay()
 {
 	if ( DestructibleClass != none )
@@ -492,8 +512,8 @@ simulated function bool CanPlace(optional bool bIsInitialCheck = true)
 simulated event Tick(float DeltaTime)
 {
 	CanPhysicallyPlace();
-	if ( Instigator.IsLocallyControlled() ) // Only do these checks on the controlling client, nowhere else
-	{
+	//if ( Instigator.IsLocallyControlled() ) // Only do these checks on the controlling client, nowhere else
+	//{
 		if (IsInState('Active') && !IsInState('PlacingItem'))
 		{
 			bLastCheckSuccessful = CanPlace();
@@ -514,10 +534,10 @@ simulated event Tick(float DeltaTime)
 			bLastCheckWasHardFail = true;
 			HidePreviewMesh();
 		}
-	}
+	//}
 
 	// Call ROWeapon's super so we can bypass the parent class' version of the checks which would turn on the preview mesh unnecessarily.
-	Super(ROweapon).Tick(DeltaTime);
+	Super.Tick(DeltaTime);
 }
 
 simulated function StartPlacingItem()
@@ -525,7 +545,7 @@ simulated function StartPlacingItem()
 	GotoState('PlacingItem');
 }
 
-function bool DoActualSpawn()
+simulated function bool DoActualSpawn()
 {
 	local ACDestructible ACD;
 	local Controller ConOwner;
@@ -543,7 +563,6 @@ function bool DoActualSpawn()
 		return false;
 	}*/
 	ACD = Spawn(DestructibleClass,,, PlaceLoc, PlaceRot);
-	ACD.PostBeginPlay();
 
 	if ( ACD != none && ConOwner != none)
 	{
@@ -559,6 +578,8 @@ DefaultProperties
 	ConfigRot  = (Pitch=0,Roll=0,Yaw=90)
 
 	WeaponContentClass(0)="ACItemPlaceableContent"
+
+	bPreviewIsSkeletal=false
 
 	bNoAccuracyStat=true
 	WeaponClassType=ROWCT_Equipment

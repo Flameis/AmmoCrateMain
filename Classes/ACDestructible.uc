@@ -9,16 +9,18 @@
 // All Rights Reserved.
 //=============================================================================
 
-class ACDestructible extends ROInterpActor
+class ACDestructible extends Actor
 	config(AmmoCrate);
 
-var()	array<class<DamageType> >	AcceptedDamageTypes;	// Types of Damage that harm this Destructible
-var()	int							StartingHealth;			// Initial Health of this Destructible
-var		int							Health;					// Current Health of this Destructible
-var 	StaticMesh 					DestroyedMesh;
-var 	ParticleSystemComponent 	DestroyedPFX;
-var 	AkBaseSoundObject			DestructionSound;
-var 	bool 						bWaitingForEffects;
+var() 	StaticMeshComponent					StaticMeshComponent;
+var()  	DynamicLightEnvironmentComponent 	LightEnvironment;
+var()	array<class<DamageType> >			AcceptedDamageTypes;	// Types of Damage that harm this Destructible
+var()	int									StartingHealth;			// Initial Health of this Destructible
+var		int									Health;					// Current Health of this Destructible
+var 	StaticMesh 							DestroyedMesh;
+var 	ParticleSystemComponent 			DestroyedPFX;
+var 	AkBaseSoundObject					DestructionSound;
+var 	bool 								bWaitingForEffects;
 
 enum ECrateMeshDisplayStuats
 {
@@ -46,19 +48,22 @@ simulated event ReplicatedEvent( name VarName )
 	}
 }
 
-simulated event PostBeginPlay()
+/*simulated event PostBeginPlay()
 {
 	Health = StartingHealth;
-	LightEnvironment.SetEnabled(TRUE);
-	SetTickIsDisabled(false);
-	StaticMeshComponent.SetLightEnvironment(LightEnvironment);
+	`log ("ACDestructible::PostBeginPlay()");
 	super.PostBeginPlay();
-}
+}*/
 
 event TakeDamage(int DamageAmount, Controller EventInstigator, vector HitLocation, vector Momentum, class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor DamageCauser)
 {
 	local int i;
 	// If we're already dead, bail.
+	if (ClassIsChildOf(DamageType, class'RODamageType_CannonShell') || ClassIsChildOf(DamageType, class'RODmgType_Satchel'))
+	{
+		AcceptedDamageTypes.additem(DamageType);
+	}
+
 	if( Health <= 0 )
 		return;
 
@@ -104,11 +109,11 @@ simulated event ShutDown()
 	SetPhysics(PHYS_None);
 
 	// shut down collision
-	SetCollision(false, false);
+	/*SetCollision(false, false);
 	if (CollisionComponent != None)
 	{
 		CollisionComponent.SetBlockRigidBody(false);
-	}
+	}*/
 
 	// So joining clients see me.
 	ForceNetRelevant();
@@ -122,7 +127,7 @@ simulated event ShutDown()
 		SetForcedInitialReplicatedProperty(Property'Engine.Actor.Physics', (Physics == default.Physics));
 	}
 
-	NetUpdateFrequency = 0.1;
+	//NetUpdateFrequency = 0.1;
 	// force immediate network update of these changes
 	bForceNetUpdate = TRUE;
 }
@@ -159,8 +164,14 @@ defaultproperties
 	bHidden=false
 	bCanBeDamaged=true
 
-	Begin Object Name=MyLightEnvironment
+	Begin Object class=DynamicLightEnvironmentComponent Name=MyLightEnvironment
 		bEnabled=true
+	   	/*bAffectedBySmallDynamicLights=FALSE
+	   	MinTimeBetweenFullUpdates=0.15
+		bShadowFromEnvironment=true
+		bForceCompositeAllLights=true
+		bDynamic=false
+		bIsCharacterLightEnvironment=true*/
 	End Object
 	LightEnvironment=MyLightEnvironment
 	Components.Add(MyLightEnvironment)
