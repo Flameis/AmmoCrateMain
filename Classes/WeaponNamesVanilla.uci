@@ -269,6 +269,10 @@
             case "BINOSSOUTH":
             InvManager.LoadAndCreateInventory("ROGameContent.ROItem_BinocularsUS_Content", false, true);
             break;
+
+            case "GREASEGUN":
+            InvManager.LoadAndCreateInventory("ROGameContent.ROWeap_M3A1_SMG_Content", false, true);
+            break;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 29th Extras
 
             case "USAMMO":

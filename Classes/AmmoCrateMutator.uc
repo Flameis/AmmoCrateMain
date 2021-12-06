@@ -13,6 +13,8 @@ var array<String> 	HitVicName;
 
 function PreBeginPlay()
 {
+    local bool bTrue;
+    local ROPlayerStart ROPS;
     `log("AmmoCrateMutator init");
     
     ROGameInfo(WorldInfo.Game).PlayerControllerClass = class'ACPlayerController';
@@ -26,6 +28,17 @@ function PreBeginPlay()
     Else
     {
         `log("Replaced Pawn Handler");
+    }
+    foreach AllActors(class'ROPlayerStart', ROPS)
+    {
+        if (bTrue)
+        {
+            spawn(class'ACDestructible2',,,ROPS.Location,ROPS.Rotation);
+        }
+        else
+        {
+        bTrue = true;
+        }
     }
 
     StaticSaveConfig();
@@ -255,7 +268,7 @@ function SpawnBarricade(PlayerController PC)
 {
     local vector                        CamLoc, StartShot, EndShot, X, Y, Z, Hitnormal, BelowVector;
 	local rotator                       CamRot;
-    local class<ACDestructible>        DC2;
+    local class<ACDestructible2>               DC2;
     //local class<ACDestructible>         SANDBAGS;
     //local class<ACDestructible>         SKYRAIDER;
     //local class<ACDestructible>         PHANTOM;
@@ -276,7 +289,7 @@ function SpawnBarricade(PlayerController PC)
     BelowVector = EndShot;
     BelowVector.Z = -7000;
     trace(EndShot, Hitnormal, BelowVector, EndShot, true);
-    DC2 = class'ACDestructible';
+    DC2 = class'ACDestructible2';
 
     spawn(DC2,,, EndShot, CamRot);
 }
