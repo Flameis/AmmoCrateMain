@@ -47,7 +47,6 @@ defaultproperties
 		//bAllowMergedDynamicShadows=false
 		bUsePrecomputedShadows=false
 		bForceDirectLightMap=false
-		MaxDrawDistance=7500
 		LightEnvironment=MyLightEnvironment
 	End Object
 	Components.Add(DestructibleMeshComponent)

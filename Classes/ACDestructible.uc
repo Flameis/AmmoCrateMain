@@ -21,6 +21,9 @@ var 	StaticMesh 							DestroyedMesh;
 var 	ParticleSystemComponent 			DestroyedPFX;
 var 	AkBaseSoundObject					DestructionSound;
 var 	bool 								bWaitingForEffects;
+var 	vector								ConfigLoc, Bounds;
+var 	rotator								ConfigRot;
+var		float								DrawSphereRadius;
 
 enum ECrateMeshDisplayStuats
 {
@@ -48,22 +51,22 @@ simulated event ReplicatedEvent( name VarName )
 	}
 }
 
-/*simulated event PostBeginPlay()
+simulated event PostBeginPlay()
 {
 	Health = StartingHealth;
 	`log ("ACDestructible::PostBeginPlay()");
 	super.PostBeginPlay();
-}*/
+}
 
 event TakeDamage(int DamageAmount, Controller EventInstigator, vector HitLocation, vector Momentum, class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor DamageCauser)
 {
 	local int i;
-	// If we're already dead, bail.
+
 	if (ClassIsChildOf(DamageType, class'RODamageType_CannonShell') || ClassIsChildOf(DamageType, class'RODmgType_Satchel'))
 	{
 		AcceptedDamageTypes.additem(DamageType);
 	}
-
+	// If we're already dead, bail.
 	if( Health <= 0 )
 		return;
 
@@ -79,7 +82,7 @@ event TakeDamage(int DamageAmount, Controller EventInstigator, vector HitLocatio
 	if( Health <= 0 )
 	{
 		// Update our lifespan.
-		Lifespan = 60;
+		Lifespan = 20;
 
 		Shutdown();
 		SetTimer(Lifespan, false, 'Destroy');
@@ -98,10 +101,10 @@ simulated event UpdateMeshStatus(ECrateMeshDisplayStuats newStatus )
 	}
 }
 
-// Overridden so we can hang around for 60 seconds and then get destroyed. -Nate
+// Overridden so we can hang around for 60 seconds and then get destroyed.
 simulated event ShutDown()
 {
-	if(Health <= 0 && CrateDisplayStatus != CMDS_Empty)
+	if(Health <= 0)
 	{
 		UpdateMeshStatus(CMDS_Destroyed);
 	}
@@ -109,11 +112,11 @@ simulated event ShutDown()
 	SetPhysics(PHYS_None);
 
 	// shut down collision
-	/*SetCollision(false, false);
+	SetCollision(false, false);
 	if (CollisionComponent != None)
 	{
 		CollisionComponent.SetBlockRigidBody(false);
-	}*/
+	}
 
 	// So joining clients see me.
 	ForceNetRelevant();
@@ -134,9 +137,17 @@ simulated event ShutDown()
 
 simulated function PlayDestructionEffects()
 {
+	//local vector HitLoc, HitNorm, StartLoc, EndLoc;
 	if ( WorldInfo.NetMode != NM_DedicatedServer )
 	{
 		StaticMeshComponent.SetStaticMesh(DestroyedMesh);
+		
+		//StartLoc = self.Location + StaticMeshComponent.Translation;
+		//EndLoc = StartLoc;
+		//EndLoc.Z = EndLoc.Z - 2000;
+		//Trace(HitLoc, HitNorm, EndLoc, StartLoc);
+		//StaticMeshComponent.StaticMesh.SetLocation(HitLoc);
+		
 		DestroyedPFX.SetActive(true);
 
 		if ( DestructionSound != none )
@@ -148,6 +159,11 @@ simulated function PlayDestructionEffects()
 
 defaultproperties
 {
+	ConfigLoc  = (X=0,Y=-55,Z=0)
+	ConfigRot  = (Pitch=0,Yaw=90,Roll=90)
+	Bounds	   = (X=62,Y=15,Z=32)
+	DrawSphereRadius = 66
+
 	RemoteRole=ROLE_SimulatedProxy
 
 	bCollideActors=true

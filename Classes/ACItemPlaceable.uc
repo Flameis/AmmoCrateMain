@@ -11,51 +11,85 @@
 class ACItemPlaceable extends ROItemPlaceable
 	abstract;
 
-var class<ACDestructible>		DestructibleClass;				// Spawning Class Reference
-var vector						ConfigLoc;
-var rotator						ConfigRot;
+var 	class<ACDestructible>		DestructibleClass;				// Spawning Class Reference
+var 	vector						ConfigLoc, Bounds, Location2;
+var 	rotator						ConfigRot;
+var		String 						ConfigName;
+var		float						DrawSphereRadius;
 
-var	repnotify StaticMeshComponent		PreviewStaticMesh;			// Static Mesh for preview
-
-replication
+/*function InitPlaceable()
 {
-	if (Role == ROLE_Authority)
-		PreviewStaticMesh;
-}
+	`log ("ACItemPlaceable::InitPlaceable() ConfigName:"@ConfigName);
+	switch (ConfigName)
+	{
+		case "Sandbags":
+		ConfigLoc.x = 0;
+		ConfigLoc.y = -55;
+		ConfigLoc.z = 0;
+		ConfigRot.Pitch = 0;
+		ConfigRot.Yaw = 90;
+		ConfigRot.Roll = 0;
+		Bounds.x = 62;
+		Bounds.y = 15;
+		Bounds.z = 32;
+		DrawSphereRadius = 66;
+		ReferenceStaticMesh = StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_112uu';
+		break;
 
-simulated event ReplicatedEvent( name VarName )
-{
-	if (VarName == 'PreviewStaticMesh')
-	{
-		UpdatePreviewMesh();
-	}
-	else
-	{
-		Super.ReplicatedEvent(VarName);
-	}
-}
+		case "Birddog":
+		ConfigLoc.x = 0;
+		ConfigLoc.y = 0;
+		ConfigLoc.z = 0;
+		ConfigRot.Pitch = 0;
+		ConfigRot.Yaw = 90;
+		ConfigRot.Roll = 0;
+		Bounds.x = 62;
+		Bounds.y = 15;
+		Bounds.z = 32;
+		DrawSphereRadius = 66;
+		ReferenceStaticMesh = StaticMesh'VH_VN_US_Recon.Mesh.O-1_USAF';
+		break;
 
-simulated function PostBeginPlay()
-{
-	if ( DestructibleClass != none )
-	{
-		ReferenceStaticMesh = DestructibleClass.default.StaticMeshComponent.StaticMesh;
+		case "Canberra":
+		ConfigLoc.x = 0;
+		ConfigLoc.y = 0;
+		ConfigLoc.z = 0;
+		ConfigRot.Pitch = 0;
+		ConfigRot.Yaw = 90;
+		ConfigRot.Roll = 0;
+		Bounds.x = 62;
+		Bounds.y = 15;
+		Bounds.z = 32;
+		DrawSphereRadius = 66;
+		ReferenceStaticMesh = StaticMesh'VH_VN_AUS_Canberra.Meshes.Canberra_Bomber_SM';
+		break;
+
+		case "FrenchBunker":
+		ConfigLoc.x = 0;
+		ConfigLoc.y = 0;
+		ConfigLoc.z = 0;
+		ConfigRot.Pitch = 0;
+		ConfigRot.Yaw = 90;
+		ConfigRot.Roll = 0;
+		Bounds.x = 62;
+		Bounds.y = 15;
+		Bounds.z = 32;
+		DrawSphereRadius = 66;
+		ReferenceStaticMesh = StaticMesh'ENV_VN_FrenchBunker.Meshes.SM_FrenchBunker';
+		break;
 	}
-	else
-	{
-		`Warn("No or Invalid 'DestructibleClass' set in 'ROItem_PlaceableAmmoCrate'");
-	}
-	super.PostBeginPlay();
-}
+	//PostBeginPlay();
+	bDebugPlacing = true;
+}*/
 
 simulated function AlertPlacingTime(float PlacingTime)
 {
-	if ( Role == ROLE_Authority )
-	{
-	   	// Show the progress bar
-	   	if ( ROPawn(Instigator) != none )
-	  		ROPawn(Instigator).StartDeployAmmoCrate(PlacingTime);
-	}
+	//if ( Role == ROLE_Authority )
+	//{
+	//   	// Show the progress bar
+	//   	if ( ROPawn(Instigator) != none )
+	//  		ROPawn(Instigator).StartDeployAmmoCrate(PlacingTime);
+	//}
 }
 
 simulated function PlayPlacingItem()
@@ -64,8 +98,8 @@ simulated function PlayPlacingItem()
 
 	HidePreviewMesh();
 
-	// Get Placing Time before Out Anim Plays and scale it based on that one only!
-	PlacingTime = 0.01;
+	//Get Placing Time before Out Anim Plays and scale it based on that one only!
+	PlacingTime = 0.001;
 
 	if ( Instigator.IsLocallyControlled() )
 	{
@@ -175,16 +209,14 @@ simulated function bool CanPhysicallyPlace(optional bool bIsInitialCheck = true)
 	TraceStart = Instigator.GetPawnViewLocation();
 	ViewDirection = Vector(Instigator.GetViewRotation());
 	VerticalAngle = acos(-ViewDirection.Z);
-
 	// Rotate in the players view direction with the Pitch/Roll flattened
 	PlaceRot = Instigator.GetViewRotation();
-	GetAxes(PlaceRot, X, Y, Z );
-
-	TraceStart         = TraceStart + (ConfigLoc.X * X) + (ConfigLoc.Y * Y) + (ConfigLoc.Z * Z);  
-	PlaceRot.Pitch = 0 + (ConfigRot.Pitch * DegToUnrRot);
-	PlaceRot.Roll = 0 + (ConfigRot.Roll * DegToUnrRot);
-	PlaceRot.Yaw = PlaceRot.Yaw + (ConfigRot.Yaw * DegToUnrRot);
-
+	GetAxes(PlaceRot, X, Y, Z );	
+	Location2 			= TraceStart;
+	TraceStart         	= TraceStart + (ConfigLoc.X * X) + (ConfigLoc.Y * Y) + (ConfigLoc.Z * Z);  
+	PlaceRot.Pitch 		= (ConfigRot.Pitch * DegToUnrRot);
+	PlaceRot.Roll 		= (ConfigRot.Roll * DegToUnrRot);
+	PlaceRot.Yaw 		= PlaceRot.Yaw + (ConfigRot.Yaw * DegToUnrRot);
 	ViewDirectionFlattened = Vector(PlaceRot);
 
 	if ( !bUsesAltTraceMethod )
@@ -374,9 +406,15 @@ simulated function bool CanPhysicallyPlace(optional bool bIsInitialCheck = true)
 
 			if ( bDebugPlacing )
 			{
-				DrawDebugSphere(TraceEndSecondary, 3, 8, 255, 255, 0, false);
-				DrawDebugLine(TraceStartSecondary,TraceEndSecondary,128,255,128,false);
+				//DrawDebugSphere(TraceEndSecondary, 3, 8, 255, 255, 0, false);
+				//DrawDebugLine(TraceStartSecondary,TraceEndSecondary,128,255,128,false);
 				DrawDebugSphere(HitLocationSecondary, 3, 8, 0, 255, 255, false);
+				//DrawDebugBox(Location2, PreviewStaticMesh.Bounds.BoxExtent, 255, 20, 147);
+				//DrawDebugSphere(Location2, PreviewStaticMesh.Bounds.SphereRadius, 8, 255, 20, 147, false);
+
+				//`log("Origin:"@string(PreviewStaticMesh.Bounds.Origin));
+				//`log("BoxExtent:"@string(PreviewStaticMesh.Bounds.BoxExtent));
+				//`log("SphereRadius:"@string(PreviewStaticMesh.Bounds.SphereRadius));
 			}
 
 			if( HitActorSecondary != none )
@@ -397,9 +435,15 @@ simulated function bool CanPhysicallyPlace(optional bool bIsInitialCheck = true)
 
 		if ( bDebugPlacing )
 		{
-			DrawDebugSphere(TraceEndSecondary, 3, 8, 255, 0, 0, false);
-			DrawDebugLine(TraceStart,TraceEndSecondary,0,255,0,false);
+			//DrawDebugSphere(TraceEndSecondary, 3, 8, 255, 0, 0, false);
+			//DrawDebugLine(TraceStart,TraceEndSecondary,0,255,0,false);
 			DrawDebugSphere(HitLocationSecondary, 3, 8, 0, 0, 255, false);
+			//DrawDebugBox(Location2, PreviewStaticMesh.Bounds.BoxExtent, 255, 20, 147);
+			//DrawDebugSphere(Location2, PreviewStaticMesh.Bounds.SphereRadius, 8, 255, 20, 147, false);
+
+			//`log("Origin:"@string(PreviewStaticMesh.Bounds.Origin));
+			//`log("BoxExtent:"@string(PreviewStaticMesh.Bounds.BoxExtent));
+			//`log("SphereRadius:"@string(PreviewStaticMesh.Bounds.SphereRadius));
 		}
 
 		if( HitActorSecondary != none )
@@ -436,8 +480,14 @@ simulated function bool CanPhysicallyPlace(optional bool bIsInitialCheck = true)
 	if ( bDebugPlacing )
 	{
 		DrawDebugSphere(TraceStart, 3, 8, 0, 0, 255, false); 	// First Trace End Loc
-		DrawDebugSphere(TraceEnd, 3, 8, 255, 255, 0, false);	// Second Trace End Loc
-		DrawDebugLine(TraceStart,TraceEnd,0,255,0,false); 		// Line of Second Trace
+		//DrawDebugSphere(TraceEnd, 3, 8, 255, 255, 0, false);	// Second Trace End Loc
+		//DrawDebugLine(TraceStart,TraceEnd,0,255,0,false); 		// Line of Second Trace
+		//DrawDebugBox(Location2, PreviewStaticMesh.Bounds.BoxExtent, 255, 20, 147);
+		//DrawDebugSphere(Location2, PreviewStaticMesh.Bounds.SphereRadius, 8, 255, 20, 147, false);
+
+		//`log("Origin:"@string(PreviewStaticMesh.Bounds.Origin));
+		//`log("BoxExtent:"@string(PreviewStaticMesh.Bounds.BoxExtent));
+		//`log("SphereRadius:"@string(PreviewStaticMesh.Bounds.SphereRadius));
 	}
 
 	return true;
@@ -511,6 +561,11 @@ simulated function bool CanPlace(optional bool bIsInitialCheck = true)
 // OVERRRIDDEN to use our version of CanPlace which checks for disnace to other ammo crates.
 simulated event Tick(float DeltaTime)
 {
+	//local vector PlaceLoc2, X, Y, Z;
+	//GetAxes(PlaceRot, X, Y, Z );
+	//PlaceLoc2.y		-= ConfigLoc.y;
+	//PlaceLoc2       = PlaceLoc + (55 * x);
+
 	CanPhysicallyPlace();
 	//if ( Instigator.IsLocallyControlled() ) // Only do these checks on the controlling client, nowhere else
 	//{
@@ -522,6 +577,8 @@ simulated event Tick(float DeltaTime)
 			{
 				ShowPreviewMesh();
 				UpdatePreviewMesh();
+				//DrawDebugBox(Location2, DestructibleClass.default.Bounds, 255, 20, 147);
+				//DrawDebugSphere(PlaceLoc2 , DestructibleClass.default.DrawSphereRadius, 10, 255, 20, 147);
 			}
 			else
 			{
@@ -571,38 +628,16 @@ simulated function bool DoActualSpawn()
 
 	return false;
 }
-	
+
 DefaultProperties
 {
-	ConfigLoc  = (X=0,Y=-55,Z=0)
-	ConfigRot  = (Pitch=0,Roll=0,Yaw=90)
+	//ConfigLoc = (X=0,Y=-55,Z=0);
+	//ConfigRot = (Pitch=0,Yaw=90,Roll=0);
 
 	WeaponContentClass(0)="ACItemPlaceableContent"
 
-	bPreviewIsSkeletal=false
-
 	bNoAccuracyStat=true
 	WeaponClassType=ROWCT_Equipment
-
-	Begin Object Name=PreviewStaticMeshComponent
-		Materials(0)=MaterialInstanceConstant'FX_VN_Materials.Materials.M_PlaceableItem'
-		Materials(1)=MaterialInstanceConstant'FX_VN_Materials.Materials.M_PlaceableItem'
-		Materials(2)=MaterialInstanceConstant'FX_VN_Materials.Materials.M_PlaceableItem'
-		Materials(3)=MaterialInstanceConstant'FX_VN_Materials.Materials.M_PlaceableItem'
-		CollideActors=false
-		BlockActors=false
-		BlockZeroExtent=false
-		BlockNonZeroExtent=false
-		BlockRigidBody=false
-		RBChannel=RBCC_Nothing
-		DepthPriorityGroup=SDPG_World
-		AbsoluteTranslation=true
-		AbsoluteRotation=true
-		AbsoluteScale=true
-		Translation=(X=0,Y=0,Z=0)
-		TranslucencySortPriority=9999
-	End Object
-	PreviewStaticMesh=PreviewStaticMeshComponent
 
 	FiringStatesArray(ALTERNATE_FIREMODE)=none
 
@@ -618,8 +653,8 @@ DefaultProperties
 
 	MaxVelBeforeUpdatePlaceLocation=25
 
-	PlaceStandingDist=1000
-	PlaceCrouchDist=600
+	PlaceStandingDist=10000
+	PlaceCrouchDist=6000
 	DownTraceDist=25
 	MaxAngleForViewDirForStanding=90
 	MaxAngleForViewDirForCrouching=90

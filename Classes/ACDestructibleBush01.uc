@@ -9,11 +9,11 @@
 // All Rights Reserved.
 //=============================================================================
 
-class ACDestructibleSkyraider extends ACDestructible;
+class ACDestructibleBush01 extends ACDestructible;
 
 defaultproperties
 {
-	StartingHealth=1000
+	StartingHealth=100
 
 	AcceptedDamageTypes(0)=Class'ROGame.RODmgType_RPG7Rocket'
     AcceptedDamageTypes(1)=Class'ROGame.RODmgType_RPG7RocketGeneral'
@@ -34,9 +34,9 @@ defaultproperties
 	LightEnvironment=MyLightEnvironment
 
 	Begin Object Name=DestructibleMeshComponent
-		StaticMesh=StaticMesh'VH_VN_ARVN_Skyraider.Meshes.Skyraider_SM'
-		CollideActors=true
-		BlockActors=true
+		StaticMesh=StaticMesh'ENV_JungleTree.Mesh.S_ENV_BushV2_01'
+		CollideActors=false
+		BlockActors=false
 		BlockZeroExtent=true
 		BlockNonZeroExtent=true
 		BlockRigidBody=false
@@ -48,7 +48,6 @@ defaultproperties
 		bUsePrecomputedShadows=false
 		bForceDirectLightMap=false
 		
-		LightingChannels=(Dynamic=TRUE,Unnamed_1=TRUE,bInitialized=TRUE)
 		LightEnvironment=MyLightEnvironment
 	End Object
 	Components.Add(DestructibleMeshComponent)
@@ -57,7 +56,7 @@ defaultproperties
 	
 
 	Begin Object Name=DestroyedPFXComp
-		Template=ParticleSystem'FX_VN_Weapons.Explosions.FX_VN_C4'
+		Template=ParticleSystem'FX_VEH_Tank_Three.FX_VEH_Tank_B_TankShell_Penetrate'
 		bAutoActivate=false
 		Translation=(X=0,Y=0,Z=2)
 		TranslucencySortPriority=1
@@ -65,6 +64,6 @@ defaultproperties
 	DestroyedPFX=DestroyedPFXComp
 	Components.Add(DestroyedPFXComp)
 
-	DestructionSound=AkEvent'WW_EXP_C4.Play_EXP_C4_Explosion'
-	DestroyedMesh=StaticMesh'VH_VN_ARVN_Skyraider.Meshes.Skyraider_Wreck_SM'
+	DestructionSound=AkEvent'WW_Global.Play_GLO_Spawn_Tunnel_Destroyed'
+	DestroyedMesh=StaticMesh'ENV_JungleTree.Mesh.S_ENV_Tree_Debris_01'
 }

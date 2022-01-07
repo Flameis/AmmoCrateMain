@@ -323,7 +323,7 @@ DefaultProperties
 	Category=ROIC_PlaceableEquipment
 	ROTM_PlacingMessage=ROTMSG_PlaceAmmoCrate
 
-	Weight=15 //KG
+	Weight=8 //KG
 
 	AmmoCrateClass=class'ROGame.ROPlaceableAmmoResupply'
 	PhysicalAmmoCrateClass=class'ROGame.ROPlaceableAmmoResupplyCrate'

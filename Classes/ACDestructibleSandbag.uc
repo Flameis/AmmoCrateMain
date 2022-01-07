@@ -11,8 +11,27 @@
 
 class ACDestructibleSandbag extends ACDestructible;
 
+simulated event ShutDown() //Special for sandbags for now so the debris doesn't collide while in the air
+{
+	SetPhysics(PHYS_None);
+
+	//shut down collision
+	SetCollision(false, false);
+	if (CollisionComponent != None)
+	{
+		CollisionComponent.SetBlockRigidBody(false);
+	}
+
+	super.ShutDown();
+}
+
 defaultproperties
 {
+	ConfigLoc  = (X=0,Y=-55,Z=0)
+	ConfigRot  = (Pitch=0,Roll=0,Yaw=90)
+	Bounds	   = (X=62,Y=15,Z=32)
+	DrawSphereRadius = 66
+	
 	StartingHealth=800
 
 	AcceptedDamageTypes(0)=Class'ROGame.RODmgType_RPG7Rocket'
@@ -41,20 +60,19 @@ defaultproperties
 
 	Begin Object Name=DestructibleMeshComponent
 		StaticMesh=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_112uu'
-		LightingChannels=(Dynamic=TRUE,Unnamed_1=FALSE,bInitialized=TRUE)
-		LightEnvironment = MyLightEnvironment
 		CollideActors=true
 		BlockActors=true
 		BlockZeroExtent=true
 		BlockNonZeroExtent=true
 		BlockRigidBody=false
 		bNotifyRigidBodyCollision=false
+		Translation=(X=0,Y=0,Z=2)
 		CastShadow=true
 		bCastDynamicShadow=true
 		//bAllowMergedDynamicShadows=false
 		bUsePrecomputedShadows=false
 		bForceDirectLightMap=false
-		MaxDrawDistance=7500
+		LightEnvironment=MyLightEnvironment
 	End Object
 	StaticMeshComponent=DestructibleMeshComponent
 	Components.Add(DestructibleMeshComponent)

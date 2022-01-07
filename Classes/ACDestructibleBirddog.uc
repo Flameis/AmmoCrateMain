@@ -11,6 +11,12 @@
 
 class ACDestructibleBirddog extends ACDestructible;
 
+simulated event PostBeginPlay()
+{
+	SetDrawScale(4);
+	super.PostBeginPlay();
+}
+
 defaultproperties
 {
 	StartingHealth=1000
@@ -47,7 +53,6 @@ defaultproperties
 		//bAllowMergedDynamicShadows=false
 		bUsePrecomputedShadows=false
 		bForceDirectLightMap=false
-		MaxDrawDistance=7500
 		LightEnvironment=MyLightEnvironment
 	End Object
 	Components.Add(DestructibleMeshComponent)
