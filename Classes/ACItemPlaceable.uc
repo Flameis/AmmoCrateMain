@@ -132,7 +132,7 @@ simulated function SpawnPlaceable()
 			}
 		}
 
-		if ( DoActualSpawn() )
+		if ( DoSpawn())
 		{
 		  	/*if ( Instigator != None && Instigator.InvManager != None )
 			{
@@ -602,7 +602,7 @@ simulated function StartPlacingItem()
 	GotoState('PlacingItem');
 }
 
-simulated function bool DoActualSpawn()
+reliable server function bool DoSpawn()
 {
 	local ACDestructible ACD;
 	local Controller ConOwner;
@@ -656,8 +656,8 @@ DefaultProperties
 	PlaceStandingDist=10000
 	PlaceCrouchDist=6000
 	DownTraceDist=25
-	MaxAngleForViewDirForStanding=90
-	MaxAngleForViewDirForCrouching=90
+	MaxAngleForViewDirForStanding=180
+	MaxAngleForViewDirForCrouching=180
 
 	// Ammo
 	MaxAmmoCount=1
@@ -743,7 +743,7 @@ DefaultProperties
 	MeleeHoldAnim=Placeable_Pullback_Hold
 
 	// Ammo
-	AmmoClass=class'ACAmmo_Placeables'
+	AmmoClass=class'ROAmmo_Placeable_AmmoCrate'
 	InvIndex=`ROII_Placeable_Ammo
 	ROTM_PlacingMessage=ROTMSG_PlaceAmmoCrate
 

@@ -19,14 +19,14 @@ function PreBeginPlay()
     ROGameInfo(WorldInfo.Game).PlayerReplicationInfoClass = class'ACPlayerReplicationInfo';
     ROGameInfo(WorldInfo.Game).PawnHandlerClass = class'ACPawnHandler';
         
-    if (ROGameInfo(WorldInfo.Game).PawnHandlerClass != class'ACPawnHandler')
+    /* if (ROGameInfo(WorldInfo.Game).PawnHandlerClass != class'ACPawnHandler')
     {
         `log("Error replacing Pawn Handler");
     }
     Else
     {
         `log("Replaced Pawn Handler");
-    }
+    } */
 
     StaticSaveConfig();
 
@@ -193,12 +193,16 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
                 //SpawnBarricade(PC);
                 //break;
 
-                case "SPAWNBARRICADETOOL":
+                case "GIVEB":
                 SpawnBarricadeTool(PC, Args[1], int(Args[2]));
                 break;
 
-                case "CLEARBARRICADES":
+                case "CLEARB":
                 ClearBarricades();
+                break;
+
+                case "DELB":
+                DelBarricade(PC);
                 break;
 
                 case "ISMUTTHERE":
@@ -216,6 +220,11 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
                         WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" spawned a "$Args[1]);
                         `log("[29thExtras] "$PlayerName$" spawned a "$Args[1]$"");
                     }
+                    else
+                    {
+                        `log("[MutCommands] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
+                        PrivateMessage(PC, "Not a valid weapon name.");
+                    }
                     break;
 
                     case "GIVEWEAPONALL":
@@ -224,6 +233,11 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
                     {
                         WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" gave a "$Args[1]$" to everyone");
                         `log("[29thExtras] "$PlayerName$" spawned a "$Args[1]$"");
+                    }
+                    else
+                    {
+                        `log("[MutCommands] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
+                        PrivateMessage(PC, "Not a valid weapon name.");
                     }
                     break;
 
@@ -234,6 +248,11 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
                         WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" gave a "$Args[1]$" to the north");
                         `log("[29thExtras] "$PlayerName$" gave a "$Args[1]$" to the north");
                     }
+                    else
+                    {
+                        `log("[MutCommands] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
+                        PrivateMessage(PC, "Not a valid weapon name.");
+                    }
                     break;
 
                     case "GIVEWEAPONSOUTH":
@@ -242,6 +261,11 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
                     {
                         WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" gave a "$Args[1]$" to the south");
                         `log("[29thExtras] "$PlayerName$" gave a "$Args[1]$" to the south");
+                    }
+                    else
+                    {
+                        `log("[MutCommands] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
+                        PrivateMessage(PC, "Not a valid weapon name.");
                     }
                     break;
 
@@ -254,8 +278,8 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
                     }
                     else
                     {
-                    `log("[MutCommands] Spawnvehicle failed! "$PlayerName$" tried to spawn a "$Args[1]);
-                    PrivateMessage(PC, "Not a valid vehicle name.");
+                        `log("[MutCommands] Spawnvehicle failed! "$PlayerName$" tried to spawn a "$Args[1]);
+                        PrivateMessage(PC, "Not a valid vehicle name.");
                     }
                     break;
 
@@ -297,7 +321,7 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
     spawn(DC2,,, EndShot, CamRot);
 }*/
 
-function SpawnBarricadeTool(PlayerController PC, string ObjectName, int Amount)
+simulated function SpawnBarricadeTool(PlayerController PC, string ObjectName, int Amount)
 {
     //local vector                        CamLoc, StartShot, EndShot, X, Y, Z, Hitnormal, BelowVector;
 	//local rotator                       CamRot;
@@ -332,11 +356,11 @@ function SpawnBarricadeTool(PlayerController PC, string ObjectName, int Amount)
         break;
 
         case "SKYRAIDER":
-        InvManager.CreateInventory(class'ACItemPlaceableContent', false, true);
+        InvManager.CreateInventory(class'ACItemPlaceableSkyraider', false, true);
         break;
 
         case "PHANTOM":
-        InvManager.CreateInventory(class'ACItemPlaceableContent', false, true);
+        InvManager.CreateInventory(class'ACItemPlaceablePhantom', false, true);
         break;
 
         case "BIRDDOG":
@@ -383,6 +407,36 @@ function ClearBarricades()
     foreach WorldInfo.AllActors(class'AmmoCrate.ACDestructible', ACD)
     {
         ACD.Destroy();
+    }
+}
+
+function DelBarricade(PlayerController PC)
+{
+    local vector TraceStart, TraceEnd, HitLocation, HitNormal, ViewDirection;
+    local float TempFloat, TraceLength;
+    local actor HitActor;
+
+    Instigator = PC.Pawn;
+
+    TraceStart = Instigator.GetPawnViewLocation();
+	ViewDirection = Vector(Instigator.GetViewRotation());
+	TempFloat = sqrt((1 - ViewDirection.Z * ViewDirection.Z) / (ViewDirection.X * ViewDirection.X + ViewDirection.Y * ViewDirection.Y));
+	ViewDirection.X *= TempFloat;
+	ViewDirection.Y *= TempFloat;
+    TraceLength = 10000;
+
+    TraceEnd = TraceStart + ViewDirection * TraceLength;
+    
+    HitActor = Trace(HitLocation, HitNormal, TraceEnd, TraceStart);
+    if (ClassIsChildOf(HitActor.Class, class'ACDestructible'))
+    {
+        HitActor.Destroy();
+    }
+
+    HitActor = Trace(HitLocation, HitNormal, TraceEnd, TraceStart);
+    if (ClassIsChildOf(HitActor.Class, class'ACDestructible'))
+    {
+        HitActor.Destroy();
     }
 }
 

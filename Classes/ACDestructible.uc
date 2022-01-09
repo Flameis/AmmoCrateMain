@@ -54,7 +54,7 @@ simulated event ReplicatedEvent( name VarName )
 simulated event PostBeginPlay()
 {
 	Health = StartingHealth;
-	`log ("ACDestructible::PostBeginPlay()");
+	//`log ("ACDestructible::PostBeginPlay()");
 	super.PostBeginPlay();
 }
 

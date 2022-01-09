@@ -18,15 +18,15 @@ simulated function PreBeginPlay()
 
 simulated function PostBeginPlay()
 {
-    local RORoleCount RORC;
+    //local RORoleCount RORC;
 
-    `log("ACPlayerController.PostBeginPlay()");
+    // `log("ACPlayerController.PostBeginPlay()");
 
     super.PostBeginPlay();
 
     ROMI = ROMapInfo(WorldInfo.GetMapInfo());
 
-    ForEach ROMI.NorthernRoles(RORC)
+    /* ForEach ROMI.NorthernRoles(RORC)
     {
         `log("RoleInfoClass = " $ RORC.RoleInfoClass);
     }
@@ -34,7 +34,7 @@ simulated function PostBeginPlay()
     ForEach ROMI.SouthernRoles(RORC)
     {
         `log("RoleInfoClass = " $ RORC.RoleInfoClass);
-    }
+    } */
 }
 
 simulated function ReceivedGameClass(class<GameInfo> GameClass)

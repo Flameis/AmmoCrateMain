@@ -46,7 +46,7 @@ defaultproperties
 	AcceptedDamageTypes(9)=Class'ROGame.RODmgTypeArtillery'
 
 	Begin Object Name=MyLightEnvironment
-		bDynamic=false
+		bDynamic=true
 		bIsCharacterLightEnvironment=true
 		/*bAffectedBySmallDynamicLights=FALSE
 	   	MinTimeBetweenFullUpdates=0.15

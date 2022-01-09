@@ -27,11 +27,10 @@ defaultproperties
 	Components.Empty
 
 	Begin Object Name=MyLightEnvironment
-		bIsCharacterLightEnvironment=false//true
-		bUseBooleanEnvironmentShadowing=false
+		bEnabled=true
 	End Object
-	Components.Add(MyLightEnvironment)
 	LightEnvironment=MyLightEnvironment
+	Components.Add(MyLightEnvironment)
 
 	Begin Object Name=DestructibleMeshComponent0
 		StaticMesh=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_112uu'
@@ -150,5 +149,5 @@ defaultproperties
 	DestroyedMesh[1]=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter'
 	DestroyedMesh[2]=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter'
 	DestroyedMesh[3]=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter'
-	DestroyedMesh[4]=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_112uu_90deg_left'
+	DestroyedMesh[4]=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter'
 }

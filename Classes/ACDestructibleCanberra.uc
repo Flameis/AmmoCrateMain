@@ -39,7 +39,7 @@ defaultproperties
 		BlockActors=true
 		BlockZeroExtent=true
 		BlockNonZeroExtent=true
-		BlockRigidBody=false
+		BlockRigidBody=true
 		bNotifyRigidBodyCollision=false
 		Translation=(X=0,Y=0,Z=2)
 		CastShadow=true
@@ -47,7 +47,6 @@ defaultproperties
 		//bAllowMergedDynamicShadows=false
 		bUsePrecomputedShadows=false
 		bForceDirectLightMap=false
-		
 		LightEnvironment=MyLightEnvironment
 	End Object
 	Components.Add(DestructibleMeshComponent)
