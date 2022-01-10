@@ -12,8 +12,6 @@
 class ACDestructible extends Actor
 	config(AmmoCrate);
 
-var() 	StaticMeshComponent					StaticMeshComponent;
-var()  	DynamicLightEnvironmentComponent 	LightEnvironment;
 var()	array<class<DamageType> >			AcceptedDamageTypes;	// Types of Damage that harm this Destructible
 var()	int									StartingHealth;			// Initial Health of this Destructible
 var		int									Health;					// Current Health of this Destructible
@@ -31,12 +29,14 @@ enum ECrateMeshDisplayStuats
 	CMDS_Destroyed,
 };
 
-var repnotify ECrateMeshDisplayStuats CrateDisplayStatus;
+var repnotify ECrateMeshDisplayStuats 			CrateDisplayStatus;
+var repnotify StaticMeshComponent				StaticMeshComponent;
+var repnotify DynamicLightEnvironmentComponent 	LightEnvironment;
 
 replication
 {
-	if (Role == ROLE_Authority)
-		CrateDisplayStatus;
+	if (bNetDirty)
+		CrateDisplayStatus, StaticMeshComponent, LightEnvironment;
 }
 
 simulated event ReplicatedEvent( name VarName )
@@ -53,8 +53,11 @@ simulated event ReplicatedEvent( name VarName )
 
 simulated event PostBeginPlay()
 {
+	StaticMeshComponent = StaticMeshComponent;
+	LightEnvironment = LightEnvironment;
 	Health = StartingHealth;
 	//`log ("ACDestructible::PostBeginPlay()");
+	ForceNetRelevant();
 	super.PostBeginPlay();
 }
 
