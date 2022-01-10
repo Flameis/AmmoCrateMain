@@ -134,6 +134,7 @@ simulated function SpawnPlaceable()
 
 		if ( DoSpawn())
 		{
+			//DoClientSpawn();
 		  	/*if ( Instigator != None && Instigator.InvManager != None )
 			{
 		 		Instigator.InvManager.RemoveFromInventory(Self);
@@ -493,7 +494,7 @@ simulated function bool CanPhysicallyPlace(optional bool bIsInitialCheck = true)
 	return true;
 }
 
-simulated exec function IronSights(){}
+//simulated exec function IronSights(){}
 
 simulated function BeginFire(Byte FireModeNum)
 {
@@ -602,7 +603,7 @@ simulated function StartPlacingItem()
 	GotoState('PlacingItem');
 }
 
-reliable server function bool DoSpawn()
+function bool DoSpawn()
 {
 	local ACDestructible ACD;
 	local Controller ConOwner;
@@ -620,6 +621,7 @@ reliable server function bool DoSpawn()
 		return false;
 	}*/
 	ACD = Spawn(DestructibleClass,,, PlaceLoc, PlaceRot);
+	ACD.bForceNetUpdate = true;
 
 	if ( ACD != none && ConOwner != none)
 	{
@@ -628,6 +630,11 @@ reliable server function bool DoSpawn()
 
 	return false;
 }
+
+/*reliable client function DoClientSpawn()
+{
+	DoSpawn();
+}*/
 
 DefaultProperties
 {
