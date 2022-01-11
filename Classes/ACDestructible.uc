@@ -45,6 +45,14 @@ simulated event ReplicatedEvent( name VarName )
 	{
 		UpdateMeshStatus(CrateDisplayStatus);
 	}
+	else if (VarName == 'StaticMeshComponent')
+	{
+		UpdateMeshStatus(CrateDisplayStatus);
+	}
+	else if (VarName == 'LightEnvironment')
+	{
+		LightEnvironment.SetEnabled(true);
+	}
 	else
 	{
 		Super.ReplicatedEvent(VarName);
@@ -101,6 +109,8 @@ simulated event UpdateMeshStatus(ECrateMeshDisplayStuats newStatus )
 	{
 		if( CrateDisplayStatus == CMDS_Destroyed )
 			PlayDestructionEffects();
+		else
+			StaticMeshComponent.SetStaticMesh(StaticMeshComponent.StaticMesh);
 	}
 }
 
