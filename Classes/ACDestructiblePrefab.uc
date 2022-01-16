@@ -47,22 +47,7 @@ defaultproperties
 	ConfigRot  = (Pitch=0,Yaw=90,Roll=90)
 	Bounds	   = (X=62,Y=15,Z=32)
 	DrawSphereRadius = 66
-
-	RemoteRole=ROLE_SimulatedProxy
-
-	bCollideActors=true
-	bBlockActors=true
-	CollisionType=COLLIDE_BlockAll
-	bProjTarget=true
-	bWorldGeometry=true
-	bCollideWorld=false
-
 	StartingHealth=500//100
-
-	bStatic=false
-	bNoDelete=false
-	bHidden=false
-	bCanBeDamaged=true
 
 	Begin Object Name=MyLightEnvironment
 		bEnabled=true

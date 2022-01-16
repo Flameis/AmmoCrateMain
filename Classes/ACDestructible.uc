@@ -30,13 +30,13 @@ enum ECrateMeshDisplayStuats
 };
 
 var repnotify ECrateMeshDisplayStuats 			CrateDisplayStatus;
-var repnotify StaticMeshComponent				StaticMeshComponent;
-var repnotify DynamicLightEnvironmentComponent 	LightEnvironment;
+var /* repnotify */ StaticMeshComponent				StaticMeshComponent;
+var /* repnotify */ DynamicLightEnvironmentComponent 	LightEnvironment;
 
 replication
 {
 	if (bNetDirty)
-		CrateDisplayStatus, StaticMeshComponent, LightEnvironment;
+		CrateDisplayStatus /* , StaticMeshComponent , LightEnvironment */;
 }
 
 simulated event ReplicatedEvent( name VarName )
@@ -96,6 +96,7 @@ event TakeDamage(int DamageAmount, Controller EventInstigator, vector HitLocatio
 simulated event UpdateMeshStatus(ECrateMeshDisplayStuats newStatus )
 {
 	CrateDisplayStatus = newStatus;
+	StaticMeshComponent = StaticMeshComponent;
 
 	if( WorldInfo.NetMode != NM_DedicatedServer )
 	{
@@ -160,6 +161,12 @@ simulated function PlayDestructionEffects()
 	}
 }
 
+/* event Tick(float DeltaTime)
+{
+	ForceNetRelevant();
+	super.Tick(DeltaTime);
+} */
+
 defaultproperties
 {
 	ConfigLoc  = (X=0,Y=-55,Z=0)
@@ -167,7 +174,9 @@ defaultproperties
 	Bounds	   = (X=62,Y=15,Z=32)
 	DrawSphereRadius = 66
 
-	RemoteRole=ROLE_SimulatedProxy
+	RemoteRole=ROLE_SimulatedProxy 
+	NetPriority = 3
+	bAlwaysRelevant = true
 
 	bCollideActors=true
 	bBlockActors=true
