@@ -41,7 +41,7 @@ auto state StartUp
     }
         
     Begin:
-    SetTimer( 20, true );
+    SetTimer( 40, true );
 }
 
 function ModifyPlayer(Pawn Other)
@@ -154,16 +154,18 @@ reliable server function NameExists(ROVehicleBase VehBase)
 	}
 }
 
-function bool IsMutThere()
+reliable server function bool IsMutThere()
 {
 	local Mutator mut;
+    local array<string> MutName;
     ROGI = ROGameInfo(WorldInfo.Game);
     mut = ROGI.BaseMutator;
 
     for (mut = ROGI.BaseMutator; mut != none; mut = mut.NextMutator)
     {
     `log("IsMutThere test "$string(mut.name));
-        if (string(mut.name) ~= "MutCommands_0")
+    MutName = SplitString(string(mut.name), "_", true);
+        if (MutName[0] ~= "MutCommands")
         {
         `log("MutCommands is activated");
         return true;

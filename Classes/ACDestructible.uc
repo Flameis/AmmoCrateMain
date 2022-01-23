@@ -29,9 +29,9 @@ enum ECrateMeshDisplayStuats
 	CMDS_Destroyed,
 };
 
-var repnotify ECrateMeshDisplayStuats 			CrateDisplayStatus;
-var /* repnotify */ StaticMeshComponent				StaticMeshComponent;
-var /* repnotify */ DynamicLightEnvironmentComponent 	LightEnvironment;
+var repnotify ECrateMeshDisplayStuats 		CrateDisplayStatus;
+var StaticMeshComponent						StaticMeshComponent;
+var DynamicLightEnvironmentComponent 		LightEnvironment;
 
 replication
 {

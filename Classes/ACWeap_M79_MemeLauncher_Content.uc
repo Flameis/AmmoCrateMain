@@ -423,7 +423,7 @@ defaultproperties
 	WeaponProjectiles(ALTERNATE_FIREMODE)=class'ACM79GrenadeProjectileWP'
 	FireInterval(ALTERNATE_FIREMODE)=0.15
 	DelayedRecoilTime(ALTERNATE_FIREMODE)=0.01
-	Spread(ALTERNATE_FIREMODE)=0.7
+	Spread(ALTERNATE_FIREMODE)=0.8
 	NumProjectiles(ALTERNATE_FIREMODE)=100
 
 	SecondaryRecoilMod=0.75	//0.5
