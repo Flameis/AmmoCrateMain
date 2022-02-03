@@ -1,15 +1,18 @@
 //=============================================================================
-// ACWeap_MolotovQuad
+// ACWeap_TripwireTrapQuadAllowable
 //=============================================================================
-// Weapon class for the 4 molotov loadout
+// Weapon class for the Vietnamese Tripwire Trap with 4 allowable traps
 //=============================================================================
 // Rising Storm 2: Vietnam Source
 // Copyright (C) 2016 Tripwire Interactive LLC
-// Edited for the 29th by Reimer, Tested and Published by Scovel
+// Edited by the 29th by Reimer, Tested and Published by Scovel
 //=============================================================================
-class ACWeap_MolotovTriad extends ROWeap_Molotov;
+class ACWeap_Tripwire_Quad extends ROWeap_TripwireTrap;
 
 DefaultProperties
 {
-	WeaponContentClass(0)="AmmoCrate.ACWeap_MolotovTriadContent"
+	WeaponContentClass(0)="AmmoCrate.ACWeap_Tripwire_Quad_Content"
+	MaxAmmoCount=4
+	InitialNumPrimaryMags=4
+	MaxNumPrimaryMags=4
 }

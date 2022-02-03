@@ -9,22 +9,44 @@
 // - Many modifications to use faction-based menshes, animations, etc. -Nate
 //============================================================================
 
-class ACItem_AmmoCrate extends ROItem_PlaceableAmmoCrate;
+class ACItem_AmmoCrate extends ROItemPlaceable
+	abstract;
+
+var class<ROPlaceableAmmoResupply>	AmmoCrateClass; 				// Spawning Class Reference
+var class<ROPlaceableAmmoResupplyCrate>	PhysicalAmmoCrateClass;		// Preview Mesh Reference
+
+// A proxy constructor item placed in the world. Generally, this is spawned and used to play an animation for the thing "deploying" in the world such as an ammo box with it's lid sliding open. -Nate
+var class<ROConstructorProxy> 			ClassConstructorProxy;
+var ROConstructorProxy 					ConstructorProxy;
+
+var byte 				TeamIdx;				// Team index of the planter. This will be used to check other players before resupplying them.
+
+var(Animations) name IdleClosedAnim;
+var(Animations) name IdleOpenAnim;
+var(Animations) name OpenCrateAnim;
+
+var	int			CooldownRemaining;				// Used for HUD messaging
+
+var int 		MinDistFromOtherAmmoCrates; 	// Distance we need to be from other crates in order to be able to plant successfully.
+var int 		MinDistFromOtherAmmoCratesSq; 	// Same as above but squared for distance checking.
 
 simulated function PostBeginPlay()
 {
+
 	if ( PhysicalAmmoCrateClass != none )
 	{
 		ReferenceSkeletalMesh = PhysicalAmmoCrateClass.default.CrateMesh.SkeletalMesh;
 	}
 	else
 	{
-		`Warn("No or Invalid 'PhysicalAmmoCrateClass' set in 'ROItem_PlaceableAmmoCrate'");
+		WarnInternal("No or Invalid 'PhysicalAmmoCrateClass' set in 'ROItem_AmmoCrate'");
 	}
 
 	MinDistFromOtherAmmoCratesSq = MinDistFromOtherAmmoCrates * MinDistFromOtherAmmoCrates;
 	super.PostBeginPlay();
 }
+
+simulated exec function IronSights(){}
 
 simulated function BeginFire(Byte FireModeNum)
 {
@@ -141,6 +163,113 @@ simulated function bool CanPlace(optional bool bIsInitialCheck = true)
 	return false;
 }
 
+// OVERRRIDDEN to use our version of CanPlace which checks for disnace to other ammo crates.
+simulated event Tick(float DeltaTime)
+{
+	if ( Instigator.IsLocallyControlled() ) // Only do these checks on the controlling client, nowhere else
+	{
+		if (IsInState('Active') && !IsInState('PlacingItem'))
+		{
+			bLastCheckSuccessful = CanPlace() && CanPhysicallyPlace();
+
+			if(!bLastCheckWasHardFail)
+			{
+				ShowPreviewMesh();
+				UpdatePreviewMesh();
+			}
+			else
+			{
+				HidePreviewMesh();
+			}
+		}
+		else
+		{
+			bLastCheckSuccessful = false;
+			bLastCheckWasHardFail = true;
+			HidePreviewMesh();
+		}
+	}
+
+	// Call ROWeapon's super so we can bypass the parent class' version of the checks which would turn on the preview mesh unnecessarily.
+	Super(ROweapon).Tick(DeltaTime);
+}
+
+simulated function StartPlacingItem()
+{
+	GotoState('PlacingItem');
+
+	// Now try to spawn our proxy constructor and kick off it's "constructing" animation.
+	if(Role == ROLE_Authority)
+	{
+		if(ConstructorProxy != None)
+		{
+			ConstructorProxy.Destroyed();
+			ConstructorProxy = None;
+		}
+
+		ConstructorProxy = Spawn(ClassConstructorProxy, self, , PlaceLoc, PlaceRot);
+
+		if(ConstructorProxy != none)
+		{
+			// This will play the animation at the rate from the animation or just play it at a default if it can't get that for some reason.
+			ConstructorProxy.PlayConstructingAnimation();
+		}
+	}
+}
+
+simulated function SpawnPlaceable()
+{
+	// Destory our constructor proxy.
+	if(ConstructorProxy != None)
+	{
+		ConstructorProxy.Destroy();
+		ConstructorProxy = None;
+	}
+
+	Super.SpawnPlaceable();
+}
+
+
+function bool DoActualSpawn()
+{
+	local ROPlaceableAmmoResupply ROPAR;
+	local Controller ConOwner;
+	local ROPlayerController ROPC;
+
+	ConOwner = (Instigator != none) ? Instigator.Controller : none;
+
+	ROPAR = Spawn(AmmoCrateClass, ConOwner,, PlaceLoc, PlaceRot);
+
+	if ( ROPAR != none )
+	{
+		ROPC = ROPlayerController(ConOwner);
+
+		if(ROPC != None)
+		{
+			ROPC.AddPlacedAmmoCrate(ROPAR);
+		}
+
+		if(Instigator != None && Instigator.InvManager != None)
+		{
+			Instigator.InvManager.RemoveFromInventory(self);
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+simulated function AlertPlacingTime(float PlacingTime)
+{
+	if ( Role == ROLE_Authority )
+	{
+	   	// Show the progress bar
+	   	if ( ROPawn(Instigator) != none )
+	  		ROPawn(Instigator).StartDeployAmmoCrate(PlacingTime);
+	}
+}
+
 DefaultProperties
 {
 	WeaponContentClass(0)="AmmoCrate.ACItem_AmmoCrate_Content"
@@ -201,7 +330,7 @@ DefaultProperties
 
 	MinDistFromOtherAmmoCrates=50 // 30m = 30 * 50. 30m sq. = 30 * 50 ^ 2
 
-	bCanThrow=false
+	bCanThrow=true
 	DroppedPickupMesh=None
 	PickupFactoryMesh=None
 }

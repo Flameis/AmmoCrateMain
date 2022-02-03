@@ -8,7 +8,7 @@
 // - Sturt "Psycho Ch!cken" Jeffery @ Antimatter Games
 // Edited for the 29th by Reimer, Tested and Published by Scovel
 //=============================================================================
-class ACWeap_M18ClaymoreQuadContent extends ACWeap_M18ClaymoreQuad;
+class ACWeap_M18_Claymore_Quad_Content extends ACWeap_M18_Claymore_Quad;
 
 
 DefaultProperties

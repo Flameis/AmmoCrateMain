@@ -7,7 +7,7 @@
 // Copyright (C) 2016 Tripwire Interactive LLC
 // Edited for the 29th by Reimer, Tested and Published by Scovel
 //=============================================================================
-class ACWeap_MolotovTriadContent extends ACWeap_MolotovTriad;
+class ACWeap_Molotov_Triad_Content extends ACWeap_Molotov_Triad;
 
 
 DefaultProperties

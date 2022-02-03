@@ -27,8 +27,8 @@ defaultproperties
 	// HE and Smoke
 	AltAmmoLoadouts(1)=(WeaponContentClassIndex=2)
 
-	InitialNumPrimaryMags=15
-	MaxNumPrimaryMags=15
+	InitialNumPrimaryMags=13
+	MaxNumPrimaryMags=13
 	AmmoClass=class'ACAmmo_40x46_M79Grenade'
 	
 	SightRanges[0]=(SightRange=50,SightPitch=0,SightSlideOffset=0.0,SightPositionOffset=-0.0, AddedPitch=300)

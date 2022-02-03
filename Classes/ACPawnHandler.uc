@@ -271,7 +271,7 @@ static function bool CopyConfigToClass(int Team, int ArmyIndex, int SourceClassI
 			case NFOR_NLF:
 			for (i = 0; i < default.ACNLFConfigsByClass.length; i++)
 			{
-				if (i <= `ACCI_Commander)
+				if (i <= `ACCI_Tank)
 				{
 					default.ACNLFConfigsByClass[i].TunicMesh		= default.ACNLFConfigsByClass[SourceClassIndex].TunicMesh;
 					default.ACNLFConfigsByClass[i].TunicMaterial	= default.ACNLFConfigsByClass[SourceClassIndex].TunicMaterial;
@@ -290,7 +290,7 @@ static function bool CopyConfigToClass(int Team, int ArmyIndex, int SourceClassI
 			case NFOR_NVA:
 			for (i = 0; i < default.ACNVAConfigsByClass.length; i++)
 			{
-				if (i <= `ACCI_Commander)
+				if (i <= `ACCI_Tank)
 				{
 					default.ACNVAConfigsByClass[i].TunicMesh		= default.ACNVAConfigsByClass[SourceClassIndex].TunicMesh;
 					default.ACNVAConfigsByClass[i].TunicMaterial	= default.ACNVAConfigsByClass[SourceClassIndex].TunicMaterial;
@@ -314,7 +314,7 @@ static function bool CopyConfigToClass(int Team, int ArmyIndex, int SourceClassI
 			case SFOR_USArmy:
 			for (i = 0; i < default.ACUSArmyConfigsByClass.length; i++)
 			{
-				if (i <= `ACCI_Commander)
+				if (i <= `ACCI_Tank)
 				{
 					default.ACUSArmyConfigsByClass[i].TunicMesh		= default.ACUSArmyConfigsByClass[SourceClassIndex].TunicMesh;
 					default.ACUSArmyConfigsByClass[i].TunicMaterial	= default.ACUSArmyConfigsByClass[SourceClassIndex].TunicMaterial;
@@ -333,7 +333,7 @@ static function bool CopyConfigToClass(int Team, int ArmyIndex, int SourceClassI
 			case SFOR_USMC:
 			for (i = 0; i < default.ACUSMCConfigsByClass.length; i++)
 			{
-				if (i <= `ACCI_Commander)
+				if (i <= `ACCI_Tank)
 				{
 					default.ACUSMCConfigsByClass[i].TunicMesh			= default.ACUSMCConfigsByClass[SourceClassIndex].TunicMesh;
 					default.ACUSMCConfigsByClass[i].TunicMaterial		= default.ACUSMCConfigsByClass[SourceClassIndex].TunicMaterial;
@@ -352,7 +352,7 @@ static function bool CopyConfigToClass(int Team, int ArmyIndex, int SourceClassI
 			case SFOR_ARVN:
 			for (i = 0; i < default.ACARVNConfigsByClass.length; i++)
 			{
-				if (i <= `ACCI_Commander)
+				if (i <= `ACCI_Tank)
 				{
 					default.ACARVNConfigsByClass[i].TunicMesh			= default.ACARVNConfigsByClass[SourceClassIndex].TunicMesh;
 					default.ACARVNConfigsByClass[i].TunicMaterial		= default.ACARVNConfigsByClass[SourceClassIndex].TunicMaterial;
@@ -371,7 +371,7 @@ static function bool CopyConfigToClass(int Team, int ArmyIndex, int SourceClassI
 			case SFOR_AusArmy:
 			for (i = 0; i < default.ACAusArmyConfigsByClass.length; i++)
 			{
-				if (i <= `ACCI_Commander)
+				if (i <= `ACCI_Tank)
 				{
 					default.ACAusArmyConfigsByClass[i].TunicMesh		= default.ACAusArmyConfigsByClass[SourceClassIndex].TunicMesh;
 					default.ACAusArmyConfigsByClass[i].TunicMaterial	= default.ACAusArmyConfigsByClass[SourceClassIndex].TunicMaterial;

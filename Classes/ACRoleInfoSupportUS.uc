@@ -12,7 +12,7 @@ DefaultProperties
 	Items[RORIGM_Default]={(
 					// Primary : DEFAULTS
 					PrimaryWeapons=(class'ROGame.ROWeap_M16A1_AssaultRifle',class'ROGame.ROWeap_M14_Rifle'),
-					SecondaryWeapons=(class'ROGame.ROWeap_M1911_Pistol',class'ROGame.ROWeap_M1917_Pistol',),
+					SecondaryWeapons=(class'ROGame.ROWeap_M1911_Pistol',class'ROGame.ROWeap_M1917_Pistol'),
 					// Other items
 					OtherItems=(class'ROGame.ROWeap_M8_Smoke',class'AmmoCrate.ACItem_USAmmoCrate',class'ROGame.ROItem_BinocularsUS'),
 					OtherItemsStartIndexForPrimary=(0, 0),

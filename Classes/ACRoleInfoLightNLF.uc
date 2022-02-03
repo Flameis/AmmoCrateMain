@@ -20,7 +20,7 @@ DefaultProperties
 					// Primary : DEFAULTS
 					PrimaryWeapons=(class'ROGame.ROWeap_IZH43_Shotgun',class'ROGame.ROWeap_MAT49_SMG',class'ROGame.ROWeap_PPSH41_SMG',class'ROGame.ROWeap_MP40_SMG',class'ROGame.ROWeap_K50M_SMG',class'ROGame.ROWeap_IZH43_Shotgun'),
 					SecondaryWeapons=(class'ROGame.ROWeap_TT33_Pistol',class'ROGame.ROWeap_PM_Pistol'),
-					OtherItems=(class'AmmoCrate.ACWeap_MolotovTriad',class'AmmoCrate.ACWeap_TripwireQuad',class'AmmoCrate.ACWeap_FougQuad',class'ROGame.ROWeap_RDG1_Smoke',class'ROGame.ROItem_Binoculars'),
+					OtherItems=(class'AmmoCrate.ACWeap_Molotov_Triad',class'AmmoCrate.ACWeap_Tripwire_Quad',class'AmmoCrate.ACWeap_FougQuad',class'ROGame.ROWeap_RDG1_Smoke',class'ROGame.ROItem_Binoculars'),
 					OtherItemsStartIndexForPrimary=(1, 1, 1, 1, 1, 0),
 					NumOtherItemsForPrimary=(5, 5, 5, 5, 5, 1),
 	)}

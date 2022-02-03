@@ -14,10 +14,18 @@ var array<String> 	HitVicName;
 function PreBeginPlay()
 {
     `log("AmmoCrateMutator init");
+
+    if (!IsGOMThere())
+    {
+        ROGameInfo(WorldInfo.Game).PlayerControllerClass = class'ACPlayerController';
+        ROGameInfo(WorldInfo.Game).PlayerReplicationInfoClass = class'ACPlayerReplicationInfo';
+        ROGameInfo(WorldInfo.Game).PawnHandlerClass = class'ACPawnHandler';
+    }
+    else
+    {
+        SetTimer(5, false, 'InfiniteRoles');
+    }
     
-    ROGameInfo(WorldInfo.Game).PlayerControllerClass = class'ACPlayerController';
-    ROGameInfo(WorldInfo.Game).PlayerReplicationInfoClass = class'ACPlayerReplicationInfo';
-    ROGameInfo(WorldInfo.Game).PawnHandlerClass = class'ACPawnHandler';
         
     /* if (ROGameInfo(WorldInfo.Game).PawnHandlerClass != class'ACPawnHandler')
     {
@@ -31,6 +39,20 @@ function PreBeginPlay()
     StaticSaveConfig();
 
     super.PreBeginPlay();
+}
+
+function InfiniteRoles()
+{
+    local int i;
+    ROMI = ROMapInfo(WorldInfo.GetMapInfo());
+    for (i = 0; i < ROMI.SouthernRoles.length; i++)
+    {
+        ROMI.SouthernRoles[i].Count = 255;
+    }    
+    for (i = 0; i < ROMI.NorthernRoles.length; i++)
+    {
+        ROMI.NorthernRoles[i].Count = 255;
+    }
 }
 
 auto state StartUp
@@ -154,7 +176,7 @@ reliable server function NameExists(ROVehicleBase VehBase)
 	}
 }
 
-reliable server function bool IsMutThere()
+function bool IsMutThere()
 {
 	local Mutator mut;
     local array<string> MutName;
@@ -172,124 +194,153 @@ reliable server function bool IsMutThere()
         }
     }
 }
+
+function bool IsGOMThere()
+{
+	local Mutator mut;
+    ROGI = ROGameInfo(WorldInfo.Game);
+    mut = ROGI.BaseMutator;
+
+    for (mut = ROGI.BaseMutator; mut != none; mut = mut.NextMutator)
+    {
+    `log("IsMutThere test "$string(mut.name));
+        if(InStr(string(mut.name), "GOM", ,true) != -1) 
+        {
+            return true;
+        }
+    }
+}
     
 function PrivateMessage(PlayerController receiver, coerce string msg)
 {
     receiver.TeamMessage(None, msg, '');
 }
 
+/* function Salute(PlayerController Sender)
+{
+    local ROPawn Pawn;
+
+    Pawn = ROPawn(Sender.Pawn);
+
+    Pawn.ThirdPersonHeadAndArmsMeshComponent.PlayAnim(SaluteAnimV2);
+} */
+
 singular function Mutate(string MutateString, PlayerController PC) //no prefixes, also call super function!
 {
-        local array<string>     Args;
-        local string            command;
-        local string            NameValid;
+    local array<string>     Args;
+    local string            command;
+    local string            NameValid;
 
-        ROGI = ROGameInfo(WorldInfo.Game);
-        Args = SplitString(MutateString, " ", true);
-        command = Caps(Args[0]);
-        PlayerName = PC.PlayerReplicationInfo.PlayerName;
+    ROGI = ROGameInfo(WorldInfo.Game);
+    Args = SplitString(MutateString, " ", true);
+    command = Caps(Args[0]);
+    PlayerName = PC.PlayerReplicationInfo.PlayerName;
 
-			Switch (Command)
+		Switch (Command)
+        {
+            //case "SPAWNBARRICADE":
+            //SpawnBarricade(PC);
+            //break;
+
+            case "GIVEB":
+            SpawnBarricadeTool(PC, Args[1], int(Args[2]));
+            break;
+
+            case "CLEARB":
+            ClearBarricades();
+            break;
+
+            case "DELB":
+            DelBarricade(PC);
+            break;
+
+            case "ISMUTTHERE":
+            IsMutThere();
+            break;
+
+            /* case "SALUTE":
+            Salute(PC);
+            break; */
+        }
+        if (!IsMutThere())
+        {
+            switch (command)
             {
-                //case "SPAWNBARRICADE":
-                //SpawnBarricade(PC);
-                //break;
-
-                case "GIVEB":
-                SpawnBarricadeTool(PC, Args[1], int(Args[2]));
-                break;
-
-                case "CLEARB":
-                ClearBarricades();
-                break;
-
-                case "DELB":
-                DelBarricade(PC);
-                break;
-
-                case "ISMUTTHERE":
-                IsMutThere();
-                break;
-            }
-            if (!IsMutThere())
-            {
-                switch (command)
+                case "GIVEWEAPON":
+                GiveWeapon(PC, Args[1], NameValid, false, 100);
+                if (NameValid != "False")
                 {
-                    case "GIVEWEAPON":
-                    GiveWeapon(PC, Args[1], NameValid, false, 100);
-                    if (NameValid != "False")
-                    {
-                        WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" spawned a "$Args[1]);
-                        `log("[29thExtras] "$PlayerName$" spawned a "$Args[1]$"");
-                    }
-                    else
-                    {
-                        `log("[MutCommands] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
-                        PrivateMessage(PC, "Not a valid weapon name.");
-                    }
-                    break;
-
-                    case "GIVEWEAPONALL":
-                    GiveWeapon(PC, Args[1], NameValid, true);
-                    if (NameValid != "False")
-                    {
-                        WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" gave a "$Args[1]$" to everyone");
-                        `log("[29thExtras] "$PlayerName$" spawned a "$Args[1]$"");
-                    }
-                    else
-                    {
-                        `log("[MutCommands] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
-                        PrivateMessage(PC, "Not a valid weapon name.");
-                    }
-                    break;
-
-                    case "GIVEWEAPONNORTH":
-                    GiveWeapon(PC, Args[1], NameValid, false, `AXIS_TEAM_INDEX);
-                    if (NameValid != "False")
-                    {
-                        WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" gave a "$Args[1]$" to the north");
-                        `log("[29thExtras] "$PlayerName$" gave a "$Args[1]$" to the north");
-                    }
-                    else
-                    {
-                        `log("[MutCommands] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
-                        PrivateMessage(PC, "Not a valid weapon name.");
-                    }
-                    break;
-
-                    case "GIVEWEAPONSOUTH":
-                    GiveWeapon(PC, Args[1], NameValid, false, `ALLIES_TEAM_INDEX);
-                    if (NameValid != "False")
-                    {
-                        WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" gave a "$Args[1]$" to the south");
-                        `log("[29thExtras] "$PlayerName$" gave a "$Args[1]$" to the south");
-                    }
-                    else
-                    {
-                        `log("[MutCommands] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
-                        PrivateMessage(PC, "Not a valid weapon name.");
-                    }
-                    break;
-
-                    case "SPAWNVEHICLE":
-                    SpawnVehicle(PC, Args[1], NameValid);
-                    if (NameValid != "False")
-                    {
-                        WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" spawned a "$Args[1]$"");
-                        `log("[29thExtras] "$PlayerName$" spawned a "$Args[1]$"");
-                    }
-                    else
-                    {
-                        `log("[MutCommands] Spawnvehicle failed! "$PlayerName$" tried to spawn a "$Args[1]);
-                        PrivateMessage(PC, "Not a valid vehicle name.");
-                    }
-                    break;
-
-                    case "CLEARVEHICLES":
-                    ClearVehicles();
-                    break;
+                    WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" spawned a "$Args[1]);
+                    `log("[29thExtras] "$PlayerName$" spawned a "$Args[1]$"");
                 }
+                else
+                {
+                    `log("[MutCommands] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
+                    PrivateMessage(PC, "Not a valid weapon name.");
+                }
+                break;
+
+                case "GIVEWEAPONALL":
+                GiveWeapon(PC, Args[1], NameValid, true);
+                if (NameValid != "False")
+                {
+                    WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" gave a "$Args[1]$" to everyone");
+                    `log("[29thExtras] "$PlayerName$" spawned a "$Args[1]$"");
+                }
+                else
+                {
+                    `log("[MutCommands] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
+                    PrivateMessage(PC, "Not a valid weapon name.");
+                }
+                break;
+
+                case "GIVEWEAPONNORTH":
+                GiveWeapon(PC, Args[1], NameValid, false, `AXIS_TEAM_INDEX);
+                if (NameValid != "False")
+                {
+                    WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" gave a "$Args[1]$" to the north");
+                    `log("[29thExtras] "$PlayerName$" gave a "$Args[1]$" to the north");
+                }
+                else
+                {
+                    `log("[MutCommands] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
+                    PrivateMessage(PC, "Not a valid weapon name.");
+                }
+                break;
+
+                case "GIVEWEAPONSOUTH":
+                GiveWeapon(PC, Args[1], NameValid, false, `ALLIES_TEAM_INDEX);
+                if (NameValid != "False")
+                {
+                    WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" gave a "$Args[1]$" to the south");
+                    `log("[29thExtras] "$PlayerName$" gave a "$Args[1]$" to the south");
+                }
+                else
+                {
+                    `log("[MutCommands] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
+                    PrivateMessage(PC, "Not a valid weapon name.");
+                }
+                break;
+
+                case "SPAWNVEHICLE":
+                SpawnVehicle(PC, Args[1], NameValid);
+                if (NameValid != "False")
+                {
+                    WorldInfo.Game.Broadcast(self, "[29thExtras] "$PlayerName$" spawned a "$Args[1]$"");
+                    `log("[29thExtras] "$PlayerName$" spawned a "$Args[1]$"");
+                }
+                else
+                {
+                    `log("[MutCommands] Spawnvehicle failed! "$PlayerName$" tried to spawn a "$Args[1]);
+                    PrivateMessage(PC, "Not a valid vehicle name.");
+                }
+                break;
+
+                case "CLEARVEHICLES":
+                ClearVehicles();
+                break;
             }
+        }
     super.Mutate(MutateString, PC);
 }
 
@@ -325,20 +376,9 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
 
 simulated function SpawnBarricadeTool(PlayerController PC, string ObjectName, int Amount)
 {
-    //local vector                        CamLoc, StartShot, EndShot, X, Y, Z, Hitnormal, BelowVector;
-	//local rotator                       CamRot;
-    //local ACItemPlaceable                   ACIP;
-    //local class<ACItemPlaceableContent>     ACIPC;
-    //local class<ACDestructible>             DC;
     local ROInventoryManager                InvManager;
     local array<ROWeapon>                   WeaponList;
     local ROWeapon                          Weapon;
-    //local class<ACDestructible>         SANDBAGS;
-    //local class<ACDestructible>         SKYRAIDER;
-    //local class<ACDestructible>         PHANTOM;
-    //local class<ACDestructible>         BIRDDOG;
-    //local class<ACDestructible>         CANBERRA;
-    //local class<ACDestructible>         HOWITZER; 
 
     InvManager = ROInventoryManager(PC.Pawn.InvManager);
     //ACIPC = ACItemPlaceableContent(ACIP);
@@ -354,40 +394,40 @@ simulated function SpawnBarricadeTool(PlayerController PC, string ObjectName, in
     switch (ObjectName)
     {
         case "SANDBAGS":
-        InvManager.CreateInventory(class'ACItemPlaceableSandbag', false, true);
-        break;
+            InvManager.CreateInventory(class'ACItemPlaceableSandbag', false, true);
+            break;
 
         case "SKYRAIDER":
-        InvManager.CreateInventory(class'ACItemPlaceableSkyraider', false, true);
-        break;
+            InvManager.CreateInventory(class'ACItemPlaceableSkyraider', false, true);
+            break;
 
         case "PHANTOM":
-        InvManager.CreateInventory(class'ACItemPlaceablePhantom', false, true);
-        break;
+            InvManager.CreateInventory(class'ACItemPlaceablePhantom', false, true);
+            break;
 
         case "BIRDDOG":
-        InvManager.CreateInventory(class'ACItemPlaceableBirddog', false, true);
-        break;
+            InvManager.CreateInventory(class'ACItemPlaceableBirddog', false, true);
+            break;
 
         case "CANBERRA":
-        InvManager.CreateInventory(class'ACItemPlaceableCanberra', false, true);
-        break;
+            InvManager.CreateInventory(class'ACItemPlaceableCanberra', false, true);
+            break;
 
         case "HOWITZER":
-        InvManager.CreateInventory(class'ACItemPlaceableHowitzer', false, true);
-        break;
+            InvManager.CreateInventory(class'ACItemPlaceableHowitzer', false, true);
+            break;
 
         case "FRENCHBUNKER":
-        InvManager.CreateInventory(class'ACItemPlaceableFrenchBunker', false, true);
-        break;
+            InvManager.CreateInventory(class'ACItemPlaceableFrenchBunker', false, true);
+            break;
 
         case "BUSH":
-        InvManager.CreateInventory(class'ACItemPlaceableBush01', false, true);
-        break;
+            InvManager.CreateInventory(class'ACItemPlaceableBush01', false, true);
+            break;
 
         case "PREFAB":
-        InvManager.CreateInventory(class'ACItemPlaceableSandbagPrefab', false, true);
-        break;
+            InvManager.CreateInventory(class'ACItemPlaceableSandbagPrefab', false, true);
+            break;
     }
 
     InvManager.GetWeaponList(WeaponList);
@@ -528,27 +568,27 @@ function SpawnVehicle(PlayerController PC, string VehicleName, out string NameVa
     {
         // Vanilla
         case "Cobra":
-        ROHelo = Spawn(Cobra, , , EndShot, camrot);
-        break;
+            ROHelo = Spawn(Cobra, , , EndShot, camrot);
+            break;
 
         case "Loach":
-        ROHelo = Spawn(Loach, , , EndShot, camrot);
-        break;
+            ROHelo = Spawn(Loach, , , EndShot, camrot);
+            break;
 
         case "Huey":
-        ROHelo = Spawn(Huey, , , EndShot, camrot);
-        break;
+            ROHelo = Spawn(Huey, , , EndShot, camrot);
+            break;
 
         case "Bushranger":
-        ROHelo = Spawn(Bushranger, , , EndShot, camrot);
-        break;
+            ROHelo = Spawn(Bushranger, , , EndShot, camrot);
+            break;
 
         default:
-        NameValid = "False";
-        break;
+            NameValid = "False";
+            break;
     }
 
-    ROHelo.Mesh.AddImpulse(vect(0,0,1), ROHelo.Location);
+    ROHelo.Mesh.AddImpulse(vect(0,0,-1), ROHelo.Location);
     ROHelo.bTeamLocked = false;
     ROHelo.Team = 2;
 }
