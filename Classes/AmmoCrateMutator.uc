@@ -185,14 +185,15 @@ function bool IsMutThere()
 
     for (mut = ROGI.BaseMutator; mut != none; mut = mut.NextMutator)
     {
-    `log("IsMutThere test "$string(mut.name));
-    MutName = SplitString(string(mut.name), "_", true);
+        `log("IsMutThere test "$string(mut.name));
+        MutName = SplitString(string(mut.name), "_", true);
         if (MutName[0] ~= "MutCommands")
         {
-        `log("MutCommands is activated");
-        return true;
+            `log("MutCommands is activated");
+            return true;
         }
     }
+    return false;
 }
 
 function bool IsGOMThere()
@@ -203,14 +204,15 @@ function bool IsGOMThere()
 
     for (mut = ROGI.BaseMutator; mut != none; mut = mut.NextMutator)
     {
-    `log("IsMutThere test "$string(mut.name));
+        `log("IsMutThere test "$string(mut.name));
         if(InStr(string(mut.name), "GOM", ,true) != -1) 
         {
             return true;
         }
     }
+    return false;
 }
-    
+
 function PrivateMessage(PlayerController receiver, coerce string msg)
 {
     receiver.TeamMessage(None, msg, '');
