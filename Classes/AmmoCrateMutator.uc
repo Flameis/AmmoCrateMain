@@ -15,18 +15,20 @@ function PreBeginPlay()
 {
     `log("AmmoCrateMutator init");
 
-    if (!IsGOMThere())
+    if (IsWWThere())
+    {
+        SetTimer(2, false, 'InfiniteRoles');
+    }
+    else if (IsGOMThere())
+    {
+        SetTimer(2, false, 'InfiniteRoles');
+    }
+    else
     {
         ROGameInfo(WorldInfo.Game).PlayerControllerClass = class'ACPlayerController';
         ROGameInfo(WorldInfo.Game).PlayerReplicationInfoClass = class'ACPlayerReplicationInfo';
         ROGameInfo(WorldInfo.Game).PawnHandlerClass = class'ACPawnHandler';
     }
-    else
-    {
-        SetTimer(5, false, 'InfiniteRoles');
-    }
-    
-        
     /* if (ROGameInfo(WorldInfo.Game).PawnHandlerClass != class'ACPawnHandler')
     {
         `log("Error replacing Pawn Handler");
@@ -148,7 +150,7 @@ reliable server function NameExists(ROVehicleBase VehBase)
 		HitNum[I] += 1;
         PrivateMessage(PlayerController(ROV.Seats[0].StoragePawn.Controller), "You have "$MaxHitsForVic-HitNum[I]$" hits left before your vehicle is blown up!");
         PrivateMessage(PlayerController(ROV.Seats[1].StoragePawn.Controller), "You have "$MaxHitsForVic-HitNum[I]$" hits left before your vehicle is blown up!");
-        `log ("Hitvicname "$HitVicName[I]$" has "$MaxHitsForVic-HitNum[I]$" hits remaining");
+        `log ("Hitvicname: "$HitVicName[I]$" has "$MaxHitsForVic-HitNum[I]$" hits remaining");
 			
             if (HitNum[I] >= MaxHitsForVic)
 			{
@@ -192,6 +194,17 @@ function bool IsMutThere()
             `log("MutCommands is activated");
             return true;
         }
+    }
+    return false;
+}
+
+function bool IsWWThere()
+{
+    local string WWName;
+    WWName = class'Engine'.static.GetCurrentWorldInfo().GetMapName(true);
+    if (InStr(WWName, "WW") != -1)
+    {
+        return true;
     }
     return false;
 }
@@ -430,6 +443,10 @@ simulated function SpawnBarricadeTool(PlayerController PC, string ObjectName, in
         case "PREFAB":
             InvManager.CreateInventory(class'ACItemPlaceableSandbagPrefab', false, true);
             break;
+
+        case "M2BROWNING":
+            InvManager.CreateInventory(class'ACItemPlaceableTurretM2', false, true);
+            break;
     }
 
     InvManager.GetWeaponList(WeaponList);
@@ -446,11 +463,16 @@ simulated function SpawnBarricadeTool(PlayerController PC, string ObjectName, in
 
 function ClearBarricades()
 {
-    local ACDestructible ACD;
+    local ACDestructible                ACD;
+    local ACTurret_M2_HMG_Destroyable   ACTM2;
 
     foreach WorldInfo.AllActors(class'AmmoCrate.ACDestructible', ACD)
     {
         ACD.Destroy();
+    }
+    foreach WorldInfo.AllActors(class'ACTurret_M2_HMG_Destroyable', ACTM2)
+    {
+        ACTM2.Destroy();
     }
 }
 

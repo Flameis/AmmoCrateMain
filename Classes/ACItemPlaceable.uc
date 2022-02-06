@@ -11,7 +11,7 @@
 class ACItemPlaceable extends ROItemPlaceable
 	abstract;
 
-var 	class<ACDestructible>		DestructibleClass;				// Spawning Class Reference
+var 	class<Actor>				DestructibleClass;				// Spawning Class Reference
 var 	vector						ConfigLoc, Bounds, Location2;
 var 	rotator						ConfigRot;
 var		String 						ConfigName;
@@ -605,24 +605,13 @@ simulated function StartPlacingItem()
 
 function bool DoSpawn()
 {
-	local ACDestructible ACD;
+	local Actor ACD;
 	local Controller ConOwner;
-	//local ROPlayerController ROPC;
 
 	ConOwner = (Instigator != none) ? Instigator.Controller : none;
-	
-	/*switch (DestructibleClass)
-	{
-		case class'ACDestructible':
-		Spawn(class'ACDestructible',,, PlaceLoc, PlaceRot);
-		return true;
 
-		default:
-		return false;
-	}*/
 	ACD = Spawn(DestructibleClass,,, PlaceLoc, PlaceRot);
 	ACD.bForceNetUpdate = true;
-
 	if ( ACD != none && ConOwner != none)
 	{
 		return true;
@@ -630,11 +619,6 @@ function bool DoSpawn()
 
 	return false;
 }
-
-/*reliable client function DoClientSpawn()
-{
-	DoSpawn();
-}*/
 
 DefaultProperties
 {
