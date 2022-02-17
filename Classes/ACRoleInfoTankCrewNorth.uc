@@ -17,6 +17,7 @@ defaultproperties
 	ClassTier=4
 	ClassIndex=8
 	bIsTankCommander=true
+	bBotSelectable = false
 
 	Items[RORIGM_Default]={(
 					// Primary : DEFAULTS
