@@ -21,7 +21,7 @@ defaultproperties
 
 	Items[RORIGM_Default]={(
 					// Primary : DEFAULTS
-					PrimaryWeapons=(class'ROGameContent.ROWeap_AK47_AssaultRifle_Type56_1'),
+					PrimaryWeapons=(class'ROGame.ROWeap_AK47_AssaultRifle'),
 					SecondaryWeapons=(class'ROGame.ROWeap_TT33_Pistol',class'ROGame.ROWeap_PM_Pistol'),					
 		)}
 

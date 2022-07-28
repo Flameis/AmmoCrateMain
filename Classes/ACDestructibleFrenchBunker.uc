@@ -13,7 +13,7 @@ class ACDestructibleFrenchBunker extends ACDestructible;
 
 defaultproperties
 {
-	StartingHealth=2000
+	StartingHealth=1200
 
 	AcceptedDamageTypes(0)=Class'ROGame.RODmgType_RPG7Rocket'
     AcceptedDamageTypes(1)=Class'ROGame.RODmgType_RPG7RocketGeneral'

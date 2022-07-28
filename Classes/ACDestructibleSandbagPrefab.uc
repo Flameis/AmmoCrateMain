@@ -13,7 +13,7 @@ class ACDestructibleSandbagPrefab extends ACDestructiblePrefab;
 
 defaultproperties
 {
-	StartingHealth=1000
+	StartingHealth=500
 
 	AcceptedDamageTypes(0)=Class'ROGame.RODmgType_RPG7Rocket'
     AcceptedDamageTypes(1)=Class'ROGame.RODmgType_RPG7RocketGeneral'
@@ -51,7 +51,7 @@ defaultproperties
 		LightEnvironment=MyLightEnvironment
 	End Object
 	Components.Add(DestructibleMeshComponent0)
-	StaticMeshComponent[0]=DestructibleMeshComponent0
+	PFStaticMeshComponent[0]=DestructibleMeshComponent0
 	CollisionComponent=DestructibleMeshComponent0
 
 	Begin Object Class=StaticMeshComponent Name=DestructibleMeshComponent1
@@ -72,7 +72,7 @@ defaultproperties
 		LightEnvironment=MyLightEnvironment
 	End Object
 	Components.Add(DestructibleMeshComponent1)
-	StaticMeshComponent[1]=DestructibleMeshComponent1
+	PFStaticMeshComponent[1]=DestructibleMeshComponent1
 
 	Begin Object Class=StaticMeshComponent Name=DestructibleMeshComponent2
 		StaticMesh=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_112uu'
@@ -92,7 +92,7 @@ defaultproperties
 		LightEnvironment=MyLightEnvironment
 	End Object
 	Components.Add(DestructibleMeshComponent2)
-	StaticMeshComponent[2]=DestructibleMeshComponent2
+	PFStaticMeshComponent[2]=DestructibleMeshComponent2
 
 	Begin Object Class=StaticMeshComponent Name=DestructibleMeshComponent3
 		StaticMesh=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_112uu_90deg_left'
@@ -112,7 +112,7 @@ defaultproperties
 		LightEnvironment=MyLightEnvironment
 	End Object
 	Components.Add(DestructibleMeshComponent3)
-	StaticMeshComponent[3]=DestructibleMeshComponent3
+	PFStaticMeshComponent[3]=DestructibleMeshComponent3
 
 	Begin Object Class=StaticMeshComponent Name=DestructibleMeshComponent4
 		StaticMesh=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_112uu'
@@ -132,7 +132,7 @@ defaultproperties
 		LightEnvironment=MyLightEnvironment
 	End Object
 	Components.Add(DestructibleMeshComponent4)
-	StaticMeshComponent[4]=DestructibleMeshComponent4
+	PFStaticMeshComponent[4]=DestructibleMeshComponent4
 	
 
 	Begin Object Name=DestroyedPFXComp
@@ -145,9 +145,9 @@ defaultproperties
 	Components.Add(DestroyedPFXComp)
 
 	DestructionSound=AkEvent'WW_EXP_C4.Play_EXP_C4_Explosion'
-	DestroyedMesh[0]=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter'
-	DestroyedMesh[1]=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter'
-	DestroyedMesh[2]=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter'
-	DestroyedMesh[3]=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter'
-	DestroyedMesh[4]=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter'
+	PFDestroyedMesh[0]=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter'
+	PFDestroyedMesh[1]=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter'
+	PFDestroyedMesh[2]=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter'
+	PFDestroyedMesh[3]=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter'
+	PFDestroyedMesh[4]=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter'
 }

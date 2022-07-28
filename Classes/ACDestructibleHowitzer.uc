@@ -13,7 +13,7 @@ class ACDestructibleHowitzer extends ACDestructible;
 
 defaultproperties
 {
-	StartingHealth=1000
+	StartingHealth=500
 
 	AcceptedDamageTypes(0)=Class'ROGame.RODmgType_RPG7Rocket'
     AcceptedDamageTypes(1)=Class'ROGame.RODmgType_RPG7RocketGeneral'

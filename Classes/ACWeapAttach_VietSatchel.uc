@@ -21,5 +21,5 @@ DefaultProperties
 		CullDistance=5000
 	End Object
 
-	WeaponClass=class'AmmoCrate.ACWeap_VietSatchel'
+	WeaponClass=class'MutExtras.ACWeap_VietSatchel'
 }

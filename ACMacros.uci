@@ -25,5 +25,5 @@
 `define TOTALROLECOUNT_NORTH 8
 `define TOTALROLECOUNT_SOUTH 11
 
-`define getNF class'AmmoCrateMutator'.static.GetNorthernForce()
-`define getSF class'AmmoCrateMutator'.static.GetSouthernForce()
+`define getNF class'MutExtras'.static.GetNorthernForce()
+`define getSF class'MutExtras'.static.GetSouthernForce()

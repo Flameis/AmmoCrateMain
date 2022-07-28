@@ -10,10 +10,10 @@
 //=============================================================================
 
 class ACDestructiblePrefab extends ACDestructible
-	config(AmmoCrate);
+	config(MutExtras);
 
-var() 	array<StaticMeshComponent>			StaticMeshComponent;
-var 	array<StaticMesh>					DestroyedMesh;
+var() 	array<StaticMeshComponent>			PFStaticMeshComponent;
+var 	array<StaticMesh>					PFDestroyedMesh;
 
 simulated function PlayDestructionEffects()
 {
@@ -21,15 +21,15 @@ simulated function PlayDestructionEffects()
 	local int I;
 	if ( WorldInfo.NetMode != NM_DedicatedServer )
 	{
-		for (I=0; I<StaticMeshComponent.Length; I++)
+		for (I=0; I<PFStaticMeshComponent.Length; I++)
 		{
-			StaticMeshComponent[I].SetStaticMesh(DestroyedMesh[I]);
+			PFStaticMeshComponent[I].SetStaticMesh(PFDestroyedMesh[I]);
 			
-			//StartLoc = self.Location + StaticMeshComponent[I].Translation;
+			//StartLoc = self.Location + PFStaticMeshComponent[I].Translation;
 			//EndLoc = StartLoc;
 			//EndLoc.Z = EndLoc.Z - 20000;
 			//Trace(HitLoc, HitNorm, EndLoc, StartLoc);
-			//StaticMeshComponent[I].SetTranslation(HitLoc);
+			//PFStaticMeshComponent[I].SetTranslation(HitLoc);
 		}
 
 		DestroyedPFX.SetActive(true);
@@ -66,7 +66,7 @@ defaultproperties
 		BlockZeroExtent=true
 		BlockNonZeroExtent=true
 	End Object
-	StaticMeshComponent[0]=DestructibleMeshComponent0
+	PFStaticMeshComponent[0]=DestructibleMeshComponent0
 	Components.Add(DestructibleMeshComponent0)
 	CollisionComponent=DestructibleMeshComponent0
 	
@@ -80,5 +80,5 @@ defaultproperties
 	Components.Add(DestroyedPFXComp)
 
 	DestructionSound=AkEvent'WW_Global.Play_GLO_Spawn_Tunnel_Destroyed'
-	DestroyedMesh[0]=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter'
+	PFDestroyedMesh[0]=StaticMesh'ENV_VN_Sandbags.Mesh.S_ENV_Sandbags_scatter'
 }

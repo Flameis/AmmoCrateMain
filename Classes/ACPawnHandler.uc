@@ -1,5 +1,5 @@
 class ACPawnHandler extends ROPawnHandler
-	config(AmmoCrate);
+	config(MutExtras);
 
 var config	array<CharacterConfig>	ACNVAConfigsByClass;
 var config	array<CharacterConfig>	ACNLFConfigsByClass;

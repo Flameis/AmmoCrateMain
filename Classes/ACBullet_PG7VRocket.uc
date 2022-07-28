@@ -2,7 +2,7 @@
 //=============================================================================
 class ACBullet_PG7VRocket extends PG7VRocket;
 
-var AmmoCrateMutator 	ACM;
+var MutExtras 	ACM;
 
 simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponent WallComp, optional PhysicalMaterial WallPhysMaterial)
 {
@@ -16,7 +16,7 @@ simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponen
 	local ROPhysicalMaterialProperty PhysicalProperty;
 	local int TeamNum, I;
 	local array<string> ROVName;
-	local bool bNameIsBadVIC;
+	local bool bNameIsBad;
 	//local ROProjectile ROProj;
 	local ROGameInfo ROGI;
 
@@ -64,30 +64,17 @@ simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponen
 				{
 					if (ROVName[I] ~= "ACAV" || ROVName[I] ~= "ROHeli" || ROVName[I] ~= "Skis")
 					{
-					bNameIsBadVIC = true;
-					//`log("bNameIsBadVIC = true");
+					bNameIsBad = true;
+					//`log("bNameIsBad = true");
 					}
 				}
 
 				//If it isn't then see if it needs to be blown up
-				if (!bNameIsBadVIC && !ROV.bDeadVehicle)
+				if (!bNameIsBad && !ROV.bDeadVehicle)
 				{
 				ROGI = ROGameInfo(WorldInfo.Game);
-				ACM = AmmoCrateMutator(ROGI.BaseMutator);			
+				ACM = MutExtras(ROGI.BaseMutator);			
 				ACM.NameExists(VehBase);
-				//ROProj = spawn(class'WinterWar.WWVehicleProjectile_T26_AP');
-				//ROProj.init(vector(Rotation));
-				//`log ("Projectile rotation = pitch "$Rotation.pitch$" yaw "$Rotation.yaw$" roll "$Rotation.roll);				
-				//DamageRadius=200;
-				//PenetrationDamage=100;
-				//PenetrationDamageRadius=200;
-				//bSuppressExplosionFX = true;
-				//bStopAmbientSoundOnExplode = true;
-				//Damage = 0;
-				//MomentumTransfer = 0;
-				//ImpactDamage = 0;
-				//PenetrationDamage = 0;			
-				//self.Shutdown();
 				}
 				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				if( bDebugPenetration )

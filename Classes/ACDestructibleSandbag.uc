@@ -32,7 +32,7 @@ defaultproperties
 	Bounds	   = (X=62,Y=15,Z=32)
 	DrawSphereRadius = 66
 	
-	StartingHealth=800
+	StartingHealth=200
 
 	AcceptedDamageTypes(0)=Class'ROGame.RODmgType_RPG7Rocket'
     AcceptedDamageTypes(1)=Class'ROGame.RODmgType_RPG7RocketGeneral'

@@ -12,7 +12,7 @@ class ACWeap_FougQuad extends ROWeap_Fougasse_Mine;
 
 DefaultProperties
 {
-	WeaponContentClass(0)="AmmoCrate.ACWeap_FougQuadContent"
+	WeaponContentClass(0)="MutExtras.ACWeap_FougQuadContent"
 	InitialNumPrimaryMags=4
 	MaxNumPrimaryMags=4
 	MaxAmmoCount=4

@@ -11,6 +11,6 @@ class ACWeap_RPG7_RocketLauncher extends ROWeap_RPG7_RocketLauncher;
 
 DefaultProperties
 {
-	WeaponContentClass(0)="AmmoCrate.ACWeap_RPG7_RocketLauncher_Content"
+	WeaponContentClass(0)="MutExtras.ACWeap_RPG7_RocketLauncher_Content"
 	WeaponProjectiles(0)=class'ACBullet_PG7VRocket'
 }

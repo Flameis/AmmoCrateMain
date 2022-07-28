@@ -13,7 +13,7 @@ class ACDestructibleBush01 extends ACDestructible;
 
 defaultproperties
 {
-	StartingHealth=100
+	StartingHealth=1
 
 	AcceptedDamageTypes(0)=Class'ROGame.RODmgType_RPG7Rocket'
     AcceptedDamageTypes(1)=Class'ROGame.RODmgType_RPG7RocketGeneral'
