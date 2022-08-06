@@ -1,5 +1,5 @@
 class ACPawnHandler extends ROPawnHandler
-	config(MutExtras);
+	config(MutExtras_Client);
 
 var config	array<CharacterConfig>	ACNVAConfigsByClass;
 var config	array<CharacterConfig>	ACNLFConfigsByClass;
@@ -9,7 +9,6 @@ var config	array<CharacterConfig>	ACAusArmyConfigsByClass;
 var config	array<CharacterConfig>	ACARVNConfigsByClass;
 
 //These are all to save the config to the .ini
-
 static function GetCharConfig(int Team, int ArmyIndex, byte bPilot, int ClassIndex, int HonorLevel, out byte TunicID, out byte TunicMaterialID, out byte ShirtID, out byte HeadID, out byte HairID, out byte HeadgearID, out byte HeadgearMatID, out byte FaceItemID, out byte FacialHairID, out byte TattooID, ROPlayerReplicationInfo ROPRI, optional bool bRandomiseAll, optional bool bInitByMenu, optional out byte bUseBase)
 {
 	if (bRandomiseAll)
@@ -2296,11 +2295,22 @@ defaultproperties
 
 	RandomConfig=(TunicMesh=255,TunicMaterial=255,ShirtTexture=255,HeadMesh=255,HeadgearMesh=255,TattooTex=255)
 
-	USArmyTattoos(13)=(TattooTex=Texture2D'29thExtras.Tattoos.US_CamoV3',ThumbnailImage=Texture2D'VN_UI_Textures_Character_Two.Tattoos.Tattoo_US_Camo2',RequiredLevel=1)
-	USArmyTattoos(14)=(TattooTex=Texture2D'29thExtras.Tattoos.US_CamoV4',ThumbnailImage=Texture2D'VN_UI_Textures_Character_Two.Tattoos.Tattoo_US_Camo2',RequiredLevel=1)
-	USArmyTattoos(15)=(TattooTex=Texture2D'29thExtras.Tattoos.Joker',ThumbnailImage=Texture2D'CHR_VN_DLC_PCGamer.Tattoos.AUS_CoconutMonkey',RequiredLevel=1)
+	USArmyTattoos(13)=(TattooTex=Texture2D'29thExtras.Tattoos.US_CamoV3',ThumbnailImage=Texture2D'VN_UI_Textures_Character_Two.Tattoos.Tattoo_US_Camo2')
+	USArmyTattoos(14)=(TattooTex=Texture2D'29thExtras.Tattoos.US_CamoV4',ThumbnailImage=Texture2D'VN_UI_Textures_Character_Two.Tattoos.Tattoo_US_Camo2')
+	USArmyTattoos(15)=(TattooTex=Texture2D'29thExtras.Tattoos.Joker',ThumbnailImage=Texture2D'CHR_VN_DLC_PCGamer.Tattoos.AUS_CoconutMonkey')
 
-	USMCTattoos(13)=(TattooTex=Texture2D'29thExtras.Tattoos.US_CamoV3',ThumbnailImage=Texture2D'VN_UI_Textures_Character_Two.Tattoos.Tattoo_US_Camo2',RequiredLevel=1)
-	USMCTattoos(14)=(TattooTex=Texture2D'29thExtras.Tattoos.US_CamoV4',ThumbnailImage=Texture2D'VN_UI_Textures_Character_Two.Tattoos.Tattoo_US_Camo2',RequiredLevel=1)
-	USMCTattoos(15)=(TattooTex=Texture2D'29thExtras.Tattoos.Joker',ThumbnailImage=Texture2D'CHR_VN_DLC_PCGamer.Tattoos.AUS_CoconutMonkey',RequiredLevel=1)
+	USMCTattoos(13)=(TattooTex=Texture2D'29thExtras.Tattoos.US_CamoV3',ThumbnailImage=Texture2D'VN_UI_Textures_Character_Two.Tattoos.Tattoo_US_Camo2')
+	USMCTattoos(14)=(TattooTex=Texture2D'29thExtras.Tattoos.US_CamoV4',ThumbnailImage=Texture2D'VN_UI_Textures_Character_Two.Tattoos.Tattoo_US_Camo2')
+	USMCTattoos(15)=(TattooTex=Texture2D'29thExtras.Tattoos.Joker',ThumbnailImage=Texture2D'CHR_VN_DLC_PCGamer.Tattoos.AUS_CoconutMonkey')
+
+	//NVAHeadgear(23)=(HeadgearMeshes=(SkeletalMesh'29thExtras.Mesh.29thHelmet'),HeadgearMICs=(10),HeadgearSocket=helmet,bIsHelmet=0,ThumbnailImage=Texture2D'29thExtras.Textures.29th')
+	//NLFHeadgear(21)=(HeadgearMeshes=(SkeletalMesh'29thExtras.Mesh.29thHelmet'),HeadgearMICs=(8),HeadgearSocket=helmet,bIsHelmet=0,ThumbnailImage=Texture2D'29thExtras.Textures.29th')
+	USAHeadgear(38)=(HeadgearMeshes=(SkeletalMesh'29thExtras.Mesh.29thHelmet'),HeadgearMICs=(20),HeadgearSocket=helmet,bIsHelmet=0,ThumbnailImage=Texture2D'29thExtras.Textures.29th')
+	AusArmyHeadgear(20)=(HeadgearMeshes=(SkeletalMesh'29thExtras.Mesh.29thHelmet'),HeadgearMICs=(14),HeadgearSocket=helmet,bIsHelmet=1,ThumbnailImage=Texture2D'29thExtras.Textures.29th')
+	ARVNHeadgear(26)=(HeadgearMeshes=(SkeletalMesh'29thExtras.Mesh.29thHelmet'),HeadgearSocket=helmet,bIsHelmet=1,ThumbnailImage=Texture2D'29thExtras.Textures.29th')
+
+	//NVAHeadgearMICs(10)=(HeadgearMICTemplate=MaterialInstanceConstant'CHR_VN_ARVN_Headgear.Materials.M_ARVN_Headgear_M1Bare_INST')
+	//NLFHeadgearMICs(8)=(HeadgearMICTemplate=MaterialInstanceConstant'CHR_VN_ARVN_Headgear.Materials.M_ARVN_Headgear_M1Bare_INST')
+	USAHeadgearMICs(20)=(HeadgearMICTemplate=MaterialInstanceConstant'CHR_VN_ARVN_Headgear.Materials.M_ARVN_Headgear_M1Bare_INST')
+	AusHeadgearMICs(14)=(HeadgearMICTemplate=MaterialInstanceConstant'CHR_VN_ARVN_Headgear.Materials.M_ARVN_Headgear_M1Bare_INST')
 }

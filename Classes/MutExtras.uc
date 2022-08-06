@@ -1,37 +1,38 @@
 class MutExtras extends ROMutator
 	config(MutExtras);
 
-var string              PlayerName;
-var ACPlayerController  ACPC;
-var ROGameInfo          ROGI;
-var RORoleInfoClasses   RORICSouth;
-var RORoleInfoClasses   RORICNorth;
-var ROMapInfo           ROMI;
+var string                  PlayerName;
+var ACPlayerController      ACPC;
+var ROGameInfo              ROGI;
+var RORoleInfoClasses       RORICSouth;
+var RORoleInfoClasses       RORICNorth;
+var ROMapInfo               ROMI;
 
-var bool                bisVanilla;
+var bool                    bisVanilla;
 
-var array<Byte> 		HitNum;
-var array<String> 	    HitVicName;
+var array<Byte> 		    HitNum;
+var array<String> 	        HitVicName;
 
-var(Animations)	name		SaluteAnim;
-var(Animations)	name		AttentionIdleAnim;
+var config array<String>    PlayerRankAndUnit;
 
 function PreBeginPlay()
 {
     `log("[MutExtras] init");
     
-    if (IsWWThere())
+    if (IsWWThere() || IsGOMThere())
     {
         InfiniteRoles();
+        ClientInfiniteRoles();
         bisVanilla = false;
-        `log("[MutExtras] WWIsThere");
+        //`log("[MutExtras] WWIsThere");
     }
-    else if (IsGOMThere())
+    /* else if (IsGOMThere())
     {
         InfiniteRoles();
+        ClientInfiniteRoles();
         bisVanilla = false;
-        `log("[MutExtras] GOMIsThere");
-    }
+        //`log("[MutExtras] GOMIsThere");
+    } */
     else
     {
         bisVanilla = true;
@@ -40,18 +41,43 @@ function PreBeginPlay()
         ROGameInfo(WorldInfo.Game).PawnHandlerClass             = class'ACPawnHandler';
         //ROGameInfo(WorldInfo.Game).HUDType                      = class'ACHUD';
         //ROGameInfo(WorldInfo.Game).TeamInfoClass				= class'ACTeamInfo';
-        `log("[MutExtras] VanillaIsThere");
-    }
-
-    if (bisVanilla)
-    {
+        ACPC.ReplacePawnHandler();
+        ACPC.ClientReplacePawnHandler();
+        ACPC.ReplaceRoles();
+        ACPC.ClientReplaceRoles();
+        ACPC.ReplaceInventoryManager();
+        ACPC.ClientReplaceInventoryManager();
         ReplacePawns();
+        //`log("[MutExtras] VanillaIsThere");
     }
 
     super.PreBeginPlay();
 }
 
-/* function NotifyLogin(Controller NewPlayer)
+/* function PostBeginPlay()
+{
+    if (!bisVanilla)
+    {
+        InfiniteRoles();
+    }
+    super.PostBeginPlay();
+} */
+
+/* function ModifyPlayer(Pawn Other)
+{
+    //Attach 29th decals onto the headgear mesh
+	ACPawn(Other).HeadgearMIC2 = MaterialInstanceConstant'29thExtras.Materials.MIC29TH';
+	ACPawn(Other).HeadgearMIC3 = MaterialInstanceConstant'29thExtras.Materials.MIC29TH';
+	ACPawn(Other).HeadgearMIC2.SetTextureParameterValue('Diffuse', GetUnitTexture(Other.Controller));
+	ACPawn(Other).HeadgearMIC3.SetTextureParameterValue('Diffuse', GetRankTexture(Other.Controller));
+	ACPawn(Other).ThirdPersonHeadgearMeshComponent.SetMaterial(2, ACPawn(Other).HeadgearMIC2);
+	ACPawn(Other).ThirdPersonHeadgearMeshComponent.SetMaterial(3, ACPawn(Other).HeadgearMIC3);
+    //ACPawn(Other).AttachNewHeadgear(ACPawn(Other).HeadgearMesh);
+    super.ModifyPlayer(Other);
+} */
+
+
+function NotifyLogin(Controller NewPlayer)
 {
     if (bisVanilla)
     {
@@ -70,8 +96,22 @@ function PreBeginPlay()
         ACPC.ReplaceInventoryManager();
         ACPC.ClientReplaceInventoryManager();
     }
+    else if (IsWWThere() || IsGOMThere())
+    {
+        InfiniteRoles();
+        ClientInfiniteRoles(); 
+    }
         
     super.NotifyLogin(NewPlayer);
+}
+
+/* function NotifyLogin(Controller NewPlayer)
+{
+    super.NotifyLogin(NewPlayer);
+    if (!bisVanilla)
+    {
+        InfiniteRoles();
+    }
 } */
 
 auto state StartUp
@@ -121,10 +161,63 @@ function SetVicTeam()
     }
 }
 
-function InfiniteRoles()
+reliable client function ClientInfiniteRoles()
 {
-    local int i;
+    InfiniteRoles();
+}
+
+simulated function InfiniteRoles()
+{
+    local RORoleCount   NorthRoleCount, SouthRoleCount;
+    local int           I;
+    local bool          FoundNTank, FoundSTank;
+
     ROMI = ROMapInfo(WorldInfo.GetMapInfo());
+
+    if (IsWWThere())
+    {
+        for (I=0; I < ROMI.NorthernRoles.length; I++)
+        {
+            if (instr(ROMI.NorthernRoles[I].RoleInfoClass.Name, "Tank",, true) != -1)
+            {
+                FoundNTank = true;
+                `log("[MutExtras] Found NTank");
+                break;
+            }
+        }
+        for (I=0; I < ROMI.SouthernRoles.length; I++)
+        {
+            if (instr(ROMI.SouthernRoles[I].RoleInfoClass.Name, "Tank",, true) != -1)
+            {
+                FoundSTank = true;
+                `log("[MutExtras] Found STank");
+                break;
+            }
+        }
+
+        if (!FoundNTank)
+        {
+            //NorthRoleCount.RoleInfoClass = ROMI.SouthernRoles[7].RoleInfoClass;
+            NorthRoleCount.RoleInfoClass = class'ACRoleInfoTankCrewFinnish';
+            ROMI.NorthernRoles.additem(NorthRoleCount);
+        }
+        if (!FoundSTank)
+        {
+            NorthRoleCount.RoleInfoClass = ROMI.default.SouthernRoles[7].RoleInfoClass;
+            //SouthRoleCount.RoleInfoClass = class'ACRoleInfoTankCrewSoviet';
+            ROMI.SouthernRoles.additem(SouthRoleCount);
+        }
+    }
+
+    else if (IsGOMThere())
+    {
+        NorthRoleCount.RoleInfoClass = class'ACRoleInfoTankCrewNorth';
+        ROMI.NorthernRoles.additem(NorthRoleCount);
+
+        SouthRoleCount.RoleInfoClass = class'ACRoleInfoTankCrewSouth';
+        ROMI.SouthernRoles.additem(SouthRoleCount);
+    }
+
     for (i = 0; i < ROMI.SouthernRoles.length; i++)
     {
         ROMI.SouthernRoles[i].Count = 255;
@@ -137,12 +230,9 @@ function InfiniteRoles()
 
 simulated function ReplacePawns()
 {
-    if (bisVanilla)
-    {
     ROGameInfo(WorldInfo.Game).SouthRoleContentClasses = RORICSouth;
     ROGameInfo(WorldInfo.Game).NorthRoleContentClasses = RORICNorth;
     //`log("Pawns replaced");
-    }
 }
 
 function bool IsMCActive()
@@ -192,6 +282,7 @@ function bool IsGOMThere()
             return true;
         }
     }
+    `log("Did not find GOM!");
     return false;
 }
 
@@ -216,6 +307,14 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
 
 		Switch (Command)
         {
+            case "CHANGERANK":
+            ACPawn(PC.Pawn).ChangeRank(PC, Args[1]);
+            break;
+
+            case "CHANGEUNIT":
+            ACPawn(PC.Pawn).ChangeUnit(PC, Args[1]);
+            break;
+
             case "GIVEB":
             SpawnBarricadeTool(PC, Args[1], int(Args[2]));
             break;
@@ -341,10 +440,8 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
 
 function Salute(PlayerController PC)
 {
-    if ( ROPawn(PC.Pawn).ArmsMesh != none )
-	{
-		ROPawn(PC.Pawn).ArmsMesh.PlayAnim(SaluteAnim);
-	}
+	ROPawn(PC.Pawn).ArmsMesh.PlayAnim('29thArms1st', ,false, false);
+    //ROPawn(PC.Pawn).MyWeapon.PlayArmAnimation();
 }
 
 simulated function SpawnBarricadeTool(PlayerController PC, string ObjectName, int Amount)
@@ -812,9 +909,6 @@ reliable server function NameExists(ROVehicleBase VehBase)
 
 DefaultProperties
 {
-    RORICSouth=(LevelContentClasses=("MutExtras.ACSouthPawn"))
-    RORICNorth=(LevelContentClasses=("MutExtras.ACNorthPawn"))
-
-    SaluteAnim=SaluteAnimV2
-	AttentionIdleAnim=AttentionIdleAnimV2
+    RORICSouth=(LevelContentClasses=("MutExtras.ACPawnSouth"))
+    RORICNorth=(LevelContentClasses=("MutExtras.ACPawnNorth"))
 }
