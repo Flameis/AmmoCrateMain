@@ -56,7 +56,7 @@ simulated event PostBeginPlay()
 	StaticMeshComponent = StaticMeshComponent;
 	LightEnvironment = LightEnvironment;
 	Health = StartingHealth;
-	//`log ("ACDestructible::PostBeginPlay()");
+	//`log ("[MutExtras Debug]ACDestructible::PostBeginPlay()");
 	ForceNetRelevant();
 	super.PostBeginPlay();
 }

@@ -11,7 +11,11 @@ class ACItem_USAmmoCrate_Content extends ACItem_USAmmoCrate;
 
 DefaultProperties
 {
-		Begin Object Name=FirstPersonMesh
+	RemoteRole=ROLE_SimulatedProxy 
+	NetPriority = 3
+	bAlwaysRelevant = true
+
+	Begin Object Name=FirstPersonMesh
 		DepthPriorityGroup=SDPG_Foreground
 		// SkeletalMesh=SkeletalMesh'WP_VN_Resupply_Crates.Mesh.US.US_Resupply_Crate_Static'
 		// PhysicsAsset=PhysicsAsset'WP_VN_Resupply_Crates.Phys.US_Resupply_Crate_Physics'

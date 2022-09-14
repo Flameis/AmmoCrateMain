@@ -16,6 +16,6 @@ DefaultProperties
 	RoleSelectionImage(0)=Texture2D'VN_UI_Textures.menu.ProfileStats.class_icon_large_mg' //TODO: Give me a proper one soon!
 
 	AmmoCrateClass=Class'ROGame.ROVCPlaceableAmmoResupply'
-    PhysicalAmmoCrateClass=Class'ROGame.ROVCPlaceableAmmoResupplyCrate'
+    PhysicalAmmoCrateClass=Class'ACVCPlaceableAmmoResupplyCrate'
     ClassConstructorProxy=Class'ROGame.ROVCAmmoCreateConstructorProxy'
 }

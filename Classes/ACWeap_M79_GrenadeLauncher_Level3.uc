@@ -44,7 +44,7 @@ simulated function TimeWeaponEquipping()
 	P = super.ProjectileFire();
 
 	if( M79SmokeProjectile(P) != none )
-		`log("Fuse"@M79SmokeProjectile(P).FuseLength);
+		`log ("[MutExtras Debug]Fuse"@M79SmokeProjectile(P).FuseLength);
 
 	return P;
 }*/

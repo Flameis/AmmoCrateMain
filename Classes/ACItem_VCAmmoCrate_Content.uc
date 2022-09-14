@@ -11,14 +11,17 @@ class ACItem_VCAmmoCrate_Content extends ACItem_VCAmmoCrate;
 
 DefaultProperties
 {
-		Begin Object Name=FirstPersonMesh
+	RemoteRole=ROLE_SimulatedProxy 
+	NetPriority = 3
+	bAlwaysRelevant = true
+
+	Begin Object Name=FirstPersonMesh
 		DepthPriorityGroup=SDPG_Foreground
 		// SkeletalMesh=SkeletalMesh'WP_VN_Resupply_Crates.Mesh.VC.VC_Resupply_Crate_Static'
 		// PhysicsAsset=PhysicsAsset'WP_VN_Resupply_Crates.Phys.VC_Resupply_Crate_Physics'
 		SkeletalMesh=SkeletalMesh'WP_VN_VC_PunjiTrap.Mesh.VC_PunjiTrap'
 		PhysicsAsset=PhysicsAsset'WP_VN_VC_PunjiTrap.Phys.VC_PunjiTrap_Physics'
 		AnimSets(0)=AnimSet'WP_VN_Resupply_Crates.Animation.WP_VC_ResupplyHands'
-		AnimSets(1)=AnimSet'WP_VN_Resupply_Crates.Animation.WP_US_ResupplyHands'
 		AnimTreeTemplate=AnimTree'WP_VN_VC_PunjiTrap.Animation.VC_PunjiTrap_Tree'
 		Scale=1.0
 		FOV=70

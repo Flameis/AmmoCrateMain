@@ -15,77 +15,42 @@ var array<String> 	        HitVicName;
 
 var config array<String>    PlayerRankAndUnit;
 
-function PreBeginPlay()
+simulated function PreBeginPlay()
 {
-    `log("[MutExtras] init");
+    `log ("[MutExtras Debug] init");
     
-    if (IsWWThere() || IsGOMThere())
-    {
-        InfiniteRoles();
-        ClientInfiniteRoles();
-        bisVanilla = false;
-        //`log("[MutExtras] WWIsThere");
-    }
-    /* else if (IsGOMThere())
-    {
-        InfiniteRoles();
-        ClientInfiniteRoles();
-        bisVanilla = false;
-        //`log("[MutExtras] GOMIsThere");
-    } */
-    else
+    if (!IsWWThere() && !IsMutThere("GOM"))
     {
         bisVanilla = true;
         ROGameInfo(WorldInfo.Game).PlayerControllerClass        = class'ACPlayerController';
         ROGameInfo(WorldInfo.Game).PlayerReplicationInfoClass   = class'ACPlayerReplicationInfo';
         ROGameInfo(WorldInfo.Game).PawnHandlerClass             = class'ACPawnHandler';
-        //ROGameInfo(WorldInfo.Game).HUDType                      = class'ACHUD';
-        //ROGameInfo(WorldInfo.Game).TeamInfoClass				= class'ACTeamInfo';
-        ACPC.ReplacePawnHandler();
-        ACPC.ClientReplacePawnHandler();
-        ACPC.ReplaceRoles();
-        ACPC.ClientReplaceRoles();
-        ACPC.ReplaceInventoryManager();
-        ACPC.ClientReplaceInventoryManager();
         ReplacePawns();
-        //`log("[MutExtras] VanillaIsThere");
     }
 
     super.PreBeginPlay();
 }
 
-/* function PostBeginPlay()
-{
-    if (!bisVanilla)
-    {
-        InfiniteRoles();
-    }
-    super.PostBeginPlay();
-} */
-
-/* function ModifyPlayer(Pawn Other)
+function ModifyPlayer(Pawn Other)
 {
     //Attach 29th decals onto the headgear mesh
-	ACPawn(Other).HeadgearMIC2 = MaterialInstanceConstant'29thExtras.Materials.MIC29TH';
-	ACPawn(Other).HeadgearMIC3 = MaterialInstanceConstant'29thExtras.Materials.MIC29TH';
-	ACPawn(Other).HeadgearMIC2.SetTextureParameterValue('Diffuse', GetUnitTexture(Other.Controller));
-	ACPawn(Other).HeadgearMIC3.SetTextureParameterValue('Diffuse', GetRankTexture(Other.Controller));
-	ACPawn(Other).ThirdPersonHeadgearMeshComponent.SetMaterial(2, ACPawn(Other).HeadgearMIC2);
-	ACPawn(Other).ThirdPersonHeadgearMeshComponent.SetMaterial(3, ACPawn(Other).HeadgearMIC3);
-    //ACPawn(Other).AttachNewHeadgear(ACPawn(Other).HeadgearMesh);
+	ACPawn(Other).PlayerRank = ACPlayerReplicationInfo(Other.PlayerReplicationInfo).PlayerRank;
+	ACPawn(Other).PlayerUnit = ACPlayerReplicationInfo(Other.PlayerReplicationInfo).PlayerUnit;
+
     super.ModifyPlayer(Other);
-} */
+}
 
-
-function NotifyLogin(Controller NewPlayer)
+simulated function NotifyLogin(Controller NewPlayer)
 {
+    local ACPCDummy DummyPC;
+
     if (bisVanilla)
     {
         ACPC = ACPlayerController(NewPlayer);
 
         if (ACPC == None)
         {
-            `log("[MutExtras] Error replacing roles");
+            // `log ("[MutExtras Debug] Error replacing roles");
             return;
         }
 
@@ -95,29 +60,38 @@ function NotifyLogin(Controller NewPlayer)
         ACPC.ClientReplaceRoles();
         ACPC.ReplaceInventoryManager();
         ACPC.ClientReplaceInventoryManager();
+
+        ACPC.SetupUnitAndRank();
     }
-    else if (IsWWThere() || IsGOMThere())
+    else if (IsWWThere())
     {
-        InfiniteRoles();
-        ClientInfiniteRoles(); 
+        DummyPC = Spawn(class'ACPCDummy', NewPlayer);
+        DummyPC.ReplaceRoles(true, false);
+        DummyPC.ClientReplaceRoles(true, false);
+        DummyPC.Destroy();
     }
-        
+    else if (IsMutThere("GOM"))
+    {
+        DummyPC = Spawn(class'ACPCDummy', NewPlayer);
+        DummyPC.ReplaceRoles(false, true);
+        DummyPC.ClientReplaceRoles(false, true);
+        DummyPC.Destroy();
+    }
+    else
+    {
+        DummyPC = Spawn(class'ACPCDummy', NewPlayer);
+        DummyPC.ReplaceRoles(false, false);
+        DummyPC.ClientReplaceRoles(false, false);
+        DummyPC.Destroy();
+    }
+ 
     super.NotifyLogin(NewPlayer);
 }
-
-/* function NotifyLogin(Controller NewPlayer)
-{
-    super.NotifyLogin(NewPlayer);
-    if (!bisVanilla)
-    {
-        InfiniteRoles();
-    }
-} */
 
 auto state StartUp
 {
     function timer()
-    {     
+    {
         RemoveVolumes();
     }
 
@@ -127,23 +101,20 @@ auto state StartUp
     }
 
     Begin:
-    if (!IsMCActive())
+    SetTimer(10, true);
+    if (!IsMutThere("Commands"))
     {
-        SetTimer(10, true);
         SetTimer(2, true, 'timer2');
     }
 }
 
 function RemoveVolumes()
 {
-    local ROVolumeNoArtillery ROVNA;
+    local ROVolumeAmmoResupply ROVAR;
 
-    foreach AllActors(class'ROVolumeNoArtillery', ROVNA)
+    foreach AllActors(class'ROVolumeAmmoResupply', ROVAR)
     {
-        if (ROVNA.bEnabled == true) 
-        {
-            ROVNA.SetEnabled(False);
-        }
+        ROVAR.Team = OWNER_Neutral;
     }
 }
 
@@ -156,7 +127,7 @@ function SetVicTeam()
         if (ROV.bDriving == true && ROV.Team != ROV.Driver.GetTeamNum() && !ROV.bDeadVehicle)
         {
             ROV.Team = ROV.Driver.GetTeamNum();
-            `log("[MutExtras] Set "$ROV$" to team "$ROV.Driver.GetTeamNum());
+            // `log ("[MutExtras Debug] Set "$ROV$" to team "$ROV.Driver.GetTeamNum());
         }
     }
 }
@@ -181,7 +152,7 @@ simulated function InfiniteRoles()
             if (instr(ROMI.NorthernRoles[I].RoleInfoClass.Name, "Tank",, true) != -1)
             {
                 FoundNTank = true;
-                `log("[MutExtras] Found NTank");
+                // `log ("[MutExtras Debug] Found NTank");
                 break;
             }
         }
@@ -190,26 +161,24 @@ simulated function InfiniteRoles()
             if (instr(ROMI.SouthernRoles[I].RoleInfoClass.Name, "Tank",, true) != -1)
             {
                 FoundSTank = true;
-                `log("[MutExtras] Found STank");
+                // `log ("[MutExtras Debug] Found STank");
                 break;
             }
         }
 
         if (!FoundNTank)
         {
-            //NorthRoleCount.RoleInfoClass = ROMI.SouthernRoles[7].RoleInfoClass;
             NorthRoleCount.RoleInfoClass = class'ACRoleInfoTankCrewFinnish';
             ROMI.NorthernRoles.additem(NorthRoleCount);
         }
         if (!FoundSTank)
         {
             NorthRoleCount.RoleInfoClass = ROMI.default.SouthernRoles[7].RoleInfoClass;
-            //SouthRoleCount.RoleInfoClass = class'ACRoleInfoTankCrewSoviet';
             ROMI.SouthernRoles.additem(SouthRoleCount);
         }
     }
 
-    else if (IsGOMThere())
+    else if (ISMutThere("GOM"))
     {
         NorthRoleCount.RoleInfoClass = class'ACRoleInfoTankCrewNorth';
         ROMI.NorthernRoles.additem(NorthRoleCount);
@@ -232,23 +201,19 @@ simulated function ReplacePawns()
 {
     ROGameInfo(WorldInfo.Game).SouthRoleContentClasses = RORICSouth;
     ROGameInfo(WorldInfo.Game).NorthRoleContentClasses = RORICNorth;
-    //`log("Pawns replaced");
 }
 
-function bool IsMCActive()
+function bool IsMutThere(string Mutator)
 {
 	local Mutator mut;
-    local array<string> MutName;
-    ROGI = ROGameInfo(WorldInfo.Game);
-    mut = ROGI.BaseMutator;
 
-    for (mut = ROGI.BaseMutator; mut != none; mut = mut.NextMutator)
+    mut = ROGameInfo(WorldInfo.Game).BaseMutator;
+
+    for (mut = ROGameInfo(WorldInfo.Game).BaseMutator; mut != none; mut = mut.NextMutator)
     {
-        `log("IsMCActive test "$string(mut.name));
-        MutName = SplitString(string(mut.name), "_", true);
-        if (MutName[0] ~= "MutCommands")
+        // `log("[MutCommands] IsMutThere test "$string(mut.name));
+        if(InStr(string(mut.name), Mutator,,true) != -1) 
         {
-            `log("MutCommands is activated");
             return true;
         }
     }
@@ -259,30 +224,11 @@ function bool IsWWThere()
 {
     local string WWName;
     WWName = class'Engine'.static.GetCurrentWorldInfo().GetMapName(true);
-    `log("Map name is: "$WWName);
     if (InStr(WWName, "WW",,true) != -1)
     {
+        // `log ("[MutExtras Debug] Found WinterWar!");
         return true;
     }
-    `log("Did not find WW!");
-    return false;
-}
-
-function bool IsGOMThere()
-{
-	local Mutator mut;
-    ROGI = ROGameInfo(WorldInfo.Game);
-    mut = ROGI.BaseMutator;
-
-    for (mut = ROGI.BaseMutator; mut != none; mut = mut.NextMutator)
-    {
-        `log("IsMCActive test "$string(mut.name));
-        if(InStr(string(mut.name), "GOM", ,true) != -1) 
-        {
-            return true;
-        }
-    }
-    `log("Did not find GOM!");
     return false;
 }
 
@@ -293,13 +239,11 @@ function PrivateMessage(PlayerController receiver, coerce string msg)
 
 singular function Mutate(string MutateString, PlayerController PC) //no prefixes, also call super function!
 {
-    //local ROCheatManager CheatManager;
-    local array<string>     Args;
-    local string            command;
-    local string            NameValid;
+    local array<string>         Args;
+    local string                command;
+    local string                NameValid;
 
     ROGI = ROGameInfo(WorldInfo.Game);
-    //CheatManager = ROCheatManager(PC.CheatManager);
     Args = SplitString(MutateString, " ", true);
     command = Caps(Args[0]);
 
@@ -308,30 +252,34 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
 		Switch (Command)
         {
             case "CHANGERANK":
-            ACPawn(PC.Pawn).ChangeRank(PC, Args[1]);
-            break;
+                ACPlayerController(PC).SetPlayerRank(Args[1]);
+                break;
 
             case "CHANGEUNIT":
-            ACPawn(PC.Pawn).ChangeUnit(PC, Args[1]);
-            break;
+                ACPlayerController(PC).SetPlayerUnit(Args[1]);
+                break;
+
+            case "RESETMESH":
+                ACPawn(PC.Pawn).CreatePawnMesh();
+                break;
 
             case "GIVEB":
-            SpawnBarricadeTool(PC, Args[1], int(Args[2]));
-            break;
+                SpawnBarricadeTool(PC, Args[1], int(Args[2]));
+                break;
 
             case "CLEARB":
-            ClearBarricades();
-            break;
+                ClearBarricades();
+                break;
 
             case "DELB":
-            DelBarricade(PC);
-            break;
+                DelBarricade(PC);
+                break;
 
             case "SALUTE":
-            Salute(PC);
-            break;
+                Salute(PC);
+                break;
         }
-        if (!IsMCActive())
+        if (!IsMutThere("Commands"))
         {
             switch (command)
             {
@@ -340,11 +288,11 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
                     if (NameValid != "False")
                     {
                         WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" spawned a "$Args[1]);
-                        `log("[MutExtras] "$PlayerName$" spawned a "$Args[1]$"");
+                        `log ("[MutExtras Debug] "$PlayerName$" spawned a "$Args[1]$"");
                     }
                     else
                     {
-                        `log("[MutCommands] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
+                        `log ("[MutExtras Debug] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
                         PrivateMessage(PC, "Not a valid weapon name.");
                     }
                     break;
@@ -354,11 +302,11 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
                     if (NameValid != "False")
                     {
                         WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" gave a "$Args[1]$" to everyone");
-                        `log("[MutExtras] "$PlayerName$" spawned a "$Args[1]$"");
+                        `log ("[MutExtras Debug] "$PlayerName$" spawned a "$Args[1]$"");
                     }
                     else
                     {
-                        `log("[MutCommands] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
+                        `log ("[MutExtras Debug] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
                         PrivateMessage(PC, "Not a valid weapon name.");
                     }
                     break;
@@ -368,11 +316,11 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
                     if (NameValid != "False")
                     {
                         WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" gave a "$Args[1]$" to the north");
-                        `log("[MutExtras] "$PlayerName$" gave a "$Args[1]$" to the north");
+                        `log ("[MutExtras Debug] "$PlayerName$" gave a "$Args[1]$" to the north");
                     }
                     else
                     {
-                        `log("[MutCommands] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
+                        `log ("[MutExtras Debug] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
                         PrivateMessage(PC, "Not a valid weapon name.");
                     }
                     break;
@@ -382,13 +330,37 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
                     if (NameValid != "False")
                     {
                         WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" gave a "$Args[1]$" to the south");
-                        `log("[MutExtras] "$PlayerName$" gave a "$Args[1]$" to the south");
+                        `log ("[MutExtras Debug] "$PlayerName$" gave a "$Args[1]$" to the south");
                     }
                     else
                     {
-                        `log("[MutCommands] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
+                        `log ("[MutExtras Debug] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
                         PrivateMessage(PC, "Not a valid weapon name.");
                     }
+                    break;
+
+                case "CLEARWEAPONS":
+                    ClearWeapons(PC, false, 100);
+                    WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" cleared their weapons");
+                    `log("[MutCommands] Clearing Weapons");
+                    break;
+        
+                case "CLEARWEAPONSALL":
+                    ClearWeapons(PC, true);
+                    WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" cleared all weapons");
+                    `log("[MutCommands] Clearing Weapons");
+                    break;
+        
+                case "CLEARWEAPONSNORTH":
+                    ClearWeapons(PC, false, `AXIS_TEAM_INDEX);
+                    WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" cleared north weapons");
+                    `log("[MutCommands] Clearing Weapons");
+                    break;
+        
+                case "CLEARWEAPONSSOUTH":
+                    ClearWeapons(PC, false, `ALLIES_TEAM_INDEX);
+                    WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" cleared south weapons");
+                    `log("[MutCommands] Clearing Weapons");
                     break;
 
                 case "SPAWNVEHICLE":
@@ -396,11 +368,11 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
                     if (NameValid != "False")
                     {
                         WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" spawned a "$Args[1]$"");
-                        `log("[MutExtras] "$PlayerName$" spawned a "$Args[1]$"");
+                        `log ("[MutExtras Debug] "$PlayerName$" spawned a "$Args[1]$"");
                     }
                     else
                     {
-                        `log("[MutCommands] Spawnvehicle failed! "$PlayerName$" tried to spawn a "$Args[1]);
+                        `log ("[MutExtras Debug] Spawnvehicle failed! "$PlayerName$" tried to spawn a "$Args[1]);
                         PrivateMessage(PC, "Not a valid vehicle name.");
                     }
                     break;
@@ -411,12 +383,12 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
 
                 case "ADDBOTS":
                     AddBots(int(Args[1]), int(Args[2]), bool(Args[3]));
-                    `log("Added Bots");
+                    `log ("[MutExtras Debug]Added Bots");
                     break;
 
                 case "REMOVEBOTS":
                     RemoveBots();
-                    `log("Removed Bots");
+                    `log ("[MutExtras Debug]Removed Bots");
                     break;
 
                 /* case "FLY":
@@ -424,13 +396,13 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
                     {
                         CheatManager.Fly();
                         PC.Pawn.AirSpeed = PC.Pawn.Default.AirSpeed * 20;
-                        `log("Fly");
+                        `log ("[MutExtras Debug]Fly");
                     }
                     else
                     {
                         CheatManager.Walk();
                         PC.Pawn.AirSpeed = PC.Pawn.Default.AirSpeed;
-                        `log("UnFly");
+                        `log ("[MutExtras Debug]UnFly");
                     }    
                     break; */
             }
@@ -575,7 +547,7 @@ function GiveWeapon(PlayerController PC, string WeaponName, out string NameValid
             foreach worldinfo.allpawns(class'ROPawn', ROP)
             {
                 InvManager = ROInventoryManager(ROP.InvManager);
-                giveweapon2(InvManager, WeaponName, NameValid);
+                DoGiveWeapon(InvManager, WeaponName, NameValid);
             }
         }   
 
@@ -586,7 +558,7 @@ function GiveWeapon(PlayerController PC, string WeaponName, out string NameValid
                 if (ROP.GetTeamNum() == `AXIS_TEAM_INDEX)
                 {
                     InvManager = ROInventoryManager(ROP.InvManager);
-                    giveweapon2(InvManager, WeaponName, NameValid);
+                    DoGiveWeapon(InvManager, WeaponName, NameValid);
                 }
             }
         }
@@ -598,7 +570,7 @@ function GiveWeapon(PlayerController PC, string WeaponName, out string NameValid
                 if (ROP.GetTeamNum() == `ALLIES_TEAM_INDEX)
                 {
                     InvManager = ROInventoryManager(ROP.InvManager);
-                    giveweapon2(InvManager, WeaponName, NameValid);
+                    DoGiveWeapon(InvManager, WeaponName, NameValid);
                 }
             }
         }
@@ -606,20 +578,83 @@ function GiveWeapon(PlayerController PC, string WeaponName, out string NameValid
         else if (TeamIndex == 100)
         {
             InvManager = ROInventoryManager(PC.Pawn.InvManager);
-            giveweapon2(InvManager, WeaponName, NameValid);
+            DoGiveWeapon(InvManager, WeaponName, NameValid);
         }
     }
     else
     {
-        `log("Error: GW PlayerController is none!");
+        // `log ("[MutExtras Debug]Error: GW PlayerController is none!");
     }
 }
 
-function giveweapon2(ROInventoryManager InvManager, string WeaponName, out string NameValid)
+function ClearWeapons(PlayerController PC, bool GiveAll, optional int TeamIndex)
 {
-    switch (WeaponName)
+    local array<ROWeapon>       WeaponsToRemove;
+    local ROWeapon              Weapon;
+    local ROInventoryManager    ROIM;
+    local ROPawn                ROP;
+
+    if (GiveAll)
+    { 
+        foreach worldinfo.allpawns(class'ROPawn', ROP)
+        {
+            ROIM = ROInventoryManager(ROP.InvManager);
+            ROIM.GetWeaponList(WeaponsToRemove);
+
+            foreach WeaponsToRemove(Weapon)
+            {
+                ROIM.RemoveFromInventory(Weapon);
+                // `log("Removed "$Weapon);
+            }
+        }
+    }   
+
+    else if (TeamIndex == `AXIS_TEAM_INDEX)
     {
-    `include(MutExtras\Classes\WeaponNamesVanilla.uci)
+        foreach worldinfo.allpawns(class'ROPawn', ROP)
+        {
+            if (ROP.GetTeamNum() == `AXIS_TEAM_INDEX)
+            {
+                ROIM = ROInventoryManager(ROP.InvManager);
+                ROIM.GetWeaponList(WeaponsToRemove);
+
+                foreach WeaponsToRemove(Weapon)
+                {
+                    ROIM.RemoveFromInventory(Weapon);
+                    // `log("Removed "$Weapon);
+                }
+            }
+        }
+    }
+
+    else if (TeamIndex == `ALLIES_TEAM_INDEX)
+    {
+        foreach worldinfo.allpawns(class'ROPawn', ROP)
+        {
+            if (ROP.GetTeamNum() == `ALLIES_TEAM_INDEX)
+            {
+                ROIM = ROInventoryManager(ROP.InvManager);
+                ROIM.GetWeaponList(WeaponsToRemove);
+
+                foreach WeaponsToRemove(Weapon)
+                {
+                    ROIM.RemoveFromInventory(Weapon);
+                    // `log("Removed "$Weapon);
+                }
+            }
+        }
+    }
+
+    else if (TeamIndex == 100)
+    {
+        ROIM = ROInventoryManager(PC.Pawn.InvManager);
+        ROIM.GetWeaponList(WeaponsToRemove);
+
+        foreach WeaponsToRemove(Weapon)
+        {
+            ROIM.RemoveFromInventory(Weapon);
+            // `log("Removed "$Weapon);
+        }
     }
 }
 
@@ -825,10 +860,10 @@ function RemoveBots()
     local ROAIController ROB;
     foreach allactors(class'ROAIController', ROB)
     {
-        ROB.ShutDown();
-        ROB.Destroy();
         ROB.Pawn.ShutDown();
         ROB.Pawn.Destroy();
+        ROB.ShutDown();
+        ROB.Destroy();
     }
 }
 
@@ -849,7 +884,7 @@ function RemoveBots()
 	}
 } */
 
-reliable server function NameExists(ROVehicleBase VehBase)
+simulated function NameExists(ROVehicleBase VehBase)
 {
 	local int 				I, MaxHitsForVic;
 	local bool 				bNameExists;
@@ -861,36 +896,36 @@ reliable server function NameExists(ROVehicleBase VehBase)
 
 	for (I = 0; I < ROVName.length ; I++)
 	{
-        if (ROVName[I] ~= "T28"){MaxHitsForVic = 5; break;}  
-        if (ROVName[I] ~= "T26"){MaxHitsForVic = 4; break;}
-        if (ROVName[I] ~= "Vickers"){MaxHitsForVic = 4; break;}
-        if (ROVName[I] ~= "HT130"){MaxHitsForVic = 4; break;}
-        if (ROVName[I] ~= "T20"){MaxHitsForVic = 3; break;}
-		if (ROVName[I] ~= "53K"){MaxHitsForVic = 1; break;}
-        else {MaxHitsForVic = 3;}
+        if      (ROVName[I] ~= "T20"     ){MaxHitsForVic = 3; break;}
+        else if (ROVName[I] ~= "T26"     ){MaxHitsForVic = 4; break;}
+        else if (ROVName[I] ~= "T28"     ){MaxHitsForVic = 5; break;}  
+		else if (ROVName[I] ~= "53K"     ){MaxHitsForVic = 1; break;}
+        else if (ROVName[I] ~= "HT130"   ){MaxHitsForVic = 4; break;}
+        else if (ROVName[I] ~= "Vickers" ){MaxHitsForVic = 4; break;}
+        else    {MaxHitsForVic = 3;}
 	}
 
 	for (I = 0; I < HitVicName.Length; I++)
 	{
-        //`log ("Hitvicname = "$HitVicName[I]$" HitNum = "$HitNum[I]);
+        //`log ("[MutExtras Debug]Hitvicname = "$HitVicName[I]$" HitNum = "$HitNum[I]);
 		if (HitVicName[I] ~= string(vehbase.name))
 		{
 		    bNameExists = true;
 		    HitNum[I] += 1;
             /* PrivateMessage(PlayerController(ROV.Seats[0].StoragePawn.Controller), "You have "$MaxHitsForVic-HitNum[I]$" hits left before your vehicle is blown up!");
             PrivateMessage(PlayerController(ROV.Seats[1].StoragePawn.Controller), "You have "$MaxHitsForVic-HitNum[I]$" hits left before your vehicle is blown up!"); */
-            `log ("Hitvicname "$HitVicName[I]$" has "$MaxHitsForVic-HitNum[I]$" hits remaining");
+            `log ("[MutExtras Debug] Hitvicname "$HitVicName[I]$" has "$MaxHitsForVic-HitNum[I]$" hits remaining");
     
             if (HitNum[I] >= MaxHitsForVic)
 		    {
 		        ROV.Health = 0;
 		        ROV.BlowupVehicle();
                 ROV.bDeadVehicle = true;
-                `log ("Blew up the "$vehbase.name$" on hit # "$HitNum[I]);
+                `log ("[MutExtras Debug]Blew up the "$vehbase.name$" on hit # "$HitNum[I]);
                 HitVicName.removeitem(HitVicName[I]);
                 HitNum.removeitem(HitNum[I]);
 		    }            
-            else {`log("DAMAGE TEST SUCCESFUL ON "$vehbase.name$" Vehicle health = "$vehbase.Health$" Hit #"$HitNum[I]);}
+            else {`log ("[MutExtras Debug] DAMAGE TEST SUCCESFUL ON "$vehbase.name$" Vehicle health = "$vehbase.Health$" Hit #"$HitNum[I]);}
 		
         break;
 		}
@@ -902,9 +937,18 @@ reliable server function NameExists(ROVehicleBase VehBase)
 	    HitNum.additem(byte(1));
         /* PrivateMessage(PlayerController(ROV.Seats[0].StoragePawn.Controller), "You have "$MaxHitsForVic-1$" hits left before your vehicle is blown up!");
         PrivateMessage(PlayerController(ROV.Seats[1].StoragePawn.Controller), "You have "$MaxHitsForVic-1$" hits left before your vehicle is blown up!"); */
-        `log ("Hitvicname "$HitVicName[I]$" has "$MaxHitsForVic-HitNum[I]$" hits remaining");
+        `log ("[MutExtras Debug] Hitvicname "$HitVicName[I]$" has "$MaxHitsForVic-HitNum[I]$" hits remaining");
 	    `log (vehbase.name$" doesn't exist on the array, adding it");
 	}
+}
+
+// At the end here so I can read error messages easier
+function DoGiveWeapon(ROInventoryManager InvManager, string WeaponName, out string NameValid)
+{
+    switch (WeaponName)
+    {
+        `include(MutExtras\Classes\WeaponNamesVanilla.uci)
+    }
 }
 
 DefaultProperties

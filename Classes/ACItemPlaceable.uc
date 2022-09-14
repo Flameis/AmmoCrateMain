@@ -19,7 +19,7 @@ var		float						DrawSphereRadius;
 
 /*function InitPlaceable()
 {
-	`log ("ACItemPlaceable::InitPlaceable() ConfigName:"@ConfigName);
+	`log ("[MutExtras Debug]ACItemPlaceable::InitPlaceable() ConfigName:"@ConfigName);
 	switch (ConfigName)
 	{
 		case "Sandbags":
@@ -413,9 +413,9 @@ simulated function bool CanPhysicallyPlace(optional bool bIsInitialCheck = true)
 				//DrawDebugBox(Location2, PreviewStaticMesh.Bounds.BoxExtent, 255, 20, 147);
 				//DrawDebugSphere(Location2, PreviewStaticMesh.Bounds.SphereRadius, 8, 255, 20, 147, false);
 
-				//`log("Origin:"@string(PreviewStaticMesh.Bounds.Origin));
-				//`log("BoxExtent:"@string(PreviewStaticMesh.Bounds.BoxExtent));
-				//`log("SphereRadius:"@string(PreviewStaticMesh.Bounds.SphereRadius));
+				//`log ("[MutExtras Debug]Origin:"@string(PreviewStaticMesh.Bounds.Origin));
+				//`log ("[MutExtras Debug]BoxExtent:"@string(PreviewStaticMesh.Bounds.BoxExtent));
+				//`log ("[MutExtras Debug]SphereRadius:"@string(PreviewStaticMesh.Bounds.SphereRadius));
 			}
 
 			if( HitActorSecondary != none )
@@ -442,9 +442,9 @@ simulated function bool CanPhysicallyPlace(optional bool bIsInitialCheck = true)
 			//DrawDebugBox(Location2, PreviewStaticMesh.Bounds.BoxExtent, 255, 20, 147);
 			//DrawDebugSphere(Location2, PreviewStaticMesh.Bounds.SphereRadius, 8, 255, 20, 147, false);
 
-			//`log("Origin:"@string(PreviewStaticMesh.Bounds.Origin));
-			//`log("BoxExtent:"@string(PreviewStaticMesh.Bounds.BoxExtent));
-			//`log("SphereRadius:"@string(PreviewStaticMesh.Bounds.SphereRadius));
+			//`log ("[MutExtras Debug]Origin:"@string(PreviewStaticMesh.Bounds.Origin));
+			//`log ("[MutExtras Debug]BoxExtent:"@string(PreviewStaticMesh.Bounds.BoxExtent));
+			//`log ("[MutExtras Debug]SphereRadius:"@string(PreviewStaticMesh.Bounds.SphereRadius));
 		}
 
 		if( HitActorSecondary != none )
@@ -486,9 +486,9 @@ simulated function bool CanPhysicallyPlace(optional bool bIsInitialCheck = true)
 		//DrawDebugBox(Location2, PreviewStaticMesh.Bounds.BoxExtent, 255, 20, 147);
 		//DrawDebugSphere(Location2, PreviewStaticMesh.Bounds.SphereRadius, 8, 255, 20, 147, false);
 
-		//`log("Origin:"@string(PreviewStaticMesh.Bounds.Origin));
-		//`log("BoxExtent:"@string(PreviewStaticMesh.Bounds.BoxExtent));
-		//`log("SphereRadius:"@string(PreviewStaticMesh.Bounds.SphereRadius));
+		//`log ("[MutExtras Debug]Origin:"@string(PreviewStaticMesh.Bounds.Origin));
+		//`log ("[MutExtras Debug]BoxExtent:"@string(PreviewStaticMesh.Bounds.BoxExtent));
+		//`log ("[MutExtras Debug]SphereRadius:"@string(PreviewStaticMesh.Bounds.SphereRadius));
 	}
 
 	return true;

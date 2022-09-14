@@ -284,7 +284,7 @@ defaultproperties
 	SwayScale=1.0//1.15
 
 	WeaponFireSnd(DEFAULT_FIREMODE)=(DefaultCue=AkEvent'WW_VOX_VC_Voice2.Play_VC_Soldier_2_EnemyHelicopterDown', FirstPersonCue=AkEvent'WW_VOX_VC_Voice2.Play_VC_Soldier_2_EnemyHelicopterDown')
-	WeaponFireSnd(ALTERNATE_FIREMODE)=(DefaultCue=AkEvent'WWW_VOX_VC_Voice2.Play_VC_Soldier_2_EnemyHelicopterDown', FirstPersonCue=AkEvent'WW_VOX_VC_Voice2.Play_VC_Soldier_2_EnemyHelicopterDown')
+	WeaponFireSnd(ALTERNATE_FIREMODE)=(DefaultCue=AkEvent'WW_VOX_VC_Voice2.Play_VC_Soldier_2_EnemyHelicopterDown', FirstPersonCue=AkEvent'WW_VOX_VC_Voice2.Play_VC_Soldier_2_EnemyHelicopterDown')
 
 	bLoopingFireSnd(DEFAULT_FIREMODE)=true
 	WeaponFireLoopEndSnd(DEFAULT_FIREMODE)=(DefaultCue=AkEvent'WW_VOX_VC_Voice2.Play_VC_Soldier_2_EnemyHelicopterDown', FirstPersonCue=AkEvent'WW_VOX_VC_Voice2.Play_VC_Soldier_2_EnemyHelicopterDown')

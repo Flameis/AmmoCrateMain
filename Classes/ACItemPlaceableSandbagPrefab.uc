@@ -31,9 +31,9 @@ simulated function UpdatePreviewMesh()
 
 	//DrawDebugBox(PlaceLoc, Bounds, 0, 20, 255, false);
 	DrawDebugSphere(PlaceLoc, DrawSphereRadius, 20, 0, 0, 255, false);
-	//`log("Origin:"@string(PreviewStaticMesh.Bounds.Origin));
-	//`log("BoxExtent:"@string(PreviewStaticMesh.Bounds.BoxExtent));
-	//`log("SphereRadius:"@string(PreviewStaticMesh.Bounds.SphereRadius));
+	//`log ("[MutExtras Debug]Origin:"@string(PreviewStaticMesh.Bounds.Origin));
+	//`log ("[MutExtras Debug]BoxExtent:"@string(PreviewStaticMesh.Bounds.BoxExtent));
+	//`log ("[MutExtras Debug]SphereRadius:"@string(PreviewStaticMesh.Bounds.SphereRadius));
 	}
 }
 

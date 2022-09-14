@@ -23,8 +23,8 @@ simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponen
 	// debugging info
 	if (bDebugBallistics)
 	{
-		`log("BulletImpactLoc="$Location@"BulletImpactNormal="$HitNormal);
-		`log("BulletImpactVel="$VSize(Velocity) / 50.0$" M/S BulletDist="$(VSize(Location - OrigLoc) / 50.0)$" BulletDrop="$((TraceHitLoc.Z - Location.Z) / 50.0));
+		`log ("[MutExtras Debug]BulletImpactLoc="$Location@"BulletImpactNormal="$HitNormal);
+		`log ("[MutExtras Debug]BulletImpactVel="$VSize(Velocity) / 50.0$" M/S BulletDist="$(VSize(Location - OrigLoc) / 50.0)$" BulletDrop="$((TraceHitLoc.Z - Location.Z) / 50.0));
 
 		if( WorldInfo.NetMode == NM_DedicatedServer )
 		{
@@ -57,7 +57,7 @@ simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponen
 				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				//Split the name into an array 
 				ROVName = splitstring((string(vehbase.name)), "_", true);
-				//`log("TESTING DAMAGE ON "$vehbase.name);
+				//`log ("[MutExtras Debug]TESTING DAMAGE ON "$vehbase.name);
 
 				//Sees if the vehicle is a vehicle we don't want to damage
 				for (I = 0; I < ROVName.length ; I++)
@@ -65,16 +65,16 @@ simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponen
 					if (ROVName[I] ~= "ACAV" || ROVName[I] ~= "ROHeli" || ROVName[I] ~= "Skis")
 					{
 					bNameIsBad = true;
-					//`log("bNameIsBad = true");
+					//`log ("[MutExtras Debug]bNameIsBad = true");
 					}
 				}
 
 				//If it isn't then see if it needs to be blown up
 				if (!bNameIsBad && !ROV.bDeadVehicle)
 				{
-				ROGI = ROGameInfo(WorldInfo.Game);
-				ACM = MutExtras(ROGI.BaseMutator);			
-				ACM.NameExists(VehBase);
+					ROGI = ROGameInfo(WorldInfo.Game);
+					ACM = MutExtras(ROGI.BaseMutator);			
+					ACM.NameExists(VehBase);
 				}
 				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				if( bDebugPenetration )

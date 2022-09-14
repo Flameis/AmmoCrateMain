@@ -1,9 +1,12 @@
-class ACPlayerController extends ROPlayerController;
+class ACPlayerController extends ROPlayerController
+	config(MutExtras_Client);
 
 var ROMapInfo                   ROMI;
 
 var array<class<RORoleInfo> > ACNorthernRoles;
 var	array<class<RORoleInfo> > ACSouthernRoles;
+
+var config string PlayerRank, PlayerUnit;
 
 simulated function PreBeginPlay()
 {
@@ -18,27 +21,15 @@ simulated function PreBeginPlay()
     	ReplaceInventoryManager();
     	//ClientReplaceInventoryManager();
 	}
+
+	// SetUnitAndRank(PlayerRank, PlayerUnit);
 }
 
 simulated function PostBeginPlay()
 {
-    //local RORoleCount RORC;
-
-    // `log("ACPlayerController.PostBeginPlay()");
-
     super.PostBeginPlay();
 
     ROMI = ROMapInfo(WorldInfo.GetMapInfo());
-
-    /* ForEach ROMI.NorthernRoles(RORC)
-    {
-        `log("RoleInfoClass = " $ RORC.RoleInfoClass);
-    }
-
-    ForEach ROMI.SouthernRoles(RORC)
-    {
-        `log("RoleInfoClass = " $ RORC.RoleInfoClass);
-    } */
 }
 
 simulated function ReceivedGameClass(class<GameInfo> GameClass)
@@ -49,12 +40,39 @@ simulated function ReceivedGameClass(class<GameInfo> GameClass)
     ReplacePawnHandler();
 }
 
+reliable client function SetPlayerRank(string NewRank)
+{
+	PlayerRank = NewRank;
+    // ACPawn(GetFirstAssociatedPawn()).PlayerRank = PlayerRank;
+	SetUnitAndRank(PlayerRank, PlayerUnit);
+    SaveConfig();
+}
+
+reliable client function SetPlayerUnit(string NewUnit)
+{
+	PlayerUnit = NewUnit;
+    // ACPawn(GetFirstAssociatedPawn()).PlayerUnit = PlayerUnit;
+	SetUnitAndRank(PlayerRank, PlayerUnit);
+    SaveConfig();
+}
+
+reliable server function SetUnitAndRank(string Rank, string Unit)
+{
+	ACPlayerReplicationInfo(PlayerReplicationInfo).PlayerRank = Rank;
+	ACPlayerReplicationInfo(PlayerReplicationInfo).PlayerUnit = Unit;
+}
+
+reliable client function SetupUnitAndRank()
+{
+	SetUnitAndRank(PlayerRank, PlayerUnit);
+}
+
 simulated function ReplacePawnHandler()
 {
     ROGameInfo(WorldInfo.Game).PawnHandlerClass = class'ACPawnHandler';
     ROGameInfo(WorldInfo.Game).DefaultPawnClass = class'ACPawn';
     ROGameInfo(WorldInfo.Game).AIPawnClass = class'ACPawn';
-    //`log("Replacing PawnHandler...");
+    //`log ("[MutExtras Debug]Replacing PawnHandler...");
 }
 
 reliable client function ClientReplacePawnHandler()
@@ -81,14 +99,14 @@ simulated function ReplaceRoles()
 
 	if (ROMI != None)
     { 
-        //`log("Replacing roles...");
+        //`log ("[MutExtras Debug]Replacing roles...");
 
 		for (I=0; I < ROMI.SouthernRoles.length; I++)
         {
 			if (instr(ROMI.SouthernRoles[I].RoleInfoClass.Name, "Pilot",, true) != -1)
             {
                 FoundPilot = true;
-                `log("[MutExtras] FoundPilot");
+                // `log ("[MutExtras Debug] FoundPilot");
 				break;
             }
         }
@@ -206,133 +224,6 @@ simulated function ReplaceRoles()
         ROMI.SouthernTeamLeader.roleinfo = new ROMI.SouthernRoles[6].RoleInfoClass;
         ROMI.NorthernTeamLeader.roleinfo = new ROMI.NorthernRoles[6].RoleInfoClass;
     }
-    /* if (ROMI != None)
-    { 
-		for (I=0; I < ROMI.SouthernRoles.length; I++)
-        {
-			if (instr(ROMI.SouthernRoles[I].RoleInfoClass.Name, "Pilot",, true) != -1)
-            {
-                FoundPilot = true;
-                `log("[MutExtras] FoundPilot");
-				break;
-            }
-        }
-
-        //`log("Replacing roles...");
-		ROMI.SouthernRoles.Remove(0, ROMI.SouthernRoles.length);
-		ROMI.NorthernRoles.Remove(0, ROMI.NorthernRoles.length);
-
-        //Gotta make the array length right
-        ROMI.SouthernRoles.length = 11;
-        ROMI.NorthernRoles.length = 8;
-
-		ROMI.SouthernTeamLeader.roleinfo = none;
-        ROMI.NorthernTeamLeader.roleinfo = none;
-
-		ROMI.SouthernTeamLeader.roleinfo = new ACSouthernRoles[0];
-        ROMI.NorthernTeamLeader.roleinfo = new ACNorthernRoles[0];
-
-		RORCS.length = 9;
-        RORCN.length = 8;
-
-		RORCS[6].RoleInfoClass = class'ACRoleInfoCommanderSouth';
-		RORCN[6].RoleInfoClass = class'ACRoleInfoCommanderNorth';
-
-		for (i = 0; i < ROMI.SouthernRoles.length; i++)
-    	{
-        	RORCS[i].Count = 255;
-			RORCN[i].ReverseCount = 255;
-    	}    
-    	for (i = 0; i < ROMI.NorthernRoles.length; i++)
-    	{
-        	RORCN[i].Count = 255;
-			RORCN[i].ReverseCount = 255;
-    	}
-
-		RORCS[6].Count = 9;
-		RORCS[6].ReverseCount = 9;
-		RORCN[6].Count = 9;
-		RORCN[6].ReverseCount = 9;
-
-        //Replace the roles
-        if (ROMI.SouthernForce == SFOR_USArmy)
-        {
-            RORCS[0].RoleInfoClass = class'ACRoleInfoRiflemanUS';
-            RORCS[1].RoleInfoClass = class'ACRoleInfoLightUS';
-            RORCS[2].RoleInfoClass = class'ACRoleInfoMachineGunnerUS';
-            RORCS[3].RoleInfoClass = class'ACRoleInfoCombatEngineerUS';
-            RORCS[4].RoleInfoClass = class'ACRoleInfoMarksmanSouth';
-            RORCS[5].RoleInfoClass = class'ACRoleInfoSupportUS';
-            RORCS[7].RoleInfoClass = class'ACRoleInfoLineup';
-        }
-
-        else if (ROMI.SouthernForce == SFOR_USMC)
-        {
-            RORCS[0].RoleInfoClass = class'ACRoleInfoRiflemanUSMC';
-            RORCS[1].RoleInfoClass = class'ACRoleInfoLightUSMC';
-            RORCS[2].RoleInfoClass = class'ACRoleInfoMachineGunnerUSMC';
-            RORCS[3].RoleInfoClass = class'ACRoleInfoCombatEngineerUS';
-            RORCS[4].RoleInfoClass = class'ACRoleInfoMarksmanSouth';
-            RORCS[5].RoleInfoClass = class'ACRoleInfoSupportUS';
-            RORCS[7].RoleInfoClass = class'ACRoleInfoLineup';
-        }
-
-        else if (ROMI.SouthernForce == SFOR_AusArmy)
-        {
-            RORCS[0].RoleInfoClass = class'ACRoleInfoRiflemanAUS';
-            RORCS[1].RoleInfoClass = class'ACRoleInfoLightAUS';
-            RORCS[2].RoleInfoClass = class'ACRoleInfoMachineGunnerAUS';
-            RORCS[3].RoleInfoClass = class'ACRoleInfoCombatEngineerAUS';
-            RORCS[4].RoleInfoClass = class'ACRoleInfoMarksmanAUS';
-            RORCS[5].RoleInfoClass = class'ACRoleInfoSupportAUS';
-            RORCS[7].RoleInfoClass = class'ACRoleInfoLineup';
-        }
-
-        else if (ROMI.SouthernForce == SFOR_ARVN)
-        {
-            RORCS[0].RoleInfoClass = class'ACRoleInfoRiflemanARVN';
-            RORCS[1].RoleInfoClass = class'ACRoleInfoLightARVN';
-            RORCS[2].RoleInfoClass = class'ACRoleInfoMachineGunnerARVN';
-            RORCS[3].RoleInfoClass = class'ACRoleInfoCombatEngineerARVN';
-            RORCS[4].RoleInfoClass = class'ACRoleInfoMarksmanSouth';
-            RORCS[5].RoleInfoClass = class'ACRoleInfoSupportUS';
-            RORCS[7].RoleInfoClass = class'ACRoleInfoLineup';
-        }
-        
-        if (ROMI.NorthernForce == NFOR_NVA)
-        {
-            RORCN[0].RoleInfoClass = class'ACRoleInfoRiflemanPAVN';
-            RORCN[1].RoleInfoClass = class'ACRoleInfoLightPAVN';
-            RORCN[2].RoleInfoClass = class'ACRoleInfoMachineGunnerNorth';
-            RORCN[3].RoleInfoClass = class'ACRoleInfoCombatEngineerPAVN';
-            RORCN[4].RoleInfoClass = class'ACRoleInfoMarksmanNorth';
-            RORCN[5].RoleInfoClass = class'ACRoleInfoSupportNorth';
-
-        }
-
-        else if (ROMI.NorthernForce == NFOR_NLF)
-        {
-            RORCN[0].RoleInfoClass = class'ACRoleInfoRiflemanNLF';
-            RORCN[1].RoleInfoClass = class'ACRoleInfoLightNLF';
-            RORCN[2].RoleInfoClass = class'ACRoleInfoMachineGunnerNorth';
-            RORCN[3].RoleInfoClass = class'ACRoleInfoCombatEngineerNLF';
-            RORCN[4].RoleInfoClass = class'ACRoleInfoMarksmanNorth';
-            RORCN[5].RoleInfoClass = class'ACRoleInfoSupportNorth';
-        }
-
-		RORCS[8].RoleInfoClass = class'ACRoleInfoTankCrewSouth';
-		RORCN[7].RoleInfoClass = class'ACRoleInfoTankCrewNorth';
-
-		if (FoundPilot)
-		{
-			RORCS.length = 11;
-			RORCS[9].RoleInfoClass = class'ACRoleInfoPilotSouth';
-			RORCS[10].RoleInfoClass =class'ACRoleInfoTransportPilotSouth';
-		}
-
-		ROMI.SouthernRoles = RORCS;
-		ROMI.NorthernRoles = RORCN;
-    } */
 }
 
 reliable client function ClientReplaceRoles()

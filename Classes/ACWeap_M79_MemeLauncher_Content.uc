@@ -35,7 +35,7 @@ simulated state Active
 
 		if ( bHidden )
 		{
-			`Log("><><><><><><><><><	Disabled ammo check cancel when weapon hidden! Delete me and my inherited state for release!");
+			`log ("[MutExtras Debug]><><><><><><><><><	Disabled ammo check cancel when weapon hidden! Delete me and my inherited state for release!");
 			// return false;
 		}
 
@@ -129,14 +129,14 @@ simulated function CustomFire()
 		{
 			if( WorldInfo.NetMode == NM_DedicatedServer )
 			{
-				//`log("Server View location is "$Instigator.GetPawnViewLocation());
+				//`log ("[MutExtras Debug]Server View location is "$Instigator.GetPawnViewLocation());
 			`ifndef(ShippingPC)
 			    ClientDrawLine(StartTrace, EndTrace, MakeColor(255,255,0)); // Yellow Line
 			`endif
 			}
 			else
 			{
-				//`log("Client View location is "$Instigator.GetPawnViewLocation());
+				//`log ("[MutExtras Debug]Client View location is "$Instigator.GetPawnViewLocation());
 				FlushPersistentDebugLines();
 				DrawDebugSphere(StartTrace, 4, 8, 0, 255, 0, true);
 				DrawDebugLine(StartTrace,EndTrace,0,255,0,true); // Green Line
@@ -305,7 +305,7 @@ simulated function CustomFireClientSide()
 		// Debug line drawing to draw where weapon shots start/end
 		if( bDebugWeapon || bDebugProjFiring )
 		{
-			`log("Client View location is "$Instigator.GetPawnViewLocation());
+			`log ("[MutExtras Debug]Client View location is "$Instigator.GetPawnViewLocation());
 			FlushPersistentDebugLines();
 			DrawDebugSphere(StartTrace, 4, 8, 0, 255, 0, true);
 			DrawDebugLine(StartTrace,EndTrace,0,255,0,true); // Green Line
@@ -380,12 +380,12 @@ reliable private server function ServerSendImpactEffects(vector StartLoc, rotato
 
 // function LogM79Ammo()
 // {
-	// `Log("PrimaryAmmoCount:"@PrimaryAmmoCount);
-	// `Log("CurrentPrimaryMagCount:"@CurrentPrimaryMagCount);
-	// `Log("SecondaryAmmoCount:"@SecondaryAmmoCount);
-	// `Log("CurrentSecondaryMagCount:"@CurrentSecondaryMagCount);
-	// `Log("AmmoCount:"@AmmoCount);
-	// `Log("CurrentMagCount:"@CurrentMagCount);
+	// `log ("[MutExtras Debug]PrimaryAmmoCount:"@PrimaryAmmoCount);
+	// `log ("[MutExtras Debug]CurrentPrimaryMagCount:"@CurrentPrimaryMagCount);
+	// `log ("[MutExtras Debug]SecondaryAmmoCount:"@SecondaryAmmoCount);
+	// `log ("[MutExtras Debug]CurrentSecondaryMagCount:"@CurrentSecondaryMagCount);
+	// `log ("[MutExtras Debug]AmmoCount:"@AmmoCount);
+	// `log ("[MutExtras Debug]CurrentMagCount:"@CurrentMagCount);
 // }
 
 // Switch between visible buckshot/grenades
