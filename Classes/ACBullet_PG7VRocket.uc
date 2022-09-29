@@ -51,31 +51,30 @@ simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponen
 			// On the server do the damage/sounds, on the client just disappear,
 			// as we want all effect to be handled server side so we can do stuff
 			// like random penetration probability
+
+			ROVName = splitstring((string(vehbase.name)), "_", true);
+			//`log ("[MutExtras Debug]TESTING DAMAGE ON "$vehbase.name);
+			//Sees if the vehicle is a vehicle we don't want to damage
+			for (I = 0; I < ROVName.length ; I++)
+			{
+				if (ROVName[I] ~= "ACAV" || ROVName[I] ~= "ROHeli" || ROVName[I] ~= "Skis")
+				{
+				bNameIsBad = true;
+				//`log ("[MutExtras Debug]bNameIsBad = true");
+				}
+			}
+			//If it isn't then see if it needs to be blown up
+			if (!bNameIsBad && !ROV.bDeadVehicle)
+			{
+				ROGI = ROGameInfo(WorldInfo.Game);
+				ACM = MutExtras(ROGI.BaseMutator);			
+				ACM.NameExists(VehBase);
+			}
+
 			if( Role == ROLE_Authority )
 			{	
 				// ReplicatedEffectLocation = Location;
 				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				//Split the name into an array 
-				ROVName = splitstring((string(vehbase.name)), "_", true);
-				//`log ("[MutExtras Debug]TESTING DAMAGE ON "$vehbase.name);
-
-				//Sees if the vehicle is a vehicle we don't want to damage
-				for (I = 0; I < ROVName.length ; I++)
-				{
-					if (ROVName[I] ~= "ACAV" || ROVName[I] ~= "ROHeli" || ROVName[I] ~= "Skis")
-					{
-					bNameIsBad = true;
-					//`log ("[MutExtras Debug]bNameIsBad = true");
-					}
-				}
-
-				//If it isn't then see if it needs to be blown up
-				if (!bNameIsBad && !ROV.bDeadVehicle)
-				{
-					ROGI = ROGameInfo(WorldInfo.Game);
-					ACM = MutExtras(ROGI.BaseMutator);			
-					ACM.NameExists(VehBase);
-				}
 				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				if( bDebugPenetration )
 				{
@@ -241,6 +240,43 @@ simulated singular event HitWall(vector HitNormal, actor Wall, PrimitiveComponen
 	ImpactedActor = None;
 }
 
+/**
+ * Explode this Projectile
+ */
+simulated function Explode(vector HitLocation, vector HitNormal)
+{
+	// START DEBUG
+	if( bShowDamageRadius )
+	{
+		RenderDamageRadius();
+	}
+	// END DEBUG
+
+	if (Role == ROLE_Authority)
+	{
+		HitExplodeLocation = HitLocation;
+		HitExplodeNormal = HitNormal;
+	}
+
+	if (Damage>0 && DamageRadius>0)
+	{
+		if ( Role == ROLE_Authority  && WorldInfo.NetMode != NM_Client )
+			MakeNoise(1.0);
+		//ProjectileHurtRadius(HitLocation, HitNormal );
+		HurtRadius(Damage, DamageRadius, MyDamageType, MomentumTransfer, HitLocation + HitNormal * ExplosionOffsetDist);
+	}
+
+	if( bStopAmbientSoundOnExplode && AmbientSound != none && AmbientComponent != none && AmbientComponent.IsPlaying())
+	{
+		StopAmbientSound();
+	}
+
+	if (!bSuppressExplosionFX)
+		SpawnExplosionEffects(HitLocation, HitNormal);
+
+	ShutDown();
+}
+
 defaultproperties
 {
 	ImpactDamage=350
@@ -248,7 +284,7 @@ defaultproperties
 	DamageRadius=200
 	MomentumTransfer=43000
 	
-	Caliber=85
+	/* Caliber=85
 	ActualRHA=58
 	TestPlateHardness=400
 	SlopeEffect=0.09559
@@ -257,5 +293,7 @@ defaultproperties
 	ShatteredPenEffectiveness=0.8
 	
 	PenetrationDepth=95
-	MaxPenetrationTests=6
+	MaxPenetrationTests=6 */
+
+	PenetrationSound=AkEvent'WW_WEP_RPG.Play_WEP_RPG_Explode'
 }

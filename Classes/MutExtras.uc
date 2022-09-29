@@ -9,11 +9,11 @@ var RORoleInfoClasses       RORICNorth;
 var ROMapInfo               ROMI;
 
 var bool                    bisVanilla;
-
 var array<Byte> 		    HitNum;
 var array<String> 	        HitVicName;
 
 var config array<String>    PlayerRankAndUnit;
+var config Bool             bLoadGOM, bLoadWW, bInfiniteRoles, bAITRoles;
 
 simulated function PreBeginPlay()
 {
@@ -493,7 +493,7 @@ function ClearBarricades()
     local ACDestructible                ACD;
     local ACTurret_M2_HMG_Destroyable   ACTM2;
 
-    foreach WorldInfo.AllActors(class'MutExtras.ACDestructible', ACD)
+    foreach WorldInfo.AllActors(class'ACDestructible', ACD)
     {
         ACD.Destroy();
     }
@@ -671,7 +671,7 @@ function SpawnVehicle(PlayerController PC, string VehicleName, out string NameVa
 	PC.GetPlayerViewPoint(CamLoc, CamRot);
 	GetAxes(CamRot, X, Y, Z );
 	StartShot   = CamLoc;
-	EndShot     = StartShot + (400.0 * X) + (200 * Z);
+	EndShot     = StartShot + (500 * X) + (200 * Z);
 
     Cobra = class'ROGameContent.ROHeli_AH1G_Content';
     Loach = class'ROGameContent.ROHeli_OH6_Content';
@@ -947,7 +947,7 @@ function DoGiveWeapon(ROInventoryManager InvManager, string WeaponName, out stri
 {
     switch (WeaponName)
     {
-        `include(MutExtras\Classes\WeaponNamesVanilla.uci)
+        `include(MutExtrasTB\Classes\WeaponNamesVanilla.uci)
     }
 }
 

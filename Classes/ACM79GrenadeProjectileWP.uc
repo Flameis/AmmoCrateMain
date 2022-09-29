@@ -19,7 +19,7 @@ var float 				LastFuseLength;			// Used to track direct FuseLength changes so it
 
 simulated function Explode(vector HitLocation, vector HitNormal)
 {
-	`log ("[MutExtras Debug]DamageRadius:"@DamageRadius);
+	//`log ("[MutExtras Debug]DamageRadius:"@DamageRadius);
 
 	if( !bHitWater )
 		SetTimer( 1.0, true, 'DoDamageCheck' );

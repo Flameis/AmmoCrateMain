@@ -309,11 +309,11 @@
 
             /* case "MKB42":
             InvManager.LoadAndCreateInventory("MutExtras.ACWeap_MKb42_AssaultRifle_Content", false, true);
-            break;
+            break; */
             
             case "MG34":
             InvManager.LoadAndCreateInventory("MutExtras.ACWeap_MG34_LMG_Content", false, true);
-            break; */
+            break;
 
             case "CIWS":
             InvManager.LoadAndCreateInventory("MutExtras.ACWeap_CIWS_Content", false, true);
