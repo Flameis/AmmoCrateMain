@@ -12,3 +12,8 @@
 
 class ACHUDWidgetOverheadMap extends ROHUDWidgetOverheadMap;
 
+/** Handles Updating Components */
+function UpdateWidget()
+{
+	super.UpdateWidget();
+}

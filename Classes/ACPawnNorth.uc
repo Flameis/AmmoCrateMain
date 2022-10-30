@@ -1,6 +1,5 @@
 class ACPawnNorth extends ACpawn;
 
-
 simulated event PreBeginPlay()
 {
 	PawnHandlerClass = class'ACPawnHandler';
@@ -145,7 +144,7 @@ defaultproperties
 	bHeadGearIsHelmet=true
 	bCanCamouflage=true
 
-		FootstepSounds.Add((MaterialType=EMT_Default,Sound=AkEvent'WW_FOL_VC.Play_FS_VC_Jog_Dirt')()
+	FootstepSounds.Add((MaterialType=EMT_Default,Sound=AkEvent'WW_FOL_VC.Play_FS_VC_Jog_Dirt')()
 	FootstepSounds.Add((MaterialType=EMT_Rock,Sound=AkEvent'WW_FOL_VC.Play_FS_VC_Jog_Gravel'))
 	FootstepSounds.Add((MaterialType=EMT_Dirt,Sound=AkEvent'WW_FOL_VC.Play_FS_VC_Jog_Dirt'))
 	FootstepSounds.Add((MaterialType=EMT_Metal,Sound=AkEvent'WW_FOL_VC.Play_FS_VC_Jog_Metal'))

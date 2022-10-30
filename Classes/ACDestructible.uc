@@ -10,7 +10,7 @@
 //=============================================================================
 
 class ACDestructible extends Actor
-	config(MutExtras);
+	config(MutExtrasTB);
 
 var()	array<class<DamageType> >			AcceptedDamageTypes;	// Types of Damage that harm this Destructible
 var()	int									StartingHealth;			// Initial Health of this Destructible

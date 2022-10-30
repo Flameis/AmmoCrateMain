@@ -25,5 +25,5 @@
 `define TOTALROLECOUNT_NORTH 8
 `define TOTALROLECOUNT_SOUTH 11
 
-`define getNF class'MutExtras'.static.GetNorthernForce()
-`define getSF class'MutExtras'.static.GetSouthernForce()
+`define getNF class'MutExtrasTB'.static.GetNorthernForce()
+`define getSF class'MutExtrasTB'.static.GetSouthernForce()

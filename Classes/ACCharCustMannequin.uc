@@ -36,8 +36,8 @@ function AttachNewHeadgear(SkeletalMesh NewHeadgearMesh)
 	// `log ("[MutExtras Debug] NewHeadgearMesh.name "$NewHeadgearMesh.name);
 	if(NewHeadgearMesh.name == '29thHelmet')
 	{ 
-		HeadgearTemplateMIC2 = MaterialInstanceConstant(DynamicLoadObject("29thExtras.Materials." $ACPlayerReplicationInfo(ROPC.PlayerReplicationInfo).PlayerRank,class'MaterialInstanceConstant',true));
-		HeadgearTemplateMIC3 = MaterialInstanceConstant(DynamicLoadObject("29thExtras.Materials." $ACPlayerReplicationInfo(ROPC.PlayerReplicationInfo).PlayerUnit,class'MaterialInstanceConstant',true));
+		HeadgearTemplateMIC2 = MaterialInstanceConstant(DynamicLoadObject("MutExtrasTBPkg.Materials." $ACPlayerReplicationInfo(ROPC.PlayerReplicationInfo).PlayerRank,class'MaterialInstanceConstant',true));
+		HeadgearTemplateMIC3 = MaterialInstanceConstant(DynamicLoadObject("MutExtrasTBPkg.Materials." $ACPlayerReplicationInfo(ROPC.PlayerReplicationInfo).PlayerUnit,class'MaterialInstanceConstant',true));
 
 		// `log ("[MutExtras Debug] GetRankTexture "$ACPlayerReplicationInfo(ROPC.PlayerReplicationInfo).PlayerRank);
     	// `log ("[MutExtras Debug] GetUnitTexture "$ACPlayerReplicationInfo(ROPC.PlayerReplicationInfo).PlayerUnit);

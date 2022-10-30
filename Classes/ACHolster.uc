@@ -3,7 +3,7 @@ class ACHolster extends ROItem_BinocularsUS_Content;
 simulated function PreBeginPlay()
 {
 	SkeletalMeshComponent(Mesh).SetHidden(true);
-	ROPawn(Instigator).ArmsMesh.AnimSets[4] = AnimSet'29thExtras.Anims.Salute1st';
+	ROPawn(Instigator).ArmsMesh.AnimSets[4] = AnimSet'MutExtrasTBPkg.Anims.Salute1st';
     //SetTimer( 10, true );
 
 	super.PreBeginPlay();
@@ -81,10 +81,10 @@ defaultproperties
 		//SkeletalMesh=SkeletalMesh'WP_VN_USA_Binoculars.Mesh.US_Binocs'
 		SkeletalMesh=none
 		AnimSets(0)=AnimSet'WP_VN_USA_Binoculars.Anim.WP_US_BinocsHands'
-		AnimSets(1)=AnimSet'29thExtras.Anims.Salute1st'
+		AnimSets(1)=AnimSet'MutExtrasTBPkg.Anims.Salute1st'
 		PhysicsAsset=None
-		AnimTreeTemplate=AnimTree'29thExtras.Anims.SaluteTree1st'
-		//AnimTreeTemplate=AnimSet'29thExtras.Anims.SaluteTree'
+		AnimTreeTemplate=AnimTree'MutExtrasTBPkg.Anims.SaluteTree1st'
+		//AnimTreeTemplate=AnimSet'MutExtrasTBPkg.Anims.SaluteTree'
 		Scale=1.0
 		FOV=70
 	End Object

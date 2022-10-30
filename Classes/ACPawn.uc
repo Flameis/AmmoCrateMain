@@ -139,8 +139,8 @@ simulated function AttachNewHeadgear(SkeletalMesh NewHeadgearMesh)
 	// `log ("[MutExtras Debug] NewHeadgearMesh.name "$NewHeadgearMesh.name);
 	if(NewHeadgearMesh.name == '29thHelmet')
 	{
-		HeadgearTemplateMIC2 = MaterialInstanceConstant(DynamicLoadObject("29thExtras.Materials." $PlayerRank,class'MaterialInstanceConstant',true));
-		HeadgearTemplateMIC3 = MaterialInstanceConstant(DynamicLoadObject("29thExtras.Materials." $PlayerUnit,class'MaterialInstanceConstant',true));
+		HeadgearTemplateMIC2 = MaterialInstanceConstant(DynamicLoadObject("MutExtrasTBPkg.Materials." $PlayerRank,class'MaterialInstanceConstant',true));
+		HeadgearTemplateMIC3 = MaterialInstanceConstant(DynamicLoadObject("MutExtrasTBPkg.Materials." $PlayerUnit,class'MaterialInstanceConstant',true));
 
 		// `log (PlayerRank);
 		// `log (PlayerUnit);
@@ -172,4 +172,10 @@ simulated function AttachNewHeadgear(SkeletalMesh NewHeadgearMesh)
 			`warn("Bone name specified in socket not found in parent anim component. Headgear component will not be attached");
 	   }
 	}
+}
+
+defaultproperties
+{
+	PlayerRank="29th"
+	PlayerUnit="29th"
 }

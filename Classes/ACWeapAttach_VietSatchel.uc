@@ -16,10 +16,10 @@ DefaultProperties
 
 	// Weapon SkeletalMesh
 	Begin Object Name=SkeletalMeshComponent0
-		SkeletalMesh=SkeletalMesh'29thExtras.Satchel.Rus_Satchel_3rd_Master'
-		PhysicsAsset=PhysicsAsset'29thExtras.Satchel.Sov_Satchel_Physics'
+		SkeletalMesh=SkeletalMesh'MutExtrasTBPkg.Satchel.Rus_Satchel_3rd_Master'
+		PhysicsAsset=PhysicsAsset'MutExtrasTBPkg.Satchel.Sov_Satchel_Physics'
 		CullDistance=5000
 	End Object
 
-	WeaponClass=class'MutExtras.ACWeap_VietSatchel'
+	WeaponClass=class'MutExtrasTB.ACWeap_VietSatchel'
 }

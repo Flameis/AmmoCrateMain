@@ -67,7 +67,6 @@ function bool SelectRoleByClass(Controller C, class<RORoleInfo> RoleInfoClass,
     // `log ("[MutExtras Debug]ACPlayerReplicationInfo.SelectRoleByClass()");
 
     ACPlayerController(C).ReplacePawnHandler();
-    ACPlayerController(C).ReplaceRoles();
     ACPlayerController(C).ReplaceInventoryManager();
 
     return super.SelectRoleByClass(C, RoleInfoClass, WeaponSelection,
@@ -83,5 +82,7 @@ function bool SelectRoleByClass(Controller C, class<RORoleInfo> RoleInfoClass,
 
 defaultproperties
 {
+	PlayerRank="29th"
+	PlayerUnit="29th"
 	PawnHandlerClass = class'ACPawnHandler';
 }
