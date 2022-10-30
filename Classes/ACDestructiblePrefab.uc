@@ -10,7 +10,7 @@
 //=============================================================================
 
 class ACDestructiblePrefab extends ACDestructible
-	config(MutExtras);
+	config(MutExtrasTB);
 
 var() 	array<StaticMeshComponent>			PFStaticMeshComponent;
 var 	array<StaticMesh>					PFDestroyedMesh;

@@ -1,19 +1,16 @@
 class MutExtras extends ROMutator
-	config(MutExtras);
+	config(MutExtras_Server);
 
-var string                  PlayerName;
-var ACPlayerController      ACPC;
-var ROGameInfo              ROGI;
 var RORoleInfoClasses       RORICSouth;
 var RORoleInfoClasses       RORICNorth;
-var ROMapInfo               ROMI;
+var array<ACDummyActor>     DummyActors;
 
 var bool                    bisVanilla;
 var array<Byte> 		    HitNum;
 var array<String> 	        HitVicName;
 
 var config array<String>    PlayerRankAndUnit;
-var config Bool             bLoadGOM, bLoadWW, bInfiniteRoles, bAITRoles;
+var config Bool             bLoadGOM3, bLoadGOM4, bLoadWW, bAITRoles, bNewTankPhys;
 
 simulated function PreBeginPlay()
 {
@@ -25,7 +22,9 @@ simulated function PreBeginPlay()
         ROGameInfo(WorldInfo.Game).PlayerControllerClass        = class'ACPlayerController';
         ROGameInfo(WorldInfo.Game).PlayerReplicationInfoClass   = class'ACPlayerReplicationInfo';
         ROGameInfo(WorldInfo.Game).PawnHandlerClass             = class'ACPawnHandler';
-        ReplacePawns();
+        
+        ROGameInfo(WorldInfo.Game).SouthRoleContentClasses = RORICSouth;
+        ROGameInfo(WorldInfo.Game).NorthRoleContentClasses = RORICNorth;
     }
 
     super.PreBeginPlay();
@@ -33,7 +32,7 @@ simulated function PreBeginPlay()
 
 function ModifyPlayer(Pawn Other)
 {
-    //Attach 29th decals onto the headgear mesh
+    //Make sure the pawns on the server have the rank and unit for the 29th helmet
 	ACPawn(Other).PlayerRank = ACPlayerReplicationInfo(Other.PlayerReplicationInfo).PlayerRank;
 	ACPawn(Other).PlayerUnit = ACPlayerReplicationInfo(Other.PlayerReplicationInfo).PlayerUnit;
 
@@ -42,57 +41,62 @@ function ModifyPlayer(Pawn Other)
 
 simulated function NotifyLogin(Controller NewPlayer)
 {
-    local ACPCDummy DummyPC;
+    local ACPlayerController      ACPC;
+    local ACDummyActor DummyActor;
+
+    DummyActor = Spawn(class'ACDummyActor', NewPlayer);
+    DummyActors.AddItem(DummyActor);
+    //`log ("[MutExtras LogIn] Spawning "$DummyActor);
+
+    //SetTimer(10, false, 'CheckLoaded');
 
     if (bisVanilla)
     {
         ACPC = ACPlayerController(NewPlayer);
 
-        if (ACPC == None)
+        if (ACPC != None)
         {
-            // `log ("[MutExtras Debug] Error replacing roles");
-            return;
-        }
+            ACPC.ReplacePawnHandler();
+            ACPC.ClientReplacePawnHandler();
+            ACPC.ReplaceRoles(bAITRoles);
+            ACPC.ClientReplaceRoles(bAITRoles);
+            ACPC.ReplaceInventoryManager();
+            ACPC.ClientReplaceInventoryManager();
 
-        ACPC.ReplacePawnHandler();
-        ACPC.ClientReplacePawnHandler();
-        ACPC.ReplaceRoles();
-        ACPC.ClientReplaceRoles();
-        ACPC.ReplaceInventoryManager();
-        ACPC.ClientReplaceInventoryManager();
-
-        ACPC.SetupUnitAndRank();
-    }
-    else if (IsWWThere())
-    {
-        DummyPC = Spawn(class'ACPCDummy', NewPlayer);
-        DummyPC.ReplaceRoles(true, false);
-        DummyPC.ClientReplaceRoles(true, false);
-        DummyPC.Destroy();
-    }
-    else if (IsMutThere("GOM"))
-    {
-        DummyPC = Spawn(class'ACPCDummy', NewPlayer);
-        DummyPC.ReplaceRoles(false, true);
-        DummyPC.ClientReplaceRoles(false, true);
-        DummyPC.Destroy();
+            ACPC.SetupUnitAndRank();
+        } 
     }
     else
     {
-        DummyPC = Spawn(class'ACPCDummy', NewPlayer);
-        DummyPC.ReplaceRoles(false, false);
-        DummyPC.ClientReplaceRoles(false, false);
-        DummyPC.Destroy();
+        DummyActor.ReplaceRoles(IsWWThere(), IsMutThere("GOM"));
+        DummyActor.ClientReplaceRoles(IsWWThere(), IsMutThere("GOM"));
     }
- 
+
     super.NotifyLogin(NewPlayer);
+}
+
+simulated function NotifyLogout(Controller Exiting)
+{
+    local ACDummyActor DummyActor;
+
+    foreach DummyActors(DummyActor)
+    {
+        if (DummyActor.Owner == Exiting)
+        {
+            //`log ("[MutExtras LogOut] Destoying "$DummyActor);
+            DummyActor.Destroy();
+            break;
+        }
+    }
+
+    super.NotifyLogout(Exiting);
 }
 
 auto state StartUp
 {
     function timer()
     {
-        RemoveVolumes();
+        ModifyVolumes();
     }
 
     function timer2()
@@ -101,135 +105,143 @@ auto state StartUp
     }
 
     Begin:
+    SetTimer(1, false, 'LoadObjects');
+    //SetTimer(10, false, 'CheckLoaded');
+    SetTimer(2, true, 'timer2');
     SetTimer(10, true);
-    if (!IsMutThere("Commands"))
+}
+
+function CheckLoaded()
+{
+    local ROMapInfo               ROMI;
+    local int i;
+    ROMI = ROMapInfo(WorldInfo.GetMapInfo());
+
+    for (i=0; i<ROMI.SharedContentReferences.length; i++)
     {
-        SetTimer(2, true, 'timer2');
+        `log ("[MutExtras CheckLoaded] SharedContentReferences = "$ROMI.SharedContentReferences[i]);
     }
 }
 
-function RemoveVolumes()
+function LoadObjects()
 {
-    local ROVolumeAmmoResupply ROVAR;
-
-    foreach AllActors(class'ROVolumeAmmoResupply', ROVAR)
-    {
-        ROVAR.Team = OWNER_Neutral;
-    }
-}
-
-function SetVicTeam()
-{
-    local ROVehicle ROV;
-
-    foreach DynamicActors(class'ROVehicle', ROV)
-    {
-        if (ROV.bDriving == true && ROV.Team != ROV.Driver.GetTeamNum() && !ROV.bDeadVehicle)
-        {
-            ROV.Team = ROV.Driver.GetTeamNum();
-            // `log ("[MutExtras Debug] Set "$ROV$" to team "$ROV.Driver.GetTeamNum());
-        }
-    }
-}
-
-reliable client function ClientInfiniteRoles()
-{
-    InfiniteRoles();
-}
-
-simulated function InfiniteRoles()
-{
-    local RORoleCount   NorthRoleCount, SouthRoleCount;
-    local int           I;
-    local bool          FoundNTank, FoundSTank;
+    local ROMapInfo               ROMI;
 
     ROMI = ROMapInfo(WorldInfo.GetMapInfo());
 
-    if (IsWWThere())
-    {
-        for (I=0; I < ROMI.NorthernRoles.length; I++)
-        {
-            if (instr(ROMI.NorthernRoles[I].RoleInfoClass.Name, "Tank",, true) != -1)
-            {
-                FoundNTank = true;
-                // `log ("[MutExtras Debug] Found NTank");
-                break;
-            }
-        }
-        for (I=0; I < ROMI.SouthernRoles.length; I++)
-        {
-            if (instr(ROMI.SouthernRoles[I].RoleInfoClass.Name, "Tank",, true) != -1)
-            {
-                FoundSTank = true;
-                // `log ("[MutExtras Debug] Found STank");
-                break;
-            }
-        }
+    //`log ("[MutExtras LoadObjects]");
 
-        if (!FoundNTank)
-        {
-            NorthRoleCount.RoleInfoClass = class'ACRoleInfoTankCrewFinnish';
-            ROMI.NorthernRoles.additem(NorthRoleCount);
-        }
-        if (!FoundSTank)
-        {
-            NorthRoleCount.RoleInfoClass = ROMI.default.SouthernRoles[7].RoleInfoClass;
-            ROMI.SouthernRoles.additem(SouthRoleCount);
-        }
+    if (bLoadGOM3)
+    {
+        ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("GOM3.GOMVehicle_M113_ACAV_ActualContent", class'Class')));
     }
-
-    else if (ISMutThere("GOM"))
+    if (bLoadGOM4)
     {
-        NorthRoleCount.RoleInfoClass = class'ACRoleInfoTankCrewNorth';
-        ROMI.NorthernRoles.additem(NorthRoleCount);
-
-        SouthRoleCount.RoleInfoClass = class'ACRoleInfoTankCrewSouth';
-        ROMI.SouthernRoles.additem(SouthRoleCount);
+        ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("GOM4.GOMVehicle_M113_ACAV_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("GOM4.GOMVehicle_M113_APC_ARVN", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("GOM4.GOMVehicle_M151_MUTT_US", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("GOM4.GOMVehicle_T34_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_38Bodyguard_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_BarShotgun_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_Bayonet_M4_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_Bayonet_M5_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_Bayonet_M7_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_BowieKnife_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_Crossbow_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_DP27", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_DPM", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_F1_Grenade_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_FusilRobust_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_K50M_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_Kar98Scoped_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_Kar98k_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_L1A1_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_LPO50_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_M12_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_M14_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_M16A1_Scoped_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_M16A1_XM148_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_M1897_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_M18_Recoilless_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_M1911A1_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_M1A1_Stockless", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_M7RifleGrenade_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_M37_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_M37_Riot", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_M44_Carbine_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_M60_200", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_M72_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_MAC10_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_MAC10_Silenced", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_MG34_Drum", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_MG42_Drum", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_P38_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_PPS_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_RGD33_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_RPD_SawnOff_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_RPG2_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_SKS_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_SVD_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_Satchel_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_SodaGrenade_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_SodaMine_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_Stel_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_Sten_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_Stevens_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_Stoner63A_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_TUL_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_Type63_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_UZI_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_VCGrenade_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_VCKnife_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_VZ23", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_VZ25", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_VZ58_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_VZ61_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_XM177E2_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_XM177E2_30", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_XM21_Content", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("GOM4.GOMWeapon_XM21_Suppressed", class'Class')));
     }
-
-    for (i = 0; i < ROMI.SouthernRoles.length; i++)
+    if (bLoadWW)
     {
-        ROMI.SouthernRoles[i].Count = 255;
-    }    
-    for (i = 0; i < ROMI.NorthernRoles.length; i++)
-    {
-        ROMI.NorthernRoles[i].Count = 255;
+        ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T20_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T26_EarlyWar_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_T28_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_HT130_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_53K_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<ROVehicle>(DynamicLoadObject("WinterWar.WWVehicle_Vickers_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_AntiTankMine_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_AVS36_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_Binoculars_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_DP28_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_F1Grenade_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_Kasapanos_FactoryIssue_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_Kasapanos_Improvised_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_KP31_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_L35_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_LahtiSaloranta_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_Luger_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_M20_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_M32Grenade_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_Maxim_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_MN27_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_MN38_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_MN91_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_MN9130_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_MN9130_Dyakonov_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_MN9130_Scoped_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_Molotov_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_NagantRevolver_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_PPD34_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_QuadMaxims_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_RDG1_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_RGD33_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_Satchel_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_Skis_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_SVT38_ActualContent", class'Class')));
+        ROMI.SharedContentReferences.AddItem(class<Inventory>(DynamicLoadObject("WinterWar.WWWeapon_TT33_ActualContent", class'Class')));
     }
-}
-
-simulated function ReplacePawns()
-{
-    ROGameInfo(WorldInfo.Game).SouthRoleContentClasses = RORICSouth;
-    ROGameInfo(WorldInfo.Game).NorthRoleContentClasses = RORICNorth;
-}
-
-function bool IsMutThere(string Mutator)
-{
-	local Mutator mut;
-
-    mut = ROGameInfo(WorldInfo.Game).BaseMutator;
-
-    for (mut = ROGameInfo(WorldInfo.Game).BaseMutator; mut != none; mut = mut.NextMutator)
-    {
-        // `log("[MutCommands] IsMutThere test "$string(mut.name));
-        if(InStr(string(mut.name), Mutator,,true) != -1) 
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-function bool IsWWThere()
-{
-    local string WWName;
-    WWName = class'Engine'.static.GetCurrentWorldInfo().GetMapName(true);
-    if (InStr(WWName, "WW",,true) != -1)
-    {
-        // `log ("[MutExtras Debug] Found WinterWar!");
-        return true;
-    }
-    return false;
 }
 
 function PrivateMessage(PlayerController receiver, coerce string msg)
@@ -241,172 +253,124 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
 {
     local array<string>         Args;
     local string                command;
-    local string                NameValid;
+    local string                PlayerName;
 
-    ROGI = ROGameInfo(WorldInfo.Game);
     Args = SplitString(MutateString, " ", true);
     command = Caps(Args[0]);
 
     PlayerName = PC.PlayerReplicationInfo.PlayerName;
 
-		Switch (Command)
-        {
-            case "CHANGERANK":
-                ACPlayerController(PC).SetPlayerRank(Args[1]);
-                break;
+	Switch (Command)
+    {
+        case "SWITCHTANKPHYS":
+            if (!bNewTankPhys)
+                bNewTankPhys=true;
+            else
+                bNewTankPhys=false;
+            break;
 
-            case "CHANGEUNIT":
-                ACPlayerController(PC).SetPlayerUnit(Args[1]);
-                break;
+        case "CHANGERANK":
+            ACPlayerController(PC).SetPlayerRank(Args[1]);
+            break;
 
-            case "RESETMESH":
-                ACPawn(PC.Pawn).CreatePawnMesh();
-                break;
+        case "CHANGEUNIT":
+            ACPlayerController(PC).SetPlayerUnit(Args[1]);
+            break;
 
-            case "GIVEB":
-                SpawnBarricadeTool(PC, Args[1], int(Args[2]));
-                break;
+        case "RESETMESH":
+            ACPawn(PC.Pawn).CreatePawnMesh();
+            break;
 
-            case "CLEARB":
-                ClearBarricades();
-                break;
+        case "GIVEB":
+            SpawnBarricadeTool(PC, Args[1], int(Args[2]));
+            break;
 
-            case "DELB":
-                DelBarricade(PC);
-                break;
+        case "CLEARB":
+            ClearBarricades();
+            break;
 
-            case "SALUTE":
-                Salute(PC);
-                break;
-        }
-        if (!IsMutThere("Commands"))
-        {
-            switch (command)
+        case "DELB":
+            DelBarricade(PC);
+            break;
+
+        case "SALUTE":
+            Salute(PC);
+            break;
+
+        case "GIVEWEAPON":
+            GiveWeapon(PC, Args[1], false, 100);
+            break;
+
+        case "GIVEWEAPONALL":
+            GiveWeapon(PC, Args[1], true);
+            break;
+
+        case "GIVEWEAPONNORTH":
+            GiveWeapon(PC, Args[1], false, `AXIS_TEAM_INDEX);
+            break;
+
+        case "GIVEWEAPONSOUTH":
+            GiveWeapon(PC, Args[1], false, `ALLIES_TEAM_INDEX);
+            break;
+
+        case "CLEARWEAPONS":
+            ClearWeapons(PC, false, 100);
+            break;
+    
+        case "CLEARWEAPONSALL":
+            ClearWeapons(PC, true);
+            break;
+    
+        case "CLEARWEAPONSNORTH":
+            ClearWeapons(PC, false, `AXIS_TEAM_INDEX);
+            break;
+    
+        case "CLEARWEAPONSSOUTH":
+            ClearWeapons(PC, false, `ALLIES_TEAM_INDEX);
+            WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" cleared south weapons");
+            break;
+
+        case "SPAWNVEHICLE":
+            if (SpawnVehicle(PC, Args[1]))
             {
-                case "GIVEWEAPON":
-                    GiveWeapon(PC, Args[1], NameValid, false, 100);
-                    if (NameValid != "False")
-                    {
-                        WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" spawned a "$Args[1]);
-                        `log ("[MutExtras Debug] "$PlayerName$" spawned a "$Args[1]$"");
-                    }
-                    else
-                    {
-                        `log ("[MutExtras Debug] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
-                        PrivateMessage(PC, "Not a valid weapon name.");
-                    }
-                    break;
-
-                case "GIVEWEAPONALL":
-                    GiveWeapon(PC, Args[1], NameValid, true);
-                    if (NameValid != "False")
-                    {
-                        WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" gave a "$Args[1]$" to everyone");
-                        `log ("[MutExtras Debug] "$PlayerName$" spawned a "$Args[1]$"");
-                    }
-                    else
-                    {
-                        `log ("[MutExtras Debug] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
-                        PrivateMessage(PC, "Not a valid weapon name.");
-                    }
-                    break;
-
-                case "GIVEWEAPONNORTH":
-                    GiveWeapon(PC, Args[1], NameValid, false, `AXIS_TEAM_INDEX);
-                    if (NameValid != "False")
-                    {
-                        WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" gave a "$Args[1]$" to the north");
-                        `log ("[MutExtras Debug] "$PlayerName$" gave a "$Args[1]$" to the north");
-                    }
-                    else
-                    {
-                        `log ("[MutExtras Debug] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
-                        PrivateMessage(PC, "Not a valid weapon name.");
-                    }
-                    break;
-
-                case "GIVEWEAPONSOUTH":
-                    GiveWeapon(PC, Args[1], NameValid, false, `ALLIES_TEAM_INDEX);
-                    if (NameValid != "False")
-                    {
-                        WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" gave a "$Args[1]$" to the south");
-                        `log ("[MutExtras Debug] "$PlayerName$" gave a "$Args[1]$" to the south");
-                    }
-                    else
-                    {
-                        `log ("[MutExtras Debug] Giveweapon failed! "$PlayerName$" tried to spawn a "$Args[1]);
-                        PrivateMessage(PC, "Not a valid weapon name.");
-                    }
-                    break;
-
-                case "CLEARWEAPONS":
-                    ClearWeapons(PC, false, 100);
-                    WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" cleared their weapons");
-                    `log("[MutCommands] Clearing Weapons");
-                    break;
-        
-                case "CLEARWEAPONSALL":
-                    ClearWeapons(PC, true);
-                    WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" cleared all weapons");
-                    `log("[MutCommands] Clearing Weapons");
-                    break;
-        
-                case "CLEARWEAPONSNORTH":
-                    ClearWeapons(PC, false, `AXIS_TEAM_INDEX);
-                    WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" cleared north weapons");
-                    `log("[MutCommands] Clearing Weapons");
-                    break;
-        
-                case "CLEARWEAPONSSOUTH":
-                    ClearWeapons(PC, false, `ALLIES_TEAM_INDEX);
-                    WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" cleared south weapons");
-                    `log("[MutCommands] Clearing Weapons");
-                    break;
-
-                case "SPAWNVEHICLE":
-                    SpawnVehicle(PC, Args[1], NameValid);
-                    if (NameValid != "False")
-                    {
-                        WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" spawned a "$Args[1]$"");
-                        `log ("[MutExtras Debug] "$PlayerName$" spawned a "$Args[1]$"");
-                    }
-                    else
-                    {
-                        `log ("[MutExtras Debug] Spawnvehicle failed! "$PlayerName$" tried to spawn a "$Args[1]);
-                        PrivateMessage(PC, "Not a valid vehicle name.");
-                    }
-                    break;
-
-                case "CLEARVEHICLES":
-                    ClearVehicles();
-                    break;
-
-                case "ADDBOTS":
-                    AddBots(int(Args[1]), int(Args[2]), bool(Args[3]));
-                    `log ("[MutExtras Debug]Added Bots");
-                    break;
-
-                case "REMOVEBOTS":
-                    RemoveBots();
-                    `log ("[MutExtras Debug]Removed Bots");
-                    break;
-
-                /* case "FLY":
-                    if (PC.bCheatFlying == false)
-                    {
-                        CheatManager.Fly();
-                        PC.Pawn.AirSpeed = PC.Pawn.Default.AirSpeed * 20;
-                        `log ("[MutExtras Debug]Fly");
-                    }
-                    else
-                    {
-                        CheatManager.Walk();
-                        PC.Pawn.AirSpeed = PC.Pawn.Default.AirSpeed;
-                        `log ("[MutExtras Debug]UnFly");
-                    }    
-                    break; */
+                WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" spawned a "$Args[1]$"");
+                `log ("[MutExtras Debug] "$PlayerName$" spawned a "$Args[1]$"");
             }
-        }
+            break;
+
+        case "CLEARVEHICLES":
+            ClearVehicles();
+            break;
+
+        case "ADDBOTS":
+            AddBots(int(Args[1]), int(Args[2]), bool(Args[3]));
+            `log ("[MutExtras Debug]Added Bots");
+            break;
+
+        case "REMOVEBOTS":
+            RemoveBots();
+            `log ("[MutExtras Debug]Removed Bots");
+            break;
+
+        case "SetSpeed":
+            SetSpeed(PC, float(Args[1]), Args[2]);
+            `log("[MutExtras Debug] SetSpeed");
+            if (Args[2] ~= "all")
+            {
+                WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" set everyone's speed to "$Args[1]);
+            }
+            else
+            {
+                WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" set their speed to "$Args[1]);
+            }
+            break;
+
+        case "ALLAMMO":
+            AllAmmo(PC);
+            `log("[MutExtras Debug] Infinite Ammo");
+            WorldInfo.Game.Broadcast(self, "[MutExtras] "$PlayerName$" toggled AllAmmo");
+            break;
+    }
     super.Mutate(MutateString, PC);
 }
 
@@ -533,12 +497,11 @@ function DelBarricade(PlayerController PC)
     }
 }
 
-function GiveWeapon(PlayerController PC, string WeaponName, out string NameValid, optional bool bGiveAll, optional int TeamIndex)
+function GiveWeapon(PlayerController PC, string WeaponName, optional bool bGiveAll, optional int TeamIndex)
 {
 	local ROInventoryManager        InvManager;
     local ROPawn                    ROP;
-
-    NameValid = "True";
+    local string                    ActualName;
 
     if (PC != none)
     {
@@ -547,10 +510,14 @@ function GiveWeapon(PlayerController PC, string WeaponName, out string NameValid
             foreach worldinfo.allpawns(class'ROPawn', ROP)
             {
                 InvManager = ROInventoryManager(ROP.InvManager);
-                DoGiveWeapon(InvManager, WeaponName, NameValid);
-            }
-        }   
 
+                ActualName = DoGiveWeapon(PC, InvManager, WeaponName);
+                if (ActualName != "true")
+                    break;
+            }
+            if (ActualName == "true")
+                WorldInfo.Game.Broadcast(self, "[MutExtrasTB] "$PC.PlayerReplicationInfo.PlayerName$" gave a "$WeaponName$" to everyone");
+        }   
         else if (TeamIndex == `AXIS_TEAM_INDEX)
         {
             foreach worldinfo.allpawns(class'ROPawn', ROP)
@@ -558,11 +525,15 @@ function GiveWeapon(PlayerController PC, string WeaponName, out string NameValid
                 if (ROP.GetTeamNum() == `AXIS_TEAM_INDEX)
                 {
                     InvManager = ROInventoryManager(ROP.InvManager);
-                    DoGiveWeapon(InvManager, WeaponName, NameValid);
+
+                    ActualName = DoGiveWeapon(PC, InvManager, WeaponName);
+                    if (ActualName != "true")
+                        break;
                 }
             }
+            if (ActualName == "true")
+                WorldInfo.Game.Broadcast(self, "[MutExtrasTB] "$PC.PlayerReplicationInfo.PlayerName$" gave a "$WeaponName$" to the north");
         }
-
         else if (TeamIndex == `ALLIES_TEAM_INDEX)
         {
             foreach worldinfo.allpawns(class'ROPawn', ROP)
@@ -570,31 +541,55 @@ function GiveWeapon(PlayerController PC, string WeaponName, out string NameValid
                 if (ROP.GetTeamNum() == `ALLIES_TEAM_INDEX)
                 {
                     InvManager = ROInventoryManager(ROP.InvManager);
-                    DoGiveWeapon(InvManager, WeaponName, NameValid);
+
+                    ActualName = DoGiveWeapon(PC, InvManager, WeaponName);
+                    if (ActualName != "true")
+                        break;
                 }
             }
+            if (ActualName == "true")
+                WorldInfo.Game.Broadcast(self, "[MutExtrasTB] "$PC.PlayerReplicationInfo.PlayerName$" gave a "$WeaponName$" to the south");
         }
-
         else if (TeamIndex == 100)
         {
             InvManager = ROInventoryManager(PC.Pawn.InvManager);
-            DoGiveWeapon(InvManager, WeaponName, NameValid);
+
+            ActualName = DoGiveWeapon(PC, InvManager, WeaponName);
+            if (ActualName == "true")
+                WorldInfo.Game.Broadcast(self, "[MutExtrasTB] "$PC.PlayerReplicationInfo.PlayerName$" spawned a "$WeaponName);
         }
     }
     else
     {
-        // `log ("[MutExtras Debug]Error: GW PlayerController is none!");
+        // `log ("[MutExtras Debug] Error: GW PlayerController is none!");
+    }
+
+    if (ActualName == "false")
+    {
+        PrivateMessage(PC, "Not a valid weapon name.");
+    }
+    else if (InStr(ActualName, "WinterWar") != -1 && !bLoadWW)
+    {
+        PrivateMessage(PC, "bLoadWinterWar must be enabled in the WebAdmin mutators settings for you to spawn this weapon!");
+    }
+    else if (InStr(ActualName, "GOM4") != -1 && !bLoadGOM4)
+    {
+        PrivateMessage(PC, "bLoadGOM4 must be enabled in the WebAdmin mutators settings for you to spawn this weapon!");
+    }
+    else if (InStr(ActualName, "GOM3") != -1 && !bLoadGOM3)
+    {
+        PrivateMessage(PC, "bLoadGOM3 must be enabled in the WebAdmin mutators settings for you to spawn this weapon!");
     }
 }
 
-function ClearWeapons(PlayerController PC, bool GiveAll, optional int TeamIndex)
+function ClearWeapons(PlayerController PC, bool ClearAll, optional int TeamIndex)
 {
     local array<ROWeapon>       WeaponsToRemove;
     local ROWeapon              Weapon;
     local ROInventoryManager    ROIM;
     local ROPawn                ROP;
 
-    if (GiveAll)
+    if (ClearAll)
     { 
         foreach worldinfo.allpawns(class'ROPawn', ROP)
         {
@@ -607,6 +602,7 @@ function ClearWeapons(PlayerController PC, bool GiveAll, optional int TeamIndex)
                 // `log("Removed "$Weapon);
             }
         }
+        WorldInfo.Game.Broadcast(self, "[MutExtras] "$PC.PlayerReplicationInfo.PlayerName$" cleared all weapons");
     }   
 
     else if (TeamIndex == `AXIS_TEAM_INDEX)
@@ -625,6 +621,7 @@ function ClearWeapons(PlayerController PC, bool GiveAll, optional int TeamIndex)
                 }
             }
         }
+        WorldInfo.Game.Broadcast(self, "[MutExtras] "$PC.PlayerReplicationInfo.PlayerName$" cleared north weapons");
     }
 
     else if (TeamIndex == `ALLIES_TEAM_INDEX)
@@ -643,6 +640,7 @@ function ClearWeapons(PlayerController PC, bool GiveAll, optional int TeamIndex)
                 }
             }
         }
+        WorldInfo.Game.Broadcast(self, "[MutExtras] "$PC.PlayerReplicationInfo.PlayerName$" cleared south weapons");
     }
 
     else if (TeamIndex == 100)
@@ -655,91 +653,181 @@ function ClearWeapons(PlayerController PC, bool GiveAll, optional int TeamIndex)
             ROIM.RemoveFromInventory(Weapon);
             // `log("Removed "$Weapon);
         }
+        WorldInfo.Game.Broadcast(self, "[MutExtras] "$PC.PlayerReplicationInfo.PlayerName$" cleared their weapons");
     }
+
+    `log("[MutExtras] Clearing Weapons");
 }
 
-function SpawnVehicle(PlayerController PC, string VehicleName, out string NameValid)
+function bool SpawnVehicle(PlayerController PC, string VehicleName)
 {
-    local vector                    CamLoc, StartShot, EndShot, X, Y, Z;
+	local vector                    CamLoc, StartShot, EndShot, X, Y, Z;
 	local rotator                   CamRot;
-	local class<ROVehicle>          Cobra, Loach, Huey, Bushranger, ACCobra, ACLoach, ACHuey, ACBushranger, BlueHuey, GreenHuey, GreenBushranger;
-	local ROVehicle                 ROHelo;
-    
-    NameValid = "True";
+    local String                    Vehicle;
+	local ROVehicle                 ROV;
+    local class<ROVehicle>          VehicleClass;
+    local ROPawn                    ROP;
+    local bool                      bLandVic;
 
-    // Do ray check and grab actor
+    ROP = ROPawn(PC.Pawn);
 	PC.GetPlayerViewPoint(CamLoc, CamRot);
 	GetAxes(CamRot, X, Y, Z );
 	StartShot   = CamLoc;
-	EndShot     = StartShot + (500 * X) + (200 * Z);
+	EndShot     = StartShot + (400.0 * X) + (200 * Z);
 
-    Cobra = class'ROGameContent.ROHeli_AH1G_Content';
-    Loach = class'ROGameContent.ROHeli_OH6_Content';
-    Huey = class'ROGameContent.ROHeli_UH1H_Content';
-    Bushranger = class'ROGameContent.ROHeli_UH1H_Gunship_Content';
-
-    ACCobra = class'ACHeli_AH1G_Content';
-    ACLoach = class'ACHeli_OH6_Content';
-    ACHuey = class'ACHeli_UH1H_Content';
-    ACBushranger = class'ACHeli_UH1H_Gunship_Content';
-
-    BlueHuey = class'GreenMenMod.GMHeli_Blue_UH1H';
-    GreenHuey = class'GreenMenMod.GMHeli_Green_UH1H';
-    GreenBushranger = class'GreenMenMod.GMHeli_Green_UH1H_Gunship_Content';
-
-    switch (VehicleName)
+	switch (VehicleName)
     {
+        // Vanilla
         case "Cobra":
-            ROHelo = Spawn(Cobra, , , EndShot, camrot);
-            break;
+        Vehicle = "ROGameContent.ROHeli_AH1G_Content";
+        break;
 
         case "Loach":
-            ROHelo = Spawn(Loach, , , EndShot, camrot);
-            break;
+        Vehicle = "ROGameContent.ROHeli_OH6_Content";
+        break;
 
         case "Huey":
-            ROHelo = Spawn(Huey, , , EndShot, camrot);
-            break;
+        Vehicle = "ROGameContent.ROHeli_UH1H_Content";
+        break;
 
         case "Bushranger":
-            ROHelo = Spawn(Bushranger, , , EndShot, camrot);
-            break;
+        Vehicle = "ROGameContent.ROHeli_UH1H_Gunship_Content";
+        break;
 
+        // MutExtras
         case "ACCobra":
-            ROHelo = Spawn(ACCobra, , , EndShot, camrot);
-            break;
+        Vehicle = "MutExtrasTB.ACHeli_AH1G_Content";
+        break;
 
         case "ACLoach":
-            ROHelo = Spawn(ACLoach, , , EndShot, camrot);
-            break;
+        Vehicle = "MutExtrasTB.ACHeli_OH6_Content";
+        break;
         
         case "ACHuey":
-            ROHelo = Spawn(ACHuey, , , EndShot, camrot);
-            break;
+        Vehicle = "MutExtrasTB.ACHeli_UH1H_Content";
+        break;
 
         case "ACBushranger":
-            ROHelo = Spawn(ACBushranger, , , EndShot, camrot);
-            break;
+        Vehicle = "MutExtrasTB.ACHeli_UH1H_Gunship_Content";
+        break;
 
+        // Green Army Men
         case "BlueHuey":
-            ROHelo = Spawn(BlueHuey, , , EndShot, camrot);
-            break;
+        Vehicle = "GreenMenMod.GMHeli_Blue_UH1H";
+        break;
 
         case "GreenHuey":
-            ROHelo = Spawn(GreenHuey, , , EndShot, camrot);
-            break;
+        Vehicle = "GreenMenMod.GMHeli_Green_UH1H";
+        break;
 
         case "GreenBushranger":
-            ROHelo = Spawn(GreenBushranger, , , EndShot, camrot);
-            break;
+        Vehicle = "GreenMenMod.GMHeli_Green_UH1H_Gunship_Content";
+        break;
+
+        //GOM
+        case "M113ACAV":
+        Vehicle = "GOM3.GOMVehicle_M113_ACAV_ActualContent";
+        bLandVic = true;
+        break;
+
+        case "GOM4M113ACAV":
+        Vehicle = "GOM4.GOMVehicle_M113_ACAV_ActualContent";
+        bLandVic = true;
+        break;
+
+        case "M113ARVN":
+		Vehicle = "GOM4.GOMVehicle_M113_APC_ARVN";
+        bLandVic = true;
+        break;
+
+        case "MUTT":
+		Vehicle = "GOM4.GOMVehicle_M151_MUTT_US";
+        bLandVic = true;
+        break;
+
+        case "T34":
+		Vehicle = "GOM4.GOMVehicle_T34_ActualContent";
+        bLandVic = true;
+        break;
+
+        //Winter War
+        case "T20":
+		Vehicle = "WinterWar.WWVehicle_T20_ActualContent";
+        bLandVic = true;
+        break;
+
+        case "T26":
+		Vehicle = "WinterWar.WWVehicle_T26_EarlyWar_ActualContent";
+        bLandVic = true;
+        break;
+
+        case "T28":
+		Vehicle = "WinterWar.WWVehicle_T28_ActualContent";
+        bLandVic = true;
+        break;
+
+        case "HT130":
+		Vehicle = "WinterWar.WWVehicle_HT130_ActualContent";
+        bLandVic = true;
+        break;
+
+        case "ATGun":
+		Vehicle = "WinterWar.WWVehicle_53K_ActualContent";
+        break;
+
+        case "Vickers":
+		Vehicle = "WinterWar.WWVehicle_Vickers_ActualContent";
+        bLandVic = true;
+        break;
+
+        case "Skis":
+        Vehicle = "WinterWar.WWVehicle_Vickers_ActualContent";
+        bLandVic = true;
+        break;
 
         default:
-            NameValid = "False";
-            break;
+        return false;
     }
 
-    ROHelo.Mesh.AddImpulse(vect(0,0,-1), ROHelo.Location);
-    ROHelo.bTeamLocked = false;
+    if (InStr(Vehicle, "WinterWar") != -1 && !bLoadWW)
+    {
+        PrivateMessage(PC, "bLoadWW must be enabled in the WebAdmin mutators settings for you to spawn this vehicle!");
+        return false;
+    }
+    else if (InStr(Vehicle, "GOM3") != -1 && !bLoadGOM3)
+    {
+        PrivateMessage(PC, "bLoadGOM3 must be enabled in the WebAdmin mutators settings for you to spawn this vehicle!");
+        return false;
+    }
+    else if (InStr(Vehicle, "GOM4") != -1 && !bLoadGOM4)
+    {
+        PrivateMessage(PC, "bLoadGOM4 must be loaded in the WebAdmin mutators settings for you to spawn this vehicle!");
+        return false;
+    }
+
+    VehicleClass = class<ROVehicle>(DynamicLoadObject(Vehicle, class'Class'));
+
+    if (VehicleClass != none)
+    {
+        ROV = Spawn(VehicleClass, , , EndShot, camrot);
+        ROV.Mesh.AddImpulse(vect(0,0,1), ROV.Location);
+        ROV.bTeamLocked = false;
+
+        // ROV.GroundSpeed=520
+	    // ROV.MaxSpeed=940 //67 km/h
+
+        if (bLandVic && bNewTankPhys)
+        {
+            ROV.Mesh.SetRBCollidesWithChannel(RBCC_Default, false);
+            ROV.Mesh.SetRBCollidesWithChannel(RBCC_BlockingVolume, false);
+        }
+
+        if (VehicleName ~= "Skis")
+        {
+            ROV.TryToDrive(ROP);
+        }
+        return true;
+    }
 }
 
 function ClearVehicles()
@@ -749,13 +837,16 @@ function ClearVehicles()
 	foreach WorldInfo.AllActors(class'ROVehicle', ROV)
 	{
 		if( !ROV.bDriving )
+        {
             ROV.ShutDown();
-			ROV.Destroy();
+			ROV.Destroy();  
+        }
 	}
 }
 
 function AddBots(int Num, optional int NewTeam = -1, optional bool bNoForceAdd)
 {
+    local ROGameInfo              ROGI;
 	local ROAIController ROBot;
     local ROPlayerReplicationInfo ROPRI;
 	local byte ChosenTeam;
@@ -867,22 +958,52 @@ function RemoveBots()
     }
 }
 
-/* function Fly(PlayerController PC)
+function SetSpeed(PlayerController PC, float F, string S)
 {
-    if ((PC.Pawn != None) && PC.bCheatFlying == false)
+    if (S ~= "all")
+    {
+        ForEach WorldInfo.AllControllers(class'PlayerController', PC)
+        {
+            if (0.5 <= F && F <= 20)
+            {
+                PC.Pawn.GroundSpeed =   PC.Pawn.Default.GroundSpeed * F;
+	            PC.Pawn.WaterSpeed =    PC.Pawn.Default.WaterSpeed * F;
+                PC.Pawn.AirSpeed =      PC.Pawn.Default.AirSpeed * F;
+                PC.Pawn.LadderSpeed =   PC.Pawn.Default.LadderSpeed * F;
+            }
+            else
+            {
+                PC.Pawn.GroundSpeed =   PC.Pawn.Default.GroundSpeed;
+	            PC.Pawn.WaterSpeed =    PC.Pawn.Default.WaterSpeed;
+                PC.Pawn.AirSpeed =      PC.Pawn.Default.AirSpeed;
+                PC.Pawn.LadderSpeed =   PC.Pawn.Default.LadderSpeed;
+                // `log("Error");
+            }
+        }
+    }
+    if (0.1 <= F && F <= 20)
 	{
-        PC.Pawn.CheatFly();
-		PC.ClientMessage("You feel much lighter");
-		PC.bCheatFlying = true;
-		PC.Outer.GotoState('PlayerFlying');
-	}
-	else if (PC.Pawn != None)
-	{
-        PC.Pawn.CheatWalk();
-        PC.bCheatFlying = false;
-		PC.Restart(false);
-	}
-} */
+        PC.Pawn.GroundSpeed = PC.Pawn.Default.GroundSpeed * F;
+	    PC.Pawn.WaterSpeed = PC.Pawn.Default.WaterSpeed * F;
+        PC.Pawn.AirSpeed = PC.Pawn.Default.AirSpeed * F;
+        PC.Pawn.LadderSpeed = PC.Pawn.Default.LadderSpeed * F;
+    }
+    else
+    {
+        PC.Pawn.GroundSpeed = PC.Pawn.Default.GroundSpeed;
+	    PC.Pawn.WaterSpeed = PC.Pawn.Default.WaterSpeed;
+        PC.Pawn.AirSpeed = PC.Pawn.Default.AirSpeed;
+        PC.Pawn.LadderSpeed = PC.Pawn.Default.LadderSpeed;
+        // `log("Error");
+    }
+}
+
+function AllAmmo(PlayerController PC)
+{
+	ROInventoryManager(PC.Pawn.InvManager).AllAmmo(true);
+	ROInventoryManager(PC.Pawn.InvManager).bInfiniteAmmo = true;
+	ROInventoryManager(PC.Pawn.InvManager).DisableClientAmmoTracking();
+}
 
 simulated function NameExists(ROVehicleBase VehBase)
 {
@@ -942,17 +1063,63 @@ simulated function NameExists(ROVehicleBase VehBase)
 	}
 }
 
-// At the end here so I can read error messages easier
-function DoGiveWeapon(ROInventoryManager InvManager, string WeaponName, out string NameValid)
+function ModifyVolumes()
 {
-    switch (WeaponName)
+    local ROVolumeAmmoResupply ROVAR;
+
+    foreach AllActors(class'ROVolumeAmmoResupply', ROVAR)
     {
-        `include(MutExtrasTB\Classes\WeaponNamesVanilla.uci)
+        ROVAR.Team = OWNER_Neutral;
     }
 }
 
+function SetVicTeam()
+{
+    local ROVehicle ROV;
+
+    foreach DynamicActors(class'ROVehicle', ROV)
+    {
+        if (ROV.bDriving == true && ROV.Team != ROV.Driver.GetTeamNum() && !ROV.bDeadVehicle)
+        {
+            ROV.Team = ROV.Driver.GetTeamNum();
+            // `log ("[MutExtras Debug] Set "$ROV$" to team "$ROV.Driver.GetTeamNum());
+        }
+    }
+}
+
+function bool IsMutThere(string Mutator)
+{
+	local Mutator mut;
+
+    mut = ROGameInfo(WorldInfo.Game).BaseMutator;
+
+    for (mut = ROGameInfo(WorldInfo.Game).BaseMutator; mut != none; mut = mut.NextMutator)
+    {
+        // `log("[MutExtras] IsMutThere test "$string(mut.name));
+        if(InStr(string(mut.name), Mutator,,true) != -1) 
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+function bool IsWWThere()
+{
+    local string WWName;
+    WWName = class'Engine'.static.GetCurrentWorldInfo().GetMapName(true);
+    if (InStr(WWName, "WW",,true) != -1)
+    {
+        // `log ("[MutExtras Debug] Found WinterWar!");
+        return true;
+    }
+    return false;
+}
+
+`include(MutExtrasTB\Classes\WeaponNames.uci)
+
 DefaultProperties
 {
-    RORICSouth=(LevelContentClasses=("MutExtras.ACPawnSouth"))
-    RORICNorth=(LevelContentClasses=("MutExtras.ACPawnNorth"))
+    RORICSouth=(LevelContentClasses=("MutExtrasTB.ACPawnSouth"))
+    RORICNorth=(LevelContentClasses=("MutExtrasTB.ACPawnNorth"))
 }
