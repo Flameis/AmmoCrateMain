@@ -41,12 +41,12 @@ simulated function ReceivedGameClass(class<GameInfo> GameClass)
     ReplacePawnHandler();
 }
 
-simulated exec function Camera(name NewMode)
+simulated exec function MCamera(name NewMode)
 {
-    ServerCamera(NewMode);
+    MServerCamera(NewMode);
 }
 
-reliable server function ServerCamera(name NewMode)
+reliable server function MServerCamera(name NewMode)
 {
     if (NewMode == '1st')
     {
