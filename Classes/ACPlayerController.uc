@@ -410,6 +410,13 @@ function UpdateLoachRecon(vector HeloLocation, optional bool bPilot)
 	local int NumControllerChecks;
 	local ROVehicleHelicopter ROVH;
 
+	IsFlyingHelicopter(ROVH);
+	if(ACHeli_OH6_Content(ROVH) == none)
+	{
+		super.UpdateLoachRecon(HeloLocation, bPilot);
+		return;
+	}
+
 	if( bPilot )
 	{
 		// Check that we are alive and still the pilot of the Loach

@@ -9,8 +9,7 @@
 // All Rights Reserved.
 //=============================================================================
 
-class ACDestructible extends Actor
-	config(MutExtrasTB);
+class ACDestructible extends Actor;
 
 var()	array<class<DamageType> >			AcceptedDamageTypes;	// Types of Damage that harm this Destructible
 var()	int									StartingHealth;			// Initial Health of this Destructible

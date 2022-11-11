@@ -1,3 +1,10 @@
+// 29th Extras Mutator
+// Created by T/5 Scovel for the 29th Infantry Division Realism Unit
+// ====================================================
+// Test Branch Update (November 2022)
+// ====================================================
+// Code tech: T/5 Scovel
+// ====================================================
 class MutExtras extends ROMutator
 	config(MutExtras_Server);
 
@@ -130,6 +137,7 @@ function LoadObjects()
     ROMI = ROMapInfo(WorldInfo.GetMapInfo());
 
     //`log ("[MutExtras LoadObjects]");
+    ROMI.SharedContentReferences.AddItem(class<Settings>(DynamicLoadObject("MutExtrasTB.MutExtrasSettings", class'Class')));
 
     if (bLoadGOM3)
     {
