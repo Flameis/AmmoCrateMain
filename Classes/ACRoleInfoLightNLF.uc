@@ -18,11 +18,11 @@ DefaultProperties
 
 	Items[RORIGM_Default]={(
 					// Primary : DEFAULTS
-					PrimaryWeapons=(class'ROGame.ROWeap_IZH43_Shotgun',class'ROGame.ROWeap_MAT49_SMG',class'ROGame.ROWeap_PPSH41_SMG',class'ROGame.ROWeap_MP40_SMG',class'ROGame.ROWeap_K50M_SMG',class'ROGame.ROWeap_IZH43_Shotgun'),
+					PrimaryWeapons=(class'ROGame.ROWeap_IZH43_Shotgun',class'ROGame.ROWeap_MAT49_SMG',class'ROGame.ROWeap_PPSH41_SMG',class'ROGame.ROWeap_MP40_SMG',class'ROGame.ROWeap_IZH43_Shotgun'),
 					SecondaryWeapons=(class'ROGame.ROWeap_TT33_Pistol',class'ROGame.ROWeap_PM_Pistol'),
-					OtherItems=(class'MutExtrasTB.ACWeap_Molotov_Triad',class'MutExtrasTB.ACWeap_Tripwire_Quad',class'MutExtrasTB.ACWeap_FougQuad',class'ROGame.ROWeap_RDG1_Smoke',class'ROGame.ROItem_Binoculars'),
-					OtherItemsStartIndexForPrimary=(1, 1, 1, 1, 1, 0),
-					NumOtherItemsForPrimary=(5, 5, 5, 5, 5, 1),
+					OtherItems=(class'MutExtrasTB.ACWeap_Molotov_Triad',class'ROGame.ROWeap_MD82_Mine',class'ROGame.ROWeap_RDG1_Smoke',class'MutExtrasTB.ACWeap_Tripwire_Quad',class'MutExtrasTB.ACWeap_FougQuad'),
+					OtherItemsStartIndexForPrimary=(2, 2, 1, 2, 0),
+					NumOtherItemsForPrimary=(0, 0, 2, 0, 1),
 	)}
 
 	ClassIcon=Texture2D'VN_UI_Textures.menu.class_icon_scout'

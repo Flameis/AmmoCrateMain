@@ -1,41 +1,60 @@
 class ACPlayerReplicationInfo extends ROPlayerReplicationInfo
 	config(MutExtras_Client);
 
-var repnotify string PlayerRank, PlayerUnit;
+var repnotify string 	PlayerRank, PlayerUnit;
+var repnotify bool 		bNeedsSalute;
 
 // Without replication, only the player can see the helmet decals
 replication
 {
 	if (bNetDirty)
-		PlayerRank, PlayerUnit;
+		PlayerRank, PlayerUnit, bNeedsSalute;
 }
 
-/* simulated event ReplicatedEvent(name VarName)
+simulated event ReplicatedEvent(name VarName)
 {
-    local String Text;
+    // local String Text;
+	local ACPawn ACP;
+
+	ForEach DynamicActors(class'ACPawn', ACP)
+	{
+		// find my pawn and tell it
+		if ( ACP.PlayerReplicationInfo == self )
+		{
+			break;
+		}
+	}
 
     if (Role == Role_Authority)
     {
-      Text = "Server";
+    //   Text = "Server";
     }
     else
     {
-      Text = "Client";
+    //   Text = "Client";
     }
 
 	if (VarName == 'PlayerRank')
 	{
-        `Log(Self$":: ReplicatedEvent():: PlayerRank is "$PlayerRank$" on the "$Text);
+        // `Log(Self$":: ReplicatedEvent():: PlayerRank is "$PlayerRank$" on the "$Text);
 	}
     else if (VarName == 'PlayerUnit')
 	{
-        `Log(Self$":: ReplicatedEvent():: PlayerUnit is "$PlayerUnit$" on the "$Text);
+        // `Log(Self$":: ReplicatedEvent():: PlayerUnit is "$PlayerUnit$" on the "$Text);
+	}
+	else if (VarName == 'bNeedsSalute')
+	{
+        // `Log(Self$":: Pawn ReplicatedEvent():: bNeedsFBSalute is "$bNeedsSalute$" on the "$Text);
+		if (bNeedsSalute)
+		{
+			ACP.Salute();
+		}
 	}
 	else
 	{
 		Super.ReplicatedEvent(VarName);
 	}
-} */
+}
 
 simulated function ClientInitialize(Controller C)
 {
@@ -82,7 +101,7 @@ function bool SelectRoleByClass(Controller C, class<RORoleInfo> RoleInfoClass,
 
 defaultproperties
 {
-	PlayerRank="29th"
-	PlayerUnit="29th"
+	PlayerRank="pvt"
+	PlayerUnit="pvt"
 	PawnHandlerClass = class'ACPawnHandler';
 }

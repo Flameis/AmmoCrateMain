@@ -270,6 +270,10 @@ singular function Mutate(string MutateString, PlayerController PC) //no prefixes
 
 	Switch (Command)
     {
+        case "SALUTE":
+            ACPlayerReplicationInfo(PC.PlayerReplicationInfo).bNeedsSalute = true;
+            break;
+
         case "SWITCHTANKPHYS":
             if (!bNewTankPhys)
                 bNewTankPhys=true;

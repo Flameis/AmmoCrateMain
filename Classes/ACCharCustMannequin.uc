@@ -8,10 +8,15 @@ var MaterialInstanceConstant 			HeadgearMIC3;
 var MaterialInstanceConstant 			HeadgearTemplateMIC2;
 var MaterialInstanceConstant			HeadgearTemplateMIC3;
 
+var DecalComponent MyDecal;
+
 event PostBeginPlay()
 {
 	super(Actor).PostBeginPlay();
 	PawnHandlerClass = class'ACPawnHandler';
+
+	mesh.AttachComponent( MyDecal, 'CHR_LArmshoulder');
+	mesh.AttachComponent( MyDecal, 'CHR_RArmshoulder');
 }
 
 function AttachNewHeadgear(SkeletalMesh NewHeadgearMesh)
@@ -67,4 +72,15 @@ function AttachNewHeadgear(SkeletalMesh NewHeadgearMesh)
 			`warn("Bone name specified in socket not found in parent anim component. Headgear component will not be attached");
 	   }
 	}
+}
+
+defaultproperties
+{
+	Begin Object Class=DecalComponent Name=Decal
+		bIgnoreOwnerHidden=TRUE
+		bProjectOnBackfaces=TRUE
+		DecalMaterial=MaterialInstanceConstant'MutExtrasTBPkg.Materials.TestMat'
+	End Object
+	Components.Add(Decal)
+	MyDecal=Decal
 }

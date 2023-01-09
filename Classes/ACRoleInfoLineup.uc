@@ -21,7 +21,8 @@ defaultproperties
 	Items[RORIGM_Default]={(
 					// Primary : DEFAULTS
 					PrimaryWeapons=(class'ROGame.ROWeap_M1Garand_Rifle'),
-					SecondaryWeapons=(class'ROGame.ROWeap_M1911_Pistol'/* class'ACHolster' */),					
+					SecondaryWeapons=(class'ACHolster'),
+					SquadLeaderItems=()
 		)}
 
 	ClassIcon=Texture2D'VN_UI_Textures.menu.class_icon_None'

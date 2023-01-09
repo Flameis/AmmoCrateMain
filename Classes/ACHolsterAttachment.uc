@@ -4,6 +4,10 @@ defaultproperties
 {
     WeaponClass=class'ACHolster'
     CHR_AnimSet=AnimSet'MutExtrasTBPkg.Anims.Salute'
+
+	ThirdPersonHandsAnim=AttentionIdleAnimV2
+	ThirdPersonHandsIronAnim=AttentionIdleAnimV2
+
     FireAnim=SaluteAnimV2
 	FireLastAnim=SaluteAnimV2
 	IdleAnim=AttentionIdleAnimV2

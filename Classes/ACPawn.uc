@@ -1,6 +1,7 @@
 class ACpawn extends ROPawn;
 
-var repnotify string PlayerRank, PlayerUnit;
+var string 	PlayerRank, PlayerUnit;
+var bool bNeedsIdle, bSaluting, bUBSalute;
 
 var MaterialInstanceConstant 		HeadgearMIC2;
 var MaterialInstanceConstant 		HeadgearMIC3;
@@ -8,45 +9,144 @@ var MaterialInstanceConstant 		HeadgearMIC3;
 var MaterialInstanceConstant HeadgearTemplateMIC2;
 var MaterialInstanceConstant HeadgearTemplateMIC3;
 
-replication 
-{
-	if (bNetDirty)
-		PlayerRank, PlayerUnit;
-}
-
-/* simulated event ReplicatedEvent(name VarName)
-{
-    local String Text;
-
-    if (Role == Role_Authority)
-    {
-      Text = "Server";
-    }
-    else
-    {
-      Text = "Client";
-    }
-
-	if (VarName == 'PlayerRank')
-	{
-        `Log(Self$":: Pawn ReplicatedEvent():: PlayerRank is "$PlayerRank$" on the "$Text);
-	}
-    else if (VarName == 'PlayerUnit')
-	{
-        `Log(Self$":: Pawn ReplicatedEvent():: PlayerUnit is "$PlayerUnit$" on the "$Text);
-	}
-	else
-	{
-		Super.ReplicatedEvent(VarName);
-	}
-} */
+var DecalComponent MyLDecal, MyRDecal;
 
 simulated event PreBeginPlay()
 {
 	PawnHandlerClass = class'ACPawnHandler';
+
+	SetTimer(0.2, true, 'CheckIdle');
+	SetTimer(3.5, true, 'SetIdle');
 	
 	super.PreBeginPlay();
 }
+
+simulated event PostBeginPlay()
+{
+	MyLDecal = PlayerWoundDecalManager.SpawnDecal(
+					MaterialInstanceConstant'MutExtrasTBPkg.Materials.TestMat',			// Decal material
+					Location,  // Decal location
+					Rotation,	// Decal orientation
+					10,				// Decal width
+					10,				// Decal height
+					100,				// Decal thickness
+					false,				// bNoClip
+					,					// Decal rotation
+					ThirdPersonHeadAndArmsMeshComponent, 				// HitComponent
+					FALSE,				// bProjectOnTerrain
+					TRUE,				// bProjectOnSkeletalMeshes
+					,					// bone name
+					,					// Hit node index (for BSP)
+					,					// Hit level index (for BSP)
+					,					// lifespan
+					,					// InFracturedStaticMeshComponentIndex
+					,					// InDepthBias
+					,					// InBlendRange
+					self				// LifeTimeParent
+					);
+	mesh.AttachComponent( MyLDecal, 'CHR_LArmshoulder');
+
+	MyRDecal = PlayerWoundDecalManager.SpawnDecal(
+					MaterialInstanceConstant'MutExtrasTBPkg.Materials.TestMat',			// Decal material
+					Location,  // Decal location
+					Rotation,	// Decal orientation
+					10 * 20.0f,				// Decal width
+					10 * 20.0f,				// Decal height
+					50.0f,				// Decal thickness
+					false,				// bNoClip
+					,					// Decal rotation
+					ThirdPersonHeadAndArmsMeshComponent, 				// HitComponent
+					FALSE,				// bProjectOnTerrain
+					TRUE,				// bProjectOnSkeletalMeshes
+					,					// bone name
+					,					// Hit node index (for BSP)
+					,					// Hit level index (for BSP)
+					,					// lifespan
+					,					// InFracturedStaticMeshComponentIndex
+					,					// InDepthBias
+					,					// InBlendRange
+					self				// LifeTimeParent
+					);
+	mesh.AttachComponent( MyRDecal, 'CHR_LArmshoulder');
+
+	`log(MyLDecal.Orientation);
+	`log(MyLDecal.Location);
+	`log(MyLDecal.HitLocation);
+	`log(MyLDecal.HitComponent);
+
+	`log(MyRDecal.Orientation);
+	`log(MyRDecal.Location);
+	`log(MyRDecal.HitLocation);
+	`log(MyRDecal.HitComponent);
+
+	`log(Location);
+			
+	super.PostBeginPlay();
+}
+
+simulated function CheckIdle()
+{
+	if (Weapon.IsA('ACHolster') && IsZero(Velocity) && !bIsCrouched && !bIsProning)
+	{
+    	bNeedsIdle = true;
+	}
+	else if (!bUBSalute)
+	{
+		StopIdleAnim();
+	}
+}
+
+function SetIdle()
+{
+	if (bNeedsIdle && !bSaluting && !bUBSalute)
+	{
+    	PlayIdleAnim();
+	}
+}
+
+function PostSalute()
+{
+	bSaluting = false;
+	bUBSalute = false;
+	if (Weapon.IsA('ACHolster') && IsZero(Velocity) && !bIsCrouched && !bIsProning)
+	{
+    	PlayIdleAnim();
+	}
+}
+
+function Salute()
+{
+	PlayerController(Controller).ServerSay("*Salute*");
+
+	if (IsZero(Velocity) && !bIsCrouched && !bIsProning && Weapon.IsInState('Active'))
+	{
+		PlayFullBodyAnimation('SaluteAnimV2', 0.5f, false, 0.8, 0);
+	}
+	else if (!bIsProning && Weapon.IsInState('Active'))
+	{
+		PlayUpperBodyAnimation('SaluteAnimV2',, 0.8);
+		bUBSalute = true;
+	}
+	bSaluting = true;
+	SetTimer(1.6, false, 'PostSalute');
+	ResetSBool();
+}
+
+function PlayIdleAnim()
+{
+	ACPawn(Instigator).PlayFullBodyAnimation('AttentionIdleAnimV2', 0.5f, false, 1, 0);
+}
+
+function StopIdleAnim()
+{
+	ACPawn(Instigator).CleanupActiveAnimation();
+}
+
+reliable server function ResetSBool()
+{
+	ACPlayerReplicationInfo(PlayerReplicationInfo).bNeedsSalute = false;
+}
+
 
 //Overridden to set the unit and rank of the player before the mesh is created and after the controller is set
 function PossessedBy(Controller C, bool bVehicleTransition)
@@ -174,8 +274,23 @@ simulated function AttachNewHeadgear(SkeletalMesh NewHeadgearMesh)
 	}
 }
 
+/* function HandleSuppressionEvent(float SuppressionPower, ESuppressionEventType SuppressionType, optional class<DamageType> DamageType, optional Actor Suppressor)
+{
+	SuppressionPower = int(SuppressionPower * 5);
+
+	super.HandleSuppressionEvent(SuppressionPower, SuppressionType, DamageType, Suppressor);
+} */
+
 defaultproperties
 {
-	PlayerRank="29th"
-	PlayerUnit="29th"
+	PlayerRank="pvt"
+	PlayerUnit="pvt"
+
+	Begin Object Class=DecalComponent Name=Decal
+		bIgnoreOwnerHidden=TRUE
+		bProjectOnBackfaces=TRUE
+		DecalMaterial=MaterialInstanceConstant'MutExtrasTBPkg.Materials.TestMat'
+	End Object
+	Components.Add(Decal)
+	MyDecal=Decal
 }
