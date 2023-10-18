@@ -292,5 +292,5 @@ defaultproperties
 		DecalMaterial=MaterialInstanceConstant'MutExtrasTBPkg.Materials.TestMat'
 	End Object
 	Components.Add(Decal)
-	MyDecal=Decal
+	// MyDecal=Decal
 }

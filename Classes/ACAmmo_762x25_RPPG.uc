@@ -13,7 +13,7 @@ class ACAmmo_762x25_RPPG extends ROAmmunition
 
 defaultproperties
 {
-	CompatibleWeaponClasses(0)=class'MutExtrasTB.ACWeap_RPPG'
+	CompatibleWeaponClasses(0)=class'ACWeap_RPPG'
 	CompatibleWeaponClasses(1)=class'ROGame.ROWeap_K50M_SMG'
 
 	InitialAmount=9999
