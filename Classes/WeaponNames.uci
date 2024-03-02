@@ -298,9 +298,9 @@ function string DoGiveWeapon(PlayerController PC, ROInventoryManager InvManager,
             ActualName = "MutExtrasTB.ACItem_VCAmmoCrate_Content";
             break;
 
-            case "M79WP":
+            /* case "M79WP":
             ActualName = "MutExtrasTB.ACWeap_M79_GrenadeLauncher_Level3";
-            break;
+            break; */
 
             case "MEME":
             ActualName = "MutExtrasTB.ACWeap_M79_MemeLauncher_Content";
