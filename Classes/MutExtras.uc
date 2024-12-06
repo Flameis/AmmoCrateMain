@@ -39,16 +39,19 @@ simulated function PreBeginPlay()
 
 function ModifyPlayer(Pawn Other)
 {
+    local ACPlayerReplicationInfo ACPRI;
+    ACPRI = ACPlayerReplicationInfo(Other.PlayerReplicationInfo);
+
     //Make sure the pawns on the server have the rank and unit for the 29th helmet
-	ACPawn(Other).PlayerRank = ACPlayerReplicationInfo(Other.PlayerReplicationInfo).PlayerRank;
-	ACPawn(Other).PlayerUnit = ACPlayerReplicationInfo(Other.PlayerReplicationInfo).PlayerUnit;
+	ACPawn(Other).PlayerRank = ACPRI.PlayerRank;
+	ACPawn(Other).PlayerUnit = ACPRI.PlayerUnit;
 
     super.ModifyPlayer(Other);
 }
 
 simulated function NotifyLogin(Controller NewPlayer)
 {
-    local ACPlayerController      ACPC;
+    local ACPlayerController ACPC;
     local ACDummyActor DummyActor;
 
     DummyActor = Spawn(class'ACDummyActor', NewPlayer);
